@@ -8,13 +8,13 @@ using namespace arma;
 IntegerMatrix C_extract_window_int(IntegerMatrix r, IntegerVector w, IntegerVector idx){
   int nr = w(0);
   int nc = w(1);
-  
+
   int rast_row_center = idx(0);
   int rast_row_top = rast_row_center-(nr-1)/2;
-  
+
   int rast_col_center= idx(1);
   int rast_col_left = rast_col_center-(nc-1)/2;
-  
+
   IntegerMatrix r_idx(nr, nc);
   IntegerMatrix c_idx(nr, nc);
   for(int i=0; i < nr; ++i){
@@ -33,7 +33,7 @@ IntegerMatrix C_extract_window_int(IntegerMatrix r, IntegerVector w, IntegerVect
 // [[Rcpp::export]]
 NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
   if(any(is_na(x))){
-    NumericMatrix GLCM_Norm(n_levels, n_levels); 
+    NumericMatrix GLCM_Norm(n_levels, n_levels);
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
   }  //Return window of NA's if any vals in window are NA
@@ -43,7 +43,7 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
   for(int i=0; i < nr; ++i){
     for(int j=0; j < nc; ++j){
       int focal_val = x(i,j);
-      IntegerVector neighbor_idx(2, 0);   
+      IntegerVector neighbor_idx(2, 0);
       neighbor_idx(0) = i-shift(1);
       neighbor_idx(1) = j+shift(0);
       int neighbor_val = x(neighbor_idx(0), neighbor_idx(1));
@@ -52,8 +52,8 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
         GLCM(neighbor_val,focal_val) = GLCM(neighbor_val,focal_val)+1;
       }
     }}
-  
-  double total=0; 
+
+  double total=0;
   for(int k=0; k < GLCM.size(); ++k){
     total = total + GLCM[k];
   }
@@ -104,28 +104,28 @@ List C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, Int
   int max_col = nc - ((w(1)-1)/2);
   NumericMatrix glcm_contrast = NumericMatrix(nr,nc);
   glcm_contrast.fill(NA_REAL);
-  
+
   NumericMatrix glcm_dissimilarity = NumericMatrix(nr,nc);
   glcm_dissimilarity.fill(NA_REAL);
-  
+
   NumericMatrix glcm_homogeneity = NumericMatrix(nr,nc);
   glcm_homogeneity.fill(NA_REAL);
-  
+
   NumericMatrix glcm_ASM = NumericMatrix(nr,nc);
   glcm_ASM.fill(NA_REAL);
-  
+
   NumericMatrix glcm_entropy = NumericMatrix(nr,nc);
   glcm_entropy.fill(NA_REAL);
-  
+
   NumericMatrix glcm_mean = NumericMatrix(nr,nc);
   glcm_mean.fill(NA_REAL);
-  
+
   NumericMatrix glcm_variance = NumericMatrix(nr,nc);
   glcm_variance.fill(NA_REAL);
-  
+
   NumericMatrix glcm_correlation = NumericMatrix(nr,nc);
   glcm_correlation.fill(NA_REAL);
-  
+
   for(int i = min_row; i< max_row; ++i) {
     for(int j = min_col; j < max_col; ++j){
       IntegerVector idx = IntegerVector(2);
