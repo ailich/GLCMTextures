@@ -24,7 +24,7 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
   } else{
     block_idx<- raster::blockSize(r, n = 9, minblocks = 2, minrows = w[1])
     out_blocks<- vector(mode = "list", length = block_idx$n)
-    block_overlap<- (w[1]+1)/2
+    block_overlap<- w[1]-1
     for (i in 1:block_idx$n) {
       min_row<- block_idx$row[[i]]
       max_row<- min(min_row + block_idx$nrows[[i]] - 1 + block_overlap, nrow(r))
