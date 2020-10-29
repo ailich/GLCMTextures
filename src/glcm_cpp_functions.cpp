@@ -46,8 +46,8 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
       IntegerVector neighbor_idx(2, 0);
       neighbor_idx(0) = i-shift(1);
       neighbor_idx(1) = j+shift(0);
-      int neighbor_val = x(neighbor_idx(0), neighbor_idx(1));
-      if((neighbor_idx(0) < nr) & (neighbor_idx(1) < nc) & (neighbor_idx(0) >= 0) & (neighbor_idx(1) >= 0)){
+      if((neighbor_idx(0) < nr) && (neighbor_idx(1) < nc) && (neighbor_idx(0) >= 0) && (neighbor_idx(1) >= 0)){
+        int neighbor_val = x(neighbor_idx(0), neighbor_idx(1));
         GLCM(focal_val,neighbor_val) = GLCM(focal_val,neighbor_val)+1;
         GLCM(neighbor_val,focal_val) = GLCM(neighbor_val,focal_val)+1;
       }
