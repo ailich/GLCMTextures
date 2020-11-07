@@ -13,7 +13,9 @@ glcm_textures(
     "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"),
   quantization,
   min_val = NULL,
-  max_val = NULL
+  max_val = NULL,
+  na_opt = "any",
+  pad = FALSE
 )
 }
 \arguments{
@@ -27,11 +29,15 @@ glcm_textures(
 
 \item{metrics}{A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
 
-\item{quantization}{quantization method (either "equal range" or "equal prob"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples.}
+\item{quantization}{quantization method (either "equal range", "equal prob", or "none"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples. "none" means the layer has already been quantized.}
 
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
+
+\item{na_opt}{A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.}
+
+\item{pad}{logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default)}
 }
 \value{
 a RasterBrick of Texture Metrics (or RasterLayer if just one metric is calculated)

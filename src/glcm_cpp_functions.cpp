@@ -31,15 +31,37 @@ IntegerMatrix C_extract_window_int(IntegerMatrix r, IntegerVector w, IntegerVect
 
 //Make GLCM
 // [[Rcpp::export]]
-NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
-  if(any(is_na(x))){
+NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, String na_opt){
+  StringVector na_options(3);
+  na_options(0) = "any";
+  na_options(1) = "center";
+  na_options(2) = "all";
+
+  if((na_opt== (na_options(0))) && (is_true(any(is_na(x))))){
     NumericMatrix GLCM_Norm(n_levels, n_levels);
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
   }  //Return window of NA's if any vals in window are NA
-  IntegerMatrix GLCM(n_levels, n_levels);//initialize GLCM
+
   int nr= x.nrow();
   int nc= x.ncol();
+  int cr= (nr-1)/2;//row position of center
+  int cc= (nc-1)/2; //column position of center
+  IntegerVector center_val(1);
+  center_val(0) = x(cr,cc);
+  if((na_opt== (na_options(1))) && (is_true(all(is_na(center_val))))){
+    NumericMatrix GLCM_Norm(n_levels, n_levels);
+    GLCM_Norm.fill(NA_REAL);
+    return GLCM_Norm;
+  }  //Return window of NA's if center value in window is NA
+
+  if((na_opt== (na_options(2))) && (is_true(all(is_na(x))))){
+    NumericMatrix GLCM_Norm(n_levels, n_levels);
+    GLCM_Norm.fill(NA_REAL);
+    return GLCM_Norm;
+  }  //Return window of NA's if all values in window is NA
+
+  IntegerMatrix GLCM(n_levels, n_levels);//initialize GLCM
   for(int i=0; i < nr; ++i){
     for(int j=0; j < nc; ++j){
       int focal_val = x(i,j);
@@ -48,10 +70,14 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
       neighbor_idx(1) = j+shift(0);
       if((neighbor_idx(0) < nr) && (neighbor_idx(1) < nc) && (neighbor_idx(0) >= 0) && (neighbor_idx(1) >= 0)){
         int neighbor_val = x(neighbor_idx(0), neighbor_idx(1));
-        GLCM(focal_val,neighbor_val) = GLCM(focal_val,neighbor_val)+1;
-        GLCM(neighbor_val,focal_val) = GLCM(neighbor_val,focal_val)+1;
-      }
-    }}
+        IntegerVector focalval_neighborval(2);
+        focalval_neighborval(0)=focal_val;
+        focalval_neighborval(1)=neighbor_val;
+        if(is_false(any(is_na(focalval_neighborval)))){
+          GLCM(focal_val,neighbor_val) = GLCM(focal_val,neighbor_val)+1;
+          GLCM(neighbor_val,focal_val) = GLCM(neighbor_val,focal_val)+1;
+        }
+      }}}
 
   double total=0;
   for(int k=0; k < GLCM.size(); ++k){
@@ -69,7 +95,7 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift){
 NumericVector C_glcm_metrics(NumericMatrix GLCM){
   NumericVector textures = rep(NA_REAL,8);
   textures.names() = CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity","glcm_ASM","glcm_entropy","glcm_mean","glcm_variance","glcm_correlation");
-  if(any(is_na(GLCM))){
+  if(is_true(any(is_na(GLCM)))){
     return textures;}
   int GLCM_dims = GLCM.nrow(); //Size of GLCM (they are square so nrows=ncols)
   arma::mat Pij = as<arma::mat>(GLCM);
@@ -95,7 +121,7 @@ NumericVector C_glcm_metrics(NumericMatrix GLCM){
 
 //GLCM across matrix using sliding window
 // [[Rcpp::export]]
-List C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift){
+List C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift, String na_opt){
   int nr= rq.nrow();
   int nc= rq.ncol();
   int min_row = (w(0)-1)/2;
@@ -132,7 +158,7 @@ List C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, Int
       idx(0)= i;
       idx(1)=j;
       IntegerMatrix curr_window = C_extract_window_int(rq, w, idx);
-      NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift); //Tabulate the GLCM
+      NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
       NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
       glcm_contrast(i,j) = curr_textures["glcm_contrast"];
       glcm_dissimilarity(i,j) = curr_textures["glcm_dissimilarity"];

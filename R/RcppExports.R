@@ -5,15 +5,15 @@ C_extract_window_int <- function(r, w, idx) {
     .Call(`_GLCMTextures_C_extract_window_int`, r, w, idx)
 }
 
-C_make_glcm <- function(x, n_levels, shift) {
-    .Call(`_GLCMTextures_C_make_glcm`, x, n_levels, shift)
+C_make_glcm <- function(x, n_levels, shift, na_opt) {
+    .Call(`_GLCMTextures_C_make_glcm`, x, n_levels, shift, na_opt)
 }
 
 C_glcm_metrics <- function(GLCM) {
     .Call(`_GLCMTextures_C_glcm_metrics`, GLCM)
 }
 
-C_glcm_textures_helper <- function(rq, w, n_levels, shift) {
-    .Call(`_GLCMTextures_C_glcm_textures_helper`, rq, w, n_levels, shift)
+C_glcm_textures_helper <- function(rq, w, n_levels, shift, na_opt) {
+    .Call(`_GLCMTextures_C_glcm_textures_helper`, rq, w, n_levels, shift, na_opt)
 }
 

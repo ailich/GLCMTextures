@@ -12,6 +12,8 @@ make_glcm(x, n_levels, shift)
 \item{n_levels}{Number of grey levels used in the quantization}
 
 \item{shift}{A vector of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0)}
+
+\item{na_opt}{A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA (only valid if dimensions of x are odd). "all" means that NA will be returned only if all values in the window are NA.}
 }
 \description{
 Creates a symmetrical normalized GLCM for a given matrix and shift

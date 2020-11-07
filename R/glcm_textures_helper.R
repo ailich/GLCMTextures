@@ -1,5 +1,5 @@
 #' Helper function for glcm_textures
-#' 
+#'
 #' This helper function calls several functions coded in C++ to tabulate the GLCM over a sliding window and extract texture metrics. If there are several shifts, this function averages values across shifts. If a file is too large to fit in memory glcm_textures will split the input raster into smaller chunks and run each chunk through this function and then merge the chunks together.
 #'
 #' @param rq A quantized raster where the valid range of values is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).
@@ -7,10 +7,11 @@
 #' @param n_levels Number of grey levels used in the quantization
 #' @param shift A vector of length 2, or a list of vectors each of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0). To average over "all directions" you can use shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), which is the default.
 #' @param metrics A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".
+#' @param na_opt A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA.
 #' @return a RasterBrick of Texture Metrics (or RasterLayer if just one metric is calculated)
 #' @import raster
 
-glcm_textures_helper<- function(rq, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")){
+glcm_textures_helper<- function(rq, w, n_levels, shift, metrics, na_opt){
   if(class(shift)!="list"){shift=list(shift)}
   #Maybe put check for shift size < windowsize-1/2
   out_list<- vector(mode = "list", length=length(shift))
@@ -19,8 +20,7 @@ glcm_textures_helper<- function(rq, w, n_levels, shift=list(c(1,0), c(1,1), c(0,
   my_res<- raster::res(rq)
   my_extent<- raster::extent(rq)
   for (i in 1:length(shift)) {
-    out_list[[i]]<- raster::stack(lapply(C_glcm_textures_helper(rq = as.matrix(rq), w = w, n_levels = n_levels, shift = shift[[i]]), 
-                                         raster::raster, crs=my_crs, xmn=my_extent[1], xmx=my_extent[2], ymn=my_extent[3], ymx=my_extent[4]))
+    out_list[[i]]<- raster::stack(lapply(C_glcm_textures_helper(rq = as.matrix(rq), w = w, n_levels = n_levels, shift = shift[[i]], na_opt=na_opt), raster::raster, crs=my_crs, xmn=my_extent[1], xmx=my_extent[2], ymn=my_extent[3], ymx=my_extent[4]))
     raster::res(out_list[[i]])<- my_res
     out_list[[i]]<- raster::subset(out_list[[i]], metrics, drop=TRUE)
   }
