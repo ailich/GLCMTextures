@@ -37,7 +37,7 @@ glcm_textures(
 
 \item{na_opt}{A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.}
 
-\item{pad}{logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default)}
+\item{pad}{logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default). If pad is TRUE, na_opt musy be set to "center" or "all".}
 }
 \value{
 a RasterBrick of Texture Metrics (or RasterLayer if just one metric is calculated)

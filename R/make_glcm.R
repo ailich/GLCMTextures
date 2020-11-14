@@ -6,7 +6,7 @@
 #' @param na_opt A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA (only valid if dimensions of x are odd). "all" means that NA will be returned only if all values in the window are NA.
 #' @export
 
-make_glcm<- function(x,n_levels, shift){
+make_glcm<- function(x,n_levels, shift, na_opt= "any"){
   if(na_opt=="center"){
     if(sum((dim(x) %% 2)==0) > 0){
       stop("Error: x must have odd dimensions if na_opt='center'")

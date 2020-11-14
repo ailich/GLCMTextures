@@ -4,7 +4,7 @@
 \alias{make_glcm}
 \title{Creates a symmetrical normalized GLCM for a given matrix and shift}
 \usage{
-make_glcm(x, n_levels, shift)
+make_glcm(x, n_levels, shift, na_opt = "any")
 }
 \arguments{
 \item{x}{a matrix of integers representing quantized values. The valid range of values is from 0 to n_levels-1 (e.g. a matrix with 32 grey levels would have a valid range of 0-31).}

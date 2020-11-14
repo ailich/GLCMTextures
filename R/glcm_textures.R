@@ -10,7 +10,7 @@
 #' @param min_val minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)
 #' @param max_val maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)
 #' @param na_opt A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.
-#' @param pad logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default)
+#' @param pad logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default). If pad is TRUE, na_opt musy be set to "center" or "all".
 #'
 #' @return a RasterBrick of Texture Metrics (or RasterLayer if just one metric is calculated)
 #' @import raster
@@ -19,7 +19,14 @@
 glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na_opt= "any", pad=FALSE){
   if(length(w==1)){
     w<- rep(w,2)}
+  if(any(w<3) | any(0 == (w %% 2))){
+    stop("Error: w must be odd and greater than or equal to 3")}
+  if (!any(na_opt==c("any", "center", "all"))){
+    stop("na_opt must be 'any', 'center', or 'all'")
+    }
   if(pad==TRUE){
+    if(na_opt=="any"){
+      stop("if pad=TRUE, na_opt must be 'center' or 'all'")}
     og_extent<- raster::extent(r)
     r<- raster::extend(r, c(w[1], w[2]), value=NA)
     }
