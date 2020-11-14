@@ -61,7 +61,7 @@ the shift value can be specified as any integer value.
 There are 8 metrics than can be calculated by this package. These
 metrics can be divided into 3 groups: the contrast group, the
 orderliness group, and the descriptive statistics group (Hall-Beyer
-2017).
+2017). The formulas provided below are from Hall-Beyer (2017).
 
 N = Number of rows or columns in the GLCM (Equal to the number of gray
 levels)
