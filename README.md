@@ -32,8 +32,11 @@ how and if the data should be quantized.
 
 ## Install and Load Package
 
-To install the package use the code
-devtools::install\_github(“ailich/GLCMTextures”)
+If you don’t already have devtools installed, use the code
+`install.packages("devtools")`
+
+Then to install this package use the code
+`devtools::install_github("ailich/GLCMTextures")`
 
 ``` r
 library(raster) #Load raster package
@@ -182,11 +185,12 @@ treated as both a focal and neighbor value, we also add to row 4/column
 
 We then continue this process throughout the whole image, moving right
 to the next focal pixel, and down to start the next row when a given row
-is completed.Once we have finished tabulating all the counts we
-“normailize” the GLCM by dividing the counts by the sum of all the
-counts to get relative frequencies or probabilities that a given pixel
-of value i occurs next to a pixel of value j. The values in a normalized
-GLCM will therefore sum to 1.
+is completed. The resulting GLCM is a square matrix of counts that is
+symmetric about the diagonal. Once we have finished tabulating all the
+counts we “normailize” the GLCM by dividing the each element by the sum
+of all the counts to get relative frequencies or probabilities that a
+given pixel of value i occurs next to a pixel of value j. The values in
+a normalized GLCM will therefore sum to 1.
 
 ``` r
 horizontal_glcm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0)) 
@@ -244,15 +248,16 @@ function. Typically data are quantized to 16 (4 bit; 2<sup>4</sup>) or
 levels, the computation cost increases.
 
 There are two methods of quantization available in the quantize\_raster
-function. “equal range” will create bins that cover a range of equal
-size (e.g. if the original data ranged from 0-20 and was quantized to 4
-levels, \[0-5) would be reassigned to 0, \[5-10) would be reassigned to
-1, \[10-15) would be reassigned to 2, and \[15-20\] would be reassigned
-to 4). This is the simplest and most common quantization method. “equal
-prob” performs equal probability quantization and will use quantiles
-(Hyndman and Fan 1996) to create bins that contain an approximately
-equal number of samples, which is the quantization method suggested in
-the original paper (Haralick and Shanmugam 1973).
+function. `method = "equal range"` will create bins that cover a range
+of equal size (e.g. if the original data ranged from 0-20 and was
+quantized to 4 levels, \[0-5) would be reassigned to 0, \[5-10) would be
+reassigned to 1, \[10-15) would be reassigned to 2, and \[15-20\] would
+be reassigned to 4). This is the simplest and most common quantization
+method. `method = "equal prob"` performs equal probability quantization
+and will use quantiles (Hyndman and Fan 1996) to create bins that
+contain an approximately equal number of samples, which is the
+quantization method suggested in the original paper (Haralick and
+Shanmugam 1973).
 
 ``` r
 rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
@@ -293,11 +298,11 @@ freq(rq_equalprob)
 We can also use equal range quantization. By default the function will
 scale the values using the min and max of the data set. By default the
 raster is scaled using the min and max of the data set, but a max and
-min value can be supplied to the max\_val and min\_val parameters. This
-may be more desirable if making comparisons across several different
-rasters where you need the gray levels to correspond in a consistent way
-to the original data, as you can supply the global max/min or the
-theoretical max/min values that could occur.
+min value can be supplied to the `max_val` and `min_val` parameters.
+This may be more desirable if making comparisons across several
+different rasters where you need the gray levels to correspond in a
+consistent way to the original data, as you can supply the global
+max/min or the theoretical max/min values that could occur.
 
 ``` r
 rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
@@ -348,7 +353,7 @@ identical(textures1, textures2)
 We can also calculate the value of textures across multiple shifts by
 supplying a list. In fact, the default is to return
 directionally/rotationally invariant textures that are averaged across
-all 4 directions \[shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))\].
+all 4 directions `shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))`.
 
 ``` r
 textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
@@ -360,23 +365,23 @@ plot(textures3)
 **Some Other Options**
 
 By default all calculated texture metrics are returned; however you can
-have only a subset returned my specifying which ones you want using the
-*metrics* argument.
+have only a subset returned by specifying which ones you want using the
+`metrics` argument.
 
-You can also use *na\_opt* to specify how you want to handle NA’s.
-na\_opt=“any” by default meaning that if any values are NA, the textures
-will evaluate to NA. “center” means that the textures will evaluate to
-NA only if the central pixel is equal to NA. Lastly, setting na\_opt to
-“all” means that the textures will only evaluate to NA if all values
-in the extracted window are NA.
+You can also use `na_opt` to specify how you want to handle NA’s.
+`na_opt="any"` by default meaning that if any values are NA, the
+textures will evaluate to NA. If `na_opt="center"` means that the
+textures will evaluate to NA only if the central pixel is equal to NA.
+Lastly, setting `na_opt = "all"` means that the textures will only
+evaluate to NA if all values in the extracted window are NA.
 
-The *pad* argument can be used to deal with edge effects. By default
-pad=FALSE, so if a pixel is on one of the the edges of the raster image
-(meaning that a full window cannot be extracted around that pixel), the
-textures will evaluate to NA. Setting pad=TRUE pads the raster with
-rows/columns of NA’s so that these are no longer edge pixels. The
-returned surface is cropped back to the original raster size. Note, if
-pad=TRUE na\_opt must be set to “center” or “all”.
+The `pad` argument can be used to deal with edge effects. By default
+`pad=FALSE`, so if a pixel is on one of the the edges of the raster
+image (meaning that a full window cannot be extracted around that
+pixel), the textures will evaluate to NA. Setting `pad=TRUE` pads the
+raster with rows/columns of NA’s so that these are no longer edge
+pixels. The returned surface is cropped back to the original raster
+size. Note, if `pad=TRUE` `na_opt` must be set to `"center"` or `"all"`.
 
 # References
 
