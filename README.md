@@ -1,7 +1,15 @@
 README
 ================
 Alexander Ilich
-11/14/2020
+12/07/2020
+
+[![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
+
+Please cite as
+
+Ilich, Alexander. 2020. “GLCMTextures.”,
+<doi:http://doi.org/10.5281/zenodo.4310187>.
+<https://github.com/ailich/GLCMTextures>.
 
 # GLCMTextures
 
