@@ -1,13 +1,13 @@
 README
 ================
 Alexander Ilich
-12/07/2020
+February 01, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
 Please cite as
 
-Ilich, Alexander. 2020. “GLCMTextures.”,
+Ilich, Alexander R. 2020. “GLCMTextures.”,
 <doi:http://doi.org/10.5281/zenodo.4310187>.
 <https://github.com/ailich/GLCMTextures>.
 
@@ -378,9 +378,9 @@ size. Note, if `pad=TRUE` `na_opt` must be set to `"center"` or `"all"`.
 [Hall-Beyer, Mryka. 2017. "GLCM Textrure Tutorial
 v3.0.](https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf)
 
-Haralick, Robert M, and Karthikeyan Shanmugam. 1973. “Textural features
-for image classification.” IEEE Transactions on systems, man, and
-cybernetics (6):610-621.
+Haralick, Robert M, Karthikeyan Shanmugam, and Its’Hak Dinstein. 1973.
+“Textural features for image classification.” IEEE Transactions on
+systems, man, and cybernetics (6):610-621.
 
 Hyndman, Rob J, and Yanan Fan. 1996. “Sample quantiles in statistical
 packages.” The American Statistician 50 (4):361-365.
