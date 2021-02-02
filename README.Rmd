@@ -71,7 +71,7 @@ $\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$
 
 $\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$
 
-$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j}* \frac{(i-\mu)^2}{\sigma^2}}$
+$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$
 
 ## Tutorial
 
