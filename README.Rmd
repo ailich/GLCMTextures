@@ -32,11 +32,6 @@ If you don't already have devtools installed, use the code `install.packages("de
 
 Then to install this package use the code `devtools::install_github("ailich/GLCMTextures")`
 
-```{r}
-library(raster) #Load raster package
-library(GLCMTextures) #Load GLCMTextures package
-```
-
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 The convention for specifying the direction of the neighboring pixel (the shift) is shown in the image below. The blue pixel in the center is treated as the focal pixel in the example. Shifts are specified as c(x_shift, y_shift). So, a shift of c(1,0) refers to a the neighboring pixel being 1 to the right and 0 upwards of the focal pixel. Since a symmetric GLCM is created, this means each pixel is counted as both a focal and a neighboring pixel, so it also tabulates the shift in the opposite direction c(-1,0), which is the dotted blue line. Therefore, these two shifts will produce equivalent results. Although neighboring pixels are typically considered as those one away in a given direction, the shift value can be specified as any integer value.
 

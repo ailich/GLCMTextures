@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: Calculates GLCM Textures of raster layers
-Version: 0.1
+Version: 0.11
 Authors@R: 
     person(given = "Alex",
            family = "Ilich",
@@ -12,7 +12,7 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1.9000
+RoxygenNote: 7.1.2
 LinkingTo: 
     Rcpp,
     RcppArmadillo

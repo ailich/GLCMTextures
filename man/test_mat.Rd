@@ -5,7 +5,7 @@
 \alias{test_mat}
 \title{Test Matrix}
 \format{
-An object of class \code{matrix} with 2844 rows and 1126 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 2844 rows and 1126 columns.
 }
 \usage{
 test_mat

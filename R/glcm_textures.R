@@ -47,7 +47,7 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
       max_row<- min(min_row + block_idx$nrows[[i]] - 1 + block_overlap, nrow(r))
       block_extent<- raster::extent(r, min_row, max_row, 1, ncol(r))
       curr_block<- raster::crop(r, block_extent)
-      out_blocks[[i]]<- glcm_textures_helper(rq=curr_block, w=w, n_levels=n_levels, shift=shift, metrics=metrics)
+      out_blocks[[i]]<- glcm_textures_helper(rq=curr_block, w=w, n_levels=n_levels, shift=shift, metrics=metrics, na_opt=na_opt)
     }
     output<- do.call(raster::merge, out_blocks)
      names(output)<- metrics

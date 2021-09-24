@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // C_extract_window_int
 IntegerMatrix C_extract_window_int(IntegerMatrix r, IntegerVector w, IntegerVector idx);
 RcppExport SEXP _GLCMTextures_C_extract_window_int(SEXP rSEXP, SEXP wSEXP, SEXP idxSEXP) {

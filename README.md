@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-February 01, 2021
+September 24, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -45,11 +45,6 @@ If you don’t already have devtools installed, use the code
 
 Then to install this package use the code
 `devtools::install_github("ailich/GLCMTextures")`
-
-``` r
-library(raster) #Load raster package
-library(GLCMTextures) #Load GLCMTextures package
-```
 
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 
@@ -225,7 +220,7 @@ r<- raster(volcano) #Use preloaded volcano dataset as a raster
 plot(r) #plot values
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 #### Raster Quantization
 
@@ -255,7 +250,7 @@ rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
     ## [1] "Min Val = 0"
 
@@ -300,7 +295,7 @@ rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 #### Calculate Texture Metrics Raster Surfaces
 
@@ -325,7 +320,7 @@ textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization 
 plot(textures1)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 You may have noticed in the example above that quantization was set to
 “none”. This is because we supplied a raster that was already quantized.
@@ -350,7 +345,7 @@ textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal pr
 plot(textures3)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 **Some Other Options**
 
