@@ -28,7 +28,7 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
     if(na_opt=="any"){
       stop("if pad=TRUE, na_opt must be 'center' or 'all'")}
     og_extent<- raster::extent(r)
-    r<- raster::extend(r, c(w[1], w[2]), value=NA)
+    r<- raster::extend(r, c((w[1]-1)/2, (w[2]-1)/2), value=NA)
     }
   if(quantization!="none"){
     r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val)
