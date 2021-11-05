@@ -172,3 +172,39 @@ List C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, Int
   List textures= List::create(_["glcm_contrast"]=glcm_contrast, _["glcm_dissimilarity"]=glcm_dissimilarity, _["glcm_homogeneity"]=glcm_homogeneity, _["glcm_ASM"]=glcm_ASM, _["glcm_entropy"]=glcm_entropy, _["glcm_mean"]=glcm_mean, _["glcm_variance"]=glcm_variance, _["glcm_correlation"]=glcm_correlation);
   return(textures);
 }
+
+//GLCM across matrix using sliding window
+// [[Rcpp::export]]
+NumericMatrix C_glcm_textures_helper2(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift, String na_opt){
+  int nr= rq.nrow();
+  int nc= rq.ncol();
+  int min_row = (w(0)-1)/2;
+  int max_row = nr - ((w(0)-1)/2);
+  int min_col = (w(1)-1)/2;
+  int max_col = nc - ((w(1)-1)/2);
+  int n_elem = nr * nc;
+
+  NumericMatrix out = NumericMatrix(n_elem, 8);
+  out.fill(NA_REAL);
+  colnames(out)= CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation");
+
+  for(int i = min_row; i< max_row; ++i) {
+    for(int j = min_col; j < max_col; ++j){
+      IntegerVector idx = IntegerVector(2);
+      idx(0)= i;
+      idx(1)=j;
+      int curr_elem_idx = i*nc + j; //rasters are indexed moving across rows
+      IntegerMatrix curr_window = C_extract_window_int(rq, w, idx);
+      NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
+      NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
+      out(curr_elem_idx, 0) = curr_textures["glcm_contrast"];
+      out(curr_elem_idx, 1) = curr_textures["glcm_dissimilarity"];
+      out(curr_elem_idx, 2) = curr_textures["glcm_homogeneity"];
+      out(curr_elem_idx, 3) = curr_textures["glcm_ASM"];
+      out(curr_elem_idx, 4) = curr_textures["glcm_entropy"];
+      out(curr_elem_idx, 5) = curr_textures["glcm_mean"];
+      out(curr_elem_idx, 6) = curr_textures["glcm_variance"];
+      out(curr_elem_idx, 7) = curr_textures["glcm_correlation"];
+    }}
+  return(out);
+}
