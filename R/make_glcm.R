@@ -4,13 +4,18 @@
 #' @param n_levels Number of grey levels used in the quantization
 #' @param shift A vector of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0)
 #' @param na_opt A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA (only valid if dimensions of x are odd). "all" means that NA will be returned only if all values in the window are NA.
+#' @param normalize a logical specifying whether to normalize the counts to probabilities by dividing by the sum of the GLCM (TRUE, the default) or to express the GLCM as counts (FALSE)
 #' @export
 
-make_glcm<- function(x,n_levels, shift, na_opt= "any"){
+make_glcm<- function(x,n_levels, shift, na_opt= "any", normalize=TRUE){
   if(na_opt=="center"){
     if(sum((dim(x) %% 2)==0) > 0){
       stop("Error: x must have odd dimensions if na_opt='center'")
       }
     }
-  return(C_make_glcm(x=x, n_levels=n_levels, shift=shift, na_opt=na_opt))
+	if(normalize){
+	  return(C_make_glcm(x=x, n_levels=n_levels, shift=shift, na_opt=na_opt))
+	  } else{
+	    return(C_make_glcm_counts(x=x, n_levels=n_levels, shift=shift, na_opt=na_opt))
+	  }
   }

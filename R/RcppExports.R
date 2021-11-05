@@ -9,6 +9,10 @@ C_make_glcm <- function(x, n_levels, shift, na_opt) {
     .Call(`_GLCMTextures_C_make_glcm`, x, n_levels, shift, na_opt)
 }
 
+C_make_glcm_counts <- function(x, n_levels, shift, na_opt) {
+    .Call(`_GLCMTextures_C_make_glcm_counts`, x, n_levels, shift, na_opt)
+}
+
 C_glcm_metrics <- function(GLCM) {
     .Call(`_GLCMTextures_C_glcm_metrics`, GLCM)
 }

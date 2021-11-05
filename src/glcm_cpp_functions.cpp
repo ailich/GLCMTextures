@@ -29,15 +29,10 @@ IntegerMatrix C_extract_window_int(IntegerMatrix r, IntegerVector w, IntegerVect
   return dat; //extracted window as a matrix
 }
 
-//Make GLCM
+//Make GLCM (normalized)
 // [[Rcpp::export]]
 NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, String na_opt){
-  StringVector na_options(3);
-  na_options(0) = "any";
-  na_options(1) = "center";
-  na_options(2) = "all";
-
-  if((na_opt== (na_options(0))) && (is_true(any(is_na(x))))){
+ if((na_opt== "any") && (is_true(any(is_na(x))))){
     NumericMatrix GLCM_Norm(n_levels, n_levels);
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
@@ -49,13 +44,13 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, St
   int cc= (nc-1)/2; //column position of center
   IntegerVector center_val(1);
   center_val(0) = x(cr,cc);
-  if((na_opt== (na_options(1))) && (is_true(all(is_na(center_val))))){
+  if((na_opt== "center") && (is_true(all(is_na(center_val))))){
     NumericMatrix GLCM_Norm(n_levels, n_levels);
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
   }  //Return window of NA's if center value in window is NA
 
-  if((na_opt== (na_options(2))) && (is_true(all(is_na(x))))){
+  if((na_opt== "all") && (is_true(all(is_na(x))))){
     NumericMatrix GLCM_Norm(n_levels, n_levels);
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
@@ -88,6 +83,53 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, St
     GLCM_Norm[m] = (GLCM[m]*1.0)/total;
   }
   return GLCM_Norm;
+}
+
+//Make GLCM (non-normalized)
+// [[Rcpp::export]]
+IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, String na_opt){
+  if((na_opt== "any") && (is_true(any(is_na(x))))){
+    IntegerMatrix GLCM(n_levels, n_levels);
+    GLCM.fill(NA_INTEGER);
+    return GLCM;
+  }  //Return window of NA's if any vals in window are NA
+
+  int nr= x.nrow();
+  int nc= x.ncol();
+  int cr= (nr-1)/2;//row position of center
+  int cc= (nc-1)/2; //column position of center
+  IntegerVector center_val(1);
+  center_val(0) = x(cr,cc);
+  if((na_opt== "center") && (is_true(all(is_na(center_val))))){
+    IntegerMatrix GLCM(n_levels, n_levels);
+    GLCM.fill(NA_INTEGER);
+    return GLCM;
+  }  //Return window of NA's if center value in window is NA
+
+  if((na_opt== "all") && (is_true(all(is_na(x))))){
+    IntegerMatrix GLCM(n_levels, n_levels);
+    GLCM.fill(NA_INTEGER);
+    return GLCM;
+  }  //Return window of NA's if all values in window is NA
+
+  IntegerMatrix GLCM(n_levels, n_levels);//initialize GLCM
+  for(int i=0; i < nr; ++i){
+    for(int j=0; j < nc; ++j){
+      int focal_val = x(i,j);
+      IntegerVector neighbor_idx(2, 0);
+      neighbor_idx(0) = i-shift(1);
+      neighbor_idx(1) = j+shift(0);
+      if((neighbor_idx(0) < nr) && (neighbor_idx(1) < nc) && (neighbor_idx(0) >= 0) && (neighbor_idx(1) >= 0)){
+        int neighbor_val = x(neighbor_idx(0), neighbor_idx(1));
+        IntegerVector focalval_neighborval(2);
+        focalval_neighborval(0)=focal_val;
+        focalval_neighborval(1)=neighbor_val;
+        if(is_false(any(is_na(focalval_neighborval)))){
+          GLCM(focal_val,neighbor_val) = GLCM(focal_val,neighbor_val)+1;
+          GLCM(neighbor_val,focal_val) = GLCM(neighbor_val,focal_val)+1;
+        }
+      }}}
+  return GLCM;
 }
 
 //Calculate Texture Metrics
