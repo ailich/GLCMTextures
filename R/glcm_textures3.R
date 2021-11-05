@@ -71,17 +71,17 @@ glcm_textures3<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
       block_idx<- raster::blockSize(r, n = 8, minblocks = 2, minrows = w[1])
 
       for (i in 1:block_idx$n) {
-        print(paste(i, "of", block_idx$n))
+        #print(paste(i, "of", block_idx$n))
         min_row<- max(c(block_idx$row[[i]] - block_overlap), 1)
         max_row<- min(c(block_idx$row[[i]] + block_idx$nrows[[i]] - 1 + block_overlap, nr))
         curr_block <- raster::getValues(r, row = min_row, nrows = max_row-min_row+1, format="matrix")
         out_array<- array(dim = c(length(curr_block), 8, length(shift)))
         for (k in 1:length(shift)) {
-          print(paste("Starting Shift", k))
+          #print(paste("Starting Shift", k))
           out_array[,,k]<- C_glcm_textures_helper2(rq= curr_block, w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
         }
 
-        out_block<- apply(out_array,MARGIN = c(1,2), FUN = mean, na.rm=TRUE) #average across shifts
+        out_block<- apply(out_array,MARGIN = c(1,2), FUN = mean) #average across shifts
 
         #out_block is a formatted as matrix where each column corresponds to a raster layer (this is how writeRaster needs it to be formatted)
         #As you go down rows in this matrix you move across rows in the raster object
