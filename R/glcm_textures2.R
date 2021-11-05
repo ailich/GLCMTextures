@@ -55,14 +55,14 @@ glcm_textures2<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
       nr<- nrow(r)
       nc<- ncol(r)
       for (k in 1:length(shift)) {
-        print(paste("Starting Shift", k))
+        #print(paste("Starting Shift", k))
         f_out <- raster::rasterTmpFile()
         out_list[[k]]<- raster::brick(r, nl=8, values=FALSE)
         out_list[[k]] <- raster::writeStart(out_list[[k]], filename = f_out)
         block_idx<- raster::blockSize(r, n = 8, minblocks = 2, minrows = w[1])
 
         for (i in 1:block_idx$n) {
-          print(paste(i, "of", block_idx$n))
+          #print(paste(i, "of", block_idx$n))
           min_row<- max(c(block_idx$row[[i]] - block_overlap), 1)
           max_row<- min(c(block_idx$row[[i]] + block_idx$nrows[[i]] - 1 + block_overlap, nr))
           curr_block <- raster::getValues(r, row = min_row, nrows = max_row-min_row+1, format="matrix")

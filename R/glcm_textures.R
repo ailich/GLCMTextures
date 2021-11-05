@@ -43,7 +43,7 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
     out_blocks<- vector(mode = "list", length = block_idx$n)
     block_overlap<- w[1]-1
     for (i in 1:block_idx$n) {
-      print(paste(i, "of", block_idx$n))
+      #print(paste(i, "of", block_idx$n))
       min_row<- block_idx$row[[i]]
       max_row<- min(min_row + block_idx$nrows[[i]] - 1 + block_overlap, nrow(r))
       block_extent<- raster::extent(r, min_row, max_row, 1, ncol(r))
