@@ -40,6 +40,7 @@ glcm_textures3<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
     stop("Error: raster layer must have values between 0 and n_levels-1")}
 
   out_list<- vector(mode = "list", length=length(shift))
+  n_layers<- length(metrics)
 
   run_in_blocks<- !raster::canProcessInMemory(r, n = (8*length(shift))+1)
   if(run_in_blocks==FALSE){
@@ -50,7 +51,6 @@ glcm_textures3<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
       names(out_list[[k]])<- colnames(curr_vals)
       out_list[[k]]<- raster::subset(out_list[[k]], metrics, drop=TRUE)
     }
-    n_layers<- raster::nlayers(out_list[[1]])
     avg_shifts<- length(shift) > 1
     if(avg_shifts){
       output<- stack()
