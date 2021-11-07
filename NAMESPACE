@@ -2,8 +2,6 @@
 
 export(glcm_metrics)
 export(glcm_textures)
-export(glcm_textures2)
-export(glcm_textures3)
 export(make_glcm)
 export(quantize_raster)
 import(raster)

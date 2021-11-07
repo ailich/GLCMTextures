@@ -163,61 +163,7 @@ NumericVector C_glcm_metrics(NumericMatrix GLCM){
 
 //GLCM across matrix using sliding window
 // [[Rcpp::export]]
-List C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift, String na_opt){
-  int nr= rq.nrow();
-  int nc= rq.ncol();
-  int min_row = (w(0)-1)/2;
-  int max_row = nr - ((w(0)-1)/2);
-  int min_col = (w(1)-1)/2;
-  int max_col = nc - ((w(1)-1)/2);
-  NumericMatrix glcm_contrast = NumericMatrix(nr,nc);
-  glcm_contrast.fill(NA_REAL);
-
-  NumericMatrix glcm_dissimilarity = NumericMatrix(nr,nc);
-  glcm_dissimilarity.fill(NA_REAL);
-
-  NumericMatrix glcm_homogeneity = NumericMatrix(nr,nc);
-  glcm_homogeneity.fill(NA_REAL);
-
-  NumericMatrix glcm_ASM = NumericMatrix(nr,nc);
-  glcm_ASM.fill(NA_REAL);
-
-  NumericMatrix glcm_entropy = NumericMatrix(nr,nc);
-  glcm_entropy.fill(NA_REAL);
-
-  NumericMatrix glcm_mean = NumericMatrix(nr,nc);
-  glcm_mean.fill(NA_REAL);
-
-  NumericMatrix glcm_variance = NumericMatrix(nr,nc);
-  glcm_variance.fill(NA_REAL);
-
-  NumericMatrix glcm_correlation = NumericMatrix(nr,nc);
-  glcm_correlation.fill(NA_REAL);
-
-  for(int i = min_row; i< max_row; ++i) {
-    for(int j = min_col; j < max_col; ++j){
-      IntegerVector idx = IntegerVector(2);
-      idx(0)= i;
-      idx(1)=j;
-      IntegerMatrix curr_window = C_extract_window_int(rq, w, idx);
-      NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
-      NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
-      glcm_contrast(i,j) = curr_textures["glcm_contrast"];
-      glcm_dissimilarity(i,j) = curr_textures["glcm_dissimilarity"];
-      glcm_homogeneity(i,j) = curr_textures["glcm_homogeneity"];
-      glcm_ASM(i,j) = curr_textures["glcm_ASM"];
-      glcm_entropy(i,j) = curr_textures["glcm_entropy"];
-      glcm_mean(i,j) = curr_textures["glcm_mean"];
-      glcm_variance(i,j) = curr_textures["glcm_variance"];
-      glcm_correlation(i,j) = curr_textures["glcm_correlation"];
-    }}
-  List textures= List::create(_["glcm_contrast"]=glcm_contrast, _["glcm_dissimilarity"]=glcm_dissimilarity, _["glcm_homogeneity"]=glcm_homogeneity, _["glcm_ASM"]=glcm_ASM, _["glcm_entropy"]=glcm_entropy, _["glcm_mean"]=glcm_mean, _["glcm_variance"]=glcm_variance, _["glcm_correlation"]=glcm_correlation);
-  return(textures);
-}
-
-//GLCM across matrix using sliding window
-// [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper2(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift, String na_opt){
+NumericMatrix C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift, String na_opt){
   int nr= rq.nrow();
   int nc= rq.ncol();
   int min_row = (w(0)-1)/2;

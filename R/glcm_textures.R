@@ -16,11 +16,14 @@
 #' @import raster
 #' @export
 #'
-glcm_textures2<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na_opt= "any", pad=FALSE){
-  if(length(w==1)){
+glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na_opt= "any", pad=FALSE){
+  if(length(w)==1){
     w<- rep(w,2)}
-  if(any(w<3) | any(0 == (w %% 2))){
-    stop("Error: w must be odd and greater than or equal to 3")}
+  if(length(w)>2){
+    stop("Error: w must be a single number or vector of length 2")
+    }
+  if(all(w<3) | any(0 == (w %% 2))){
+    stop("Error: w must be odd and greater than or equal to 3 in at least one dimension")}
   if (!any(na_opt==c("any", "center", "all"))){
     stop("na_opt must be 'any', 'center', or 'all'")
   }
@@ -45,7 +48,7 @@ glcm_textures2<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
   if(run_in_blocks==FALSE){
     for (k in 1:length(shift)) {
       out_list[[k]]<- raster::brick(r, nl=8, values=FALSE)
-      curr_vals<- C_glcm_textures_helper2(rq= as.matrix(r), w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
+      curr_vals<- C_glcm_textures_helper(rq= as.matrix(r), w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
       values(out_list[[k]])<- curr_vals
       names(out_list[[k]])<- colnames(curr_vals)
       out_list[[k]]<- raster::subset(out_list[[k]], metrics, drop=TRUE)
@@ -67,7 +70,7 @@ glcm_textures2<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
           max_row<- min(c(block_idx$row[[i]] + block_idx$nrows[[i]] - 1 + block_overlap, nr))
           curr_block <- raster::getValues(r, row = min_row, nrows = max_row-min_row+1, format="matrix")
 
-          out_block<-  C_glcm_textures_helper2(rq= curr_block, w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
+          out_block<-  C_glcm_textures_helper(rq= curr_block, w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
           #out_block is a formatted as matrix where each column corresponds to a raster layer (this is how writeRaster needs it to be formatted)
           #As you go down rows in this matrix you move across rows in the raster object
           if(i==1){
@@ -95,13 +98,13 @@ glcm_textures2<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-
     }} else{
       output<- out_list[[1]]
     }
-    names(output)<- metrics
 
-  if(n_layers>1){
+  if(class(output)[1]=="RasterStack"){
     output<- raster::brick(output)}
 
   if(pad==TRUE){
     output<- raster::crop(output, og_extent)
   }
+  names(output)<- metrics #preserve names in case they were lost
   return(output)
 }

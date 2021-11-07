@@ -9,13 +9,13 @@ quantize_raster(r, n_levels, method, min_val = NULL, max_val = NULL)
 \arguments{
 \item{r}{A raster layer}
 
+\item{n_levels}{number of levels to quantize to}
+
 \item{method}{quantization method (either "equal range" or "equal prob"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples.}
 
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
-
-\item{n_levles}{number of levels to quantize to}
 }
 \description{
 Quantizes raster to a set number of discrete levels starting at 0. There are 2 methods of quantization are available: "uniform" and "equal prob"
