@@ -17,13 +17,19 @@
 #' @export
 #'
 glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na_opt= "any", pad=FALSE){
-  if(length(w==1)){
+  if(length(w)==1){
     w<- rep(w,2)}
-  if(any(w<3) | any(0 == (w %% 2))){
-    stop("Error: w must be odd and greater than or equal to 3")}
+  if(length(w)>2){
+    stop("Error: w must be a single number or vector of length 2")
+    }
+  if(all(w<3) | any(0 == (w %% 2))){
+    stop("Error: w must be odd and greater than or equal to 3 in at least one dimension")}
   if (!any(na_opt==c("any", "center", "all"))){
     stop("na_opt must be 'any', 'center', or 'all'")
-    }
+  }
+  if(class(shift)!="list"){shift=list(shift)}
+  #Maybe put check for shift size < windowsize-1/2
+  out_list<- vector(mode = "list", length=length(shift))
   if(pad==TRUE){
     if(na_opt=="any"){
       stop("if pad=TRUE, na_opt must be 'center' or 'all'")}
@@ -35,25 +41,70 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
   }
   if((raster::cellStats(r, stat = max) > (n_levels-1)) | (raster::cellStats(r, stat = min) < 0)){
     stop("Error: raster layer must have values between 0 and n_levels-1")}
-  run_in_blocks<- !raster::canProcessInMemory(r, n = 9)
+
+  out_list<- vector(mode = "list", length=length(shift))
+
+  run_in_blocks<- !raster::canProcessInMemory(r, n = (8*length(shift))+1)
   if(run_in_blocks==FALSE){
-    output<- glcm_textures_helper(rq=r, w=w, n_levels=n_levels, shift=shift, metrics=metrics, na_opt=na_opt)
-  } else{
-    block_idx<- raster::blockSize(r, n = 9, minblocks = 2, minrows = w[1])
-    out_blocks<- vector(mode = "list", length = block_idx$n)
-    block_overlap<- w[1]-1
-    for (i in 1:block_idx$n) {
-      min_row<- block_idx$row[[i]]
-      max_row<- min(min_row + block_idx$nrows[[i]] - 1 + block_overlap, nrow(r))
-      block_extent<- raster::extent(r, min_row, max_row, 1, ncol(r))
-      curr_block<- raster::crop(r, block_extent)
-      out_blocks[[i]]<- glcm_textures_helper(rq=curr_block, w=w, n_levels=n_levels, shift=shift, metrics=metrics, na_opt=na_opt)
+    for (k in 1:length(shift)) {
+      out_list[[k]]<- raster::brick(r, nl=8, values=FALSE)
+      curr_vals<- C_glcm_textures_helper(rq= as.matrix(r), w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
+      values(out_list[[k]])<- curr_vals
+      names(out_list[[k]])<- colnames(curr_vals)
+      out_list[[k]]<- raster::subset(out_list[[k]], metrics, drop=TRUE)
     }
-    output<- do.call(raster::merge, out_blocks)
-     names(output)<- metrics
-  }
+    } else{
+      block_overlap<- (w[1]-1)/2
+      nr<- nrow(r)
+      nc<- ncol(r)
+      for (k in 1:length(shift)) {
+        #print(paste("Starting Shift", k))
+        f_out <- raster::rasterTmpFile()
+        out_list[[k]]<- raster::brick(r, nl=8, values=FALSE)
+        out_list[[k]] <- raster::writeStart(out_list[[k]], filename = f_out)
+        block_idx<- raster::blockSize(r, n = 8, minblocks = 2, minrows = w[1])
+
+        for (i in 1:block_idx$n) {
+          #print(paste(i, "of", block_idx$n))
+          min_row<- max(c(block_idx$row[[i]] - block_overlap), 1)
+          max_row<- min(c(block_idx$row[[i]] + block_idx$nrows[[i]] - 1 + block_overlap, nr))
+          curr_block <- raster::getValues(r, row = min_row, nrows = max_row-min_row+1, format="matrix")
+
+          out_block<-  C_glcm_textures_helper(rq= curr_block, w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
+          #out_block is a formatted as matrix where each column corresponds to a raster layer (this is how writeRaster needs it to be formatted)
+          #As you go down rows in this matrix you move across rows in the raster object
+          if(i==1){
+            out_block<- out_block[1:(nrow(out_block)-(block_overlap*nc)),] #Trim bottom edge of raster
+          } else if (i != block_idx$n){
+            out_block<- out_block[(1+block_overlap*nc):(nrow(out_block)-(block_overlap*nc)),] #Trim top and bottom edge of raster
+          } else {
+            out_block<- out_block[(1+block_overlap*nc):nrow(out_block),] #Trim top edge of raster
+            }
+          raster::writeValues(out_list[[k]], v= out_block, start= block_idx$row[i])
+        }
+        out_list[[k]]<- raster::writeStop(out_list[[k]])
+        names(out_list[[k]])<- colnames(out_block)
+        out_list[[k]]<- raster::subset(out_list[[k]], metrics, drop=TRUE)
+        }
+    }
+
+  n_layers<- raster::nlayers(out_list[[1]])
+  avg_shifts<- length(shift) > 1
+  if(avg_shifts){
+    output<- stack()
+    for (j in 1:n_layers) {
+      out_layer<- mean(do.call(raster::stack, lapply(out_list, raster::subset,j))) #Average across all shifts
+      output<- raster::stack(output, out_layer) #Create new stack of averaged values
+    }} else{
+      output<- out_list[[1]]
+    }
+
+  if(class(output)[1]=="RasterStack"){
+    output<- raster::brick(output)}
+
   if(pad==TRUE){
     output<- raster::crop(output, og_extent)
   }
+  names(output)<- metrics #preserve names in case they were lost
   return(output)
 }

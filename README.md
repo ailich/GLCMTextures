@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-September 24, 2021
+November 07, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -40,11 +40,13 @@ how and if the data should be quantized.
 
 ## Install and Load Package
 
-If you don’t already have devtools installed, use the code
-`install.packages("devtools")`
+If you don’t already have remotes installed, use the code
+`install.packages("remotes")`
 
 Then to install this package use the code
-`devtools::install_github("ailich/GLCMTextures")`
+`remotes::install_github("ailich/GLCMTextures")` (you may need to
+install Rtools using the instructions found
+[here](https://cran.r-project.org/bin/windows/Rtools/))
 
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 
@@ -172,15 +174,41 @@ treated as both a focal and neighbor value, we also add to row 4/column
 We then continue this process throughout the whole image, moving right
 to the next focal pixel, and down to start the next row when a given row
 is completed. The resulting GLCM is a square matrix of counts that is
-symmetric about the diagonal. Once we have finished tabulating all the
-counts we “normailize” the GLCM by dividing the each element by the sum
-of all the counts to get relative frequencies or probabilities that a
-given pixel of value i occurs next to a pixel of value j. The values in
-a normalized GLCM will therefore sum to 1.
+symmetric about the diagonal.
 
 ``` r
-horizontal_glcm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0)) 
-print(horizontal_glcm)
+horizontal_glcm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = FALSE)
+horizontal_glcm
+```
+
+    ##      [,1] [,2] [,3] [,4]
+    ## [1,]    2    1    1    2
+    ## [2,]    1    0    0    0
+    ## [3,]    1    0    0    1
+    ## [4,]    2    0    1    0
+
+Once we have finished tabulating all the counts we “normailize” the GLCM
+by dividing the each element by the sum of all the counts to get
+relative frequencies or probabilities that a given pixel of value i
+occurs next to a pixel of value j. The values in a normalized GLCM will
+therefore sum to 1.
+
+``` r
+horizontal_glcm<- horizontal_glcm/sum(horizontal_glcm)
+horizontal_glcm
+```
+
+    ##            [,1]       [,2]       [,3]       [,4]
+    ## [1,] 0.16666667 0.08333333 0.08333333 0.16666667
+    ## [2,] 0.08333333 0.00000000 0.00000000 0.00000000
+    ## [3,] 0.08333333 0.00000000 0.00000000 0.08333333
+    ## [4,] 0.16666667 0.00000000 0.08333333 0.00000000
+
+This could be accomplished in one line of code by setting the argument
+`normalize=TRUE` which is the default.
+
+``` r
+make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
 ```
 
     ##            [,1]       [,2]       [,3]       [,4]
@@ -220,7 +248,7 @@ r<- raster(volcano) #Use preloaded volcano dataset as a raster
 plot(r) #plot values
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 #### Raster Quantization
 
@@ -250,7 +278,7 @@ rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
     ## [1] "Min Val = 0"
 
@@ -295,7 +323,7 @@ rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 #### Calculate Texture Metrics Raster Surfaces
 
@@ -320,7 +348,7 @@ textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization 
 plot(textures1)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 You may have noticed in the example above that quantization was set to
 “none”. This is because we supplied a raster that was already quantized.
@@ -345,7 +373,7 @@ textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal pr
 plot(textures3)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 **Some Other Options**
 
