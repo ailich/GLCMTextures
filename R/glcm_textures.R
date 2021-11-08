@@ -20,10 +20,13 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
   if(length(w)==1){
     w<- rep(w,2)}
   if(length(w)>2){
-    stop("Error: w must be a single number or vector of length 2")
+    stop("Specified window exceeds 2 dimensions")
     }
-  if(all(w<3) | any(0 == (w %% 2))){
-    stop("Error: w must be odd and greater than or equal to 3 in at least one dimension")}
+  if(any(0 == (w %% 2))){
+    stop("Error: w must be odd")}
+  if(all(w<3)){
+    stop("Error: w must be greater or equal to 3 in at least one dimension")
+  }
   if (!any(na_opt==c("any", "center", "all"))){
     stop("na_opt must be 'any', 'center', or 'all'")
   }
