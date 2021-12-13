@@ -161,7 +161,7 @@ NumericVector C_glcm_metrics(NumericMatrix GLCM){
   return(textures);
 }
 
-//GLCM across matrix using sliding window
+//GLCM across matrix using sliding window (raster)
 // [[Rcpp::export]]
 NumericMatrix C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_levels, IntegerVector shift, String na_opt){
   int nr= rq.nrow();
@@ -194,5 +194,37 @@ NumericMatrix C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_le
       out(curr_elem_idx, 6) = curr_textures["glcm_variance"];
       out(curr_elem_idx, 7) = curr_textures["glcm_correlation"];
     }}
+  return(out);
+}
+
+//GLCM across matrix using sliding window (terra)
+// [[Rcpp::export]]
+NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, String na_opt, size_t ni, size_t nw){
+
+  NumericMatrix out = NumericMatrix(ni, 8);
+  out.fill(NA_REAL);
+  colnames(out)= CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation");
+
+  for(size_t i=0; i<ni; i++) {
+    size_t start = i*nw;
+    size_t end = start+nw-1;
+    IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of elevation values
+    IntegerMatrix curr_window(w2[0],w2[1]);
+    for(int r=0; r < w2[0]; r++){
+      for(int c=0; c < w2[1]; c++){
+        curr_window(r,c) = xw[r*(w2[1])+c];
+        }
+      } //fill in matrix by row
+    NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
+    NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
+    out(i, 0) = curr_textures["glcm_contrast"];
+    out(i, 1) = curr_textures["glcm_dissimilarity"];
+    out(i, 2) = curr_textures["glcm_homogeneity"];
+    out(i, 3) = curr_textures["glcm_ASM"];
+    out(i, 4) = curr_textures["glcm_entropy"];
+    out(i, 5) = curr_textures["glcm_mean"];
+    out(i, 6) = curr_textures["glcm_variance"];
+    out(i, 7) = curr_textures["glcm_correlation"];
+    }
   return(out);
 }

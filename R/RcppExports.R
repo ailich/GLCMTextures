@@ -21,3 +21,7 @@ C_glcm_textures_helper <- function(rq, w, n_levels, shift, na_opt) {
     .Call(`_GLCMTextures_C_glcm_textures_helper`, rq, w, n_levels, shift, na_opt)
 }
 
+C_glcm_textures_helper2 <- function(x, w2, n_levels, shift, na_opt, ni, nw) {
+    .Call(`_GLCMTextures_C_glcm_textures_helper2`, x, w2, n_levels, shift, na_opt, ni, nw)
+}
+

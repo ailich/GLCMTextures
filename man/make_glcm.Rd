@@ -20,3 +20,8 @@ make_glcm(x, n_levels, shift, na_opt = "any", normalize = TRUE)
 \description{
 Creates a symmetrical normalized GLCM for a given matrix and shift
 }
+\references{
+Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
+
+Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
+}

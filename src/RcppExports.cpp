@@ -78,6 +78,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// C_glcm_textures_helper2
+NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, String na_opt, size_t ni, size_t nw);
+RcppExport SEXP _GLCMTextures_C_glcm_textures_helper2(SEXP xSEXP, SEXP w2SEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_optSEXP, SEXP niSEXP, SEXP nwSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type w2(w2SEXP);
+    Rcpp::traits::input_parameter< int >::type n_levels(n_levelsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type shift(shiftSEXP);
+    Rcpp::traits::input_parameter< String >::type na_opt(na_optSEXP);
+    Rcpp::traits::input_parameter< size_t >::type ni(niSEXP);
+    Rcpp::traits::input_parameter< size_t >::type nw(nwSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_glcm_textures_helper2(x, w2, n_levels, shift, na_opt, ni, nw));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_GLCMTextures_C_extract_window_int", (DL_FUNC) &_GLCMTextures_C_extract_window_int, 3},
@@ -85,6 +102,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GLCMTextures_C_make_glcm_counts", (DL_FUNC) &_GLCMTextures_C_make_glcm_counts, 4},
     {"_GLCMTextures_C_glcm_metrics", (DL_FUNC) &_GLCMTextures_C_glcm_metrics, 1},
     {"_GLCMTextures_C_glcm_textures_helper", (DL_FUNC) &_GLCMTextures_C_glcm_textures_helper, 5},
+    {"_GLCMTextures_C_glcm_textures_helper2", (DL_FUNC) &_GLCMTextures_C_glcm_textures_helper2, 7},
     {NULL, NULL, 0}
 };
 
