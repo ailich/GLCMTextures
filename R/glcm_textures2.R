@@ -60,10 +60,10 @@ glcm_textures2<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(
   out_list<- vector(mode = "list", length=length(shift))
   if(quantization!="none"){
     r<- quantize_raster2(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val)
-  } else if(!terra::is.int(r)){
+    } else if(!terra::is.int(r)){
     r<- terra::as.int(r) #Make it an integer raster
     }
-  if((terra::global(r, fun = max) > (n_levels-1)) | (terra::global(r, fun = min) < 0)){
+  if((unlist(terra::global(r, fun = max)) > (n_levels-1)) | (unlist(terra::global(r, fun = min)) < 0)){
     stop("Error: raster must have values between 0 and n_levels-1")}
 
   out_list<- vector(mode = "list", length=length(shift))

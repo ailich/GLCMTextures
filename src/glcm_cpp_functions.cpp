@@ -60,6 +60,9 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, St
   for(int i=0; i < nr; ++i){
     for(int j=0; j < nc; ++j){
       int focal_val = x(i,j);
+      if (focal_val >= n_levels || focal_val < 0) { // sanity check
+        Rf_error("programmer error: out-of-bounds focal_val=%d: i=%d, j=%d, n_levels=%d", focal_val, i, j, n_levels);
+      }
       IntegerVector neighbor_idx(2, 0);
       neighbor_idx(0) = i-shift(1);
       neighbor_idx(1) = j+shift(0);
@@ -209,12 +212,13 @@ NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_l
     size_t start = i*nw;
     size_t end = start+nw-1;
     IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of elevation values
+    Rcout << "xw: " << xw << "\n"; //print xw
     IntegerMatrix curr_window(w2[0],w2[1]);
     for(int r=0; r < w2[0]; r++){
       for(int c=0; c < w2[1]; c++){
         curr_window(r,c) = xw[r*(w2[1])+c];
-        }
-      } //fill in matrix by row
+      }
+    } //fill in matrix by row
     NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
     NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
     out(i, 0) = curr_textures["glcm_contrast"];
@@ -225,6 +229,7 @@ NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_l
     out(i, 5) = curr_textures["glcm_mean"];
     out(i, 6) = curr_textures["glcm_variance"];
     out(i, 7) = curr_textures["glcm_correlation"];
-    }
+  }
   return(out);
 }
+
