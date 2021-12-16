@@ -60,7 +60,7 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, St
   for(int i=0; i < nr; ++i){
     for(int j=0; j < nc; ++j){
       int focal_val = x(i,j);
-      if (focal_val >= n_levels || focal_val < 0) { // sanity check
+      if ((focal_val >= n_levels)) { // sanity check
         Rf_error("programmer error: out-of-bounds focal_val=%d: i=%d, j=%d, n_levels=%d", focal_val, i, j, n_levels);
       }
       IntegerVector neighbor_idx(2, 0);
@@ -211,8 +211,10 @@ NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_l
   for(size_t i=0; i<ni; i++) {
     size_t start = i*nw;
     size_t end = start+nw-1;
-    IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of elevation values
-    Rcout << "xw: " << xw << "\n"; //print xw
+    IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of values
+    //IntegerVector xw = as<IntegerVector>(wrap(x[Rcpp::Range(start,end)])); //Current window of values
+    Rf_PrintValue(xw); //print xw
+    //Rcout << "xw: " << xw << "\n"; //print xw
     IntegerMatrix curr_window(w2[0],w2[1]);
     for(int r=0; r < w2[0]; r++){
       for(int c=0; c < w2[1]; c++){
