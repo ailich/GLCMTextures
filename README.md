@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-December 12, 2021
+December 17, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -251,7 +251,7 @@ Now we can move from calculating a single value of a given texture
 metric to calculating raster surfaces of texture metrics.
 
 ``` r
-r<- rast(volcano) #Use preloaded volcano dataset as a raster
+r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200") #Use preloaded volcano dataset as a raster
 plot(r) #plot values
 ```
 
@@ -281,7 +281,7 @@ quantization method suggested in the original paper (Haralick and
 Shanmugam 1973).
 
 ``` r
-rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
+rq_equalprob<- quantize_raster2(r = r, n_levels = 16, method = "equal prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
@@ -326,7 +326,7 @@ consistent way to the original data, as you can supply the global
 max/min or the theoretical max/min values that could occur.
 
 ``` r
-rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
+rq_equalrange<- quantize_raster2(r = r, n_levels = 16, method = "equal range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
@@ -351,7 +351,7 @@ For example, below we calculate textures using a window size of 3 rows
 by 5 columns
 
 ``` r
-textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization = "none", shift = c(1,0)) 
+textures1<- glcm_textures2(rq_equalprob, w = c(3,5), n_levels = 16, quantization = "none", shift = c(1,0)) 
 plot(textures1)
 ```
 
@@ -364,7 +364,7 @@ We could instead call the original raster and have it quantized within
 the glcm\_textures function
 
 ``` r
-textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
+textures2<- glcm_textures2(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
 all.equal(values(textures1), values(textures2))
 ```
 
@@ -376,7 +376,7 @@ directionally/rotationally invariant textures that are averaged across
 all 4 directions `shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))`.
 
 ``` r
-textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
+textures3<- glcm_textures2(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
 plot(textures3)
 ```
 
