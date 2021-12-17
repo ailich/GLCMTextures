@@ -33,6 +33,7 @@ IntegerMatrix C_extract_window_int(IntegerMatrix r, IntegerVector w, IntegerVect
 // [[Rcpp::export]]
 NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, String na_opt){
  if((na_opt== "any") && (is_true(any(is_na(x))))){
+    //Rcout << "any" << "\n"; //print na_opt
     NumericMatrix GLCM_Norm(n_levels, n_levels);
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
@@ -209,11 +210,12 @@ NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_l
   colnames(out)= CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation");
 
   for(size_t i=0; i<ni; i++) {
+    //Rcout << "i: " << i << "\n"; //print i
     size_t start = i*nw;
     size_t end = start+nw-1;
     IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of values
     //IntegerVector xw = as<IntegerVector>(wrap(x[Rcpp::Range(start,end)])); //Current window of values
-    Rf_PrintValue(xw); //print xw
+    //Rf_PrintValue(xw); //print xw
     //Rcout << "xw: " << xw << "\n"; //print xw
     IntegerMatrix curr_window(w2[0],w2[1]);
     for(int r=0; r < w2[0]; r++){
@@ -222,7 +224,9 @@ NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_l
       }
     } //fill in matrix by row
     NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
+    //Rcout << "GLCM: " << curr_GLCM << "\n"; //print GLCM
     NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
+    //Rf_PrintValue(curr_textures["glcm_contrast"]);
     out(i, 0) = curr_textures["glcm_contrast"];
     out(i, 1) = curr_textures["glcm_dissimilarity"];
     out(i, 2) = curr_textures["glcm_homogeneity"];
