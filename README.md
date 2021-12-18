@@ -388,12 +388,7 @@ By default all calculated texture metrics are returned; however you can
 have only a subset returned by specifying which ones you want using the
 `metrics` argument.
 
-You can also use `na_opt` to specify how you want to handle NA’s.
-`na_opt="any"` by default meaning that if any values are NA, the
-textures will evaluate to NA. If `na_opt="center"` means that the
-textures will evaluate to NA only if the central pixel is equal to NA.
-Lastly, setting `na_opt = "all"` means that the textures will only
-evaluate to NA if all values in the extracted window are NA.
+You can also use `na.rm` to specify how you want to handle `NA` values.
 
 # References
 
