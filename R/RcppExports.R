@@ -9,6 +9,14 @@ C_make_glcm <- function(x, n_levels, shift, na_opt) {
     .Call(`_GLCMTextures_C_make_glcm`, x, n_levels, shift, na_opt)
 }
 
+C_make_glcm_counts2 <- function(x, n_levels, shift, na_rm) {
+    .Call(`_GLCMTextures_C_make_glcm_counts2`, x, n_levels, shift, na_rm)
+}
+
+C_make_glcm2 <- function(x, n_levels, shift, na_rm) {
+    .Call(`_GLCMTextures_C_make_glcm2`, x, n_levels, shift, na_rm)
+}
+
 C_make_glcm_counts <- function(x, n_levels, shift, na_opt) {
     .Call(`_GLCMTextures_C_make_glcm_counts`, x, n_levels, shift, na_opt)
 }
@@ -21,7 +29,7 @@ C_glcm_textures_helper <- function(rq, w, n_levels, shift, na_opt) {
     .Call(`_GLCMTextures_C_glcm_textures_helper`, rq, w, n_levels, shift, na_opt)
 }
 
-C_glcm_textures_helper2 <- function(x, w2, n_levels, shift, na_opt, ni, nw) {
-    .Call(`_GLCMTextures_C_glcm_textures_helper2`, x, w2, n_levels, shift, na_opt, ni, nw)
+C_glcm_textures_helper2 <- function(x, w2, n_levels, shift, na_rm, ni, nw) {
+    .Call(`_GLCMTextures_C_glcm_textures_helper2`, x, w2, n_levels, shift, na_rm, ni, nw)
 }
 

@@ -9,7 +9,8 @@
 #' @param quantization quantization method (either "equal range", "equal prob", or "none"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples. "none" means the layer has already been quantized.
 #' @param min_val minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)
 #' @param max_val maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)
-#' @param na_opt A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.
+#' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
+#' @param silent useful for debugging
 #' @return a SpatRaster or Raster* Object
 #' @import terra
 #' @importFrom raster raster
@@ -20,7 +21,7 @@
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
 #'
-glcm_textures2<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na_opt= "any"){
+glcm_textures2<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na.rm= FALSE, silent=TRUE){
   og_class<- class(r)[1]
   if(og_class=="RasterLayer"){
     r<- terra::rast(r) #Convert to SpatRaster
@@ -42,9 +43,6 @@ glcm_textures2<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(
     stop("Error: w must be odd")}
   if(all(w<3)){
     stop("Error: w must be greater or equal to 3 in at least one dimension")
-  }
-  if (!any(na_opt==c("any", "center", "all"))){
-    stop("na_opt must be 'any', 'center', or 'all'")
   }
   if(class(shift)!="list"){shift=list(shift)}
   if(any(sapply(shift, length)!=2)){
@@ -68,7 +66,7 @@ glcm_textures2<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(
 
   out_list<- vector(mode = "list", length=length(shift))
   for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper2, w2=w, n_levels= n_levels, shift = shift[[k]], na_opt=na_opt)
+    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper2, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, silent=silent)
     out_list[[k]]<- terra::subset(out_list[[k]], metrics)
     }
 

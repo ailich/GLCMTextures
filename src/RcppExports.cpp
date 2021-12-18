@@ -38,6 +38,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// C_make_glcm_counts2
+IntegerMatrix C_make_glcm_counts2(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm);
+RcppExport SEXP _GLCMTextures_C_make_glcm_counts2(SEXP xSEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n_levels(n_levelsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type shift(shiftSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_make_glcm_counts2(x, n_levels, shift, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// C_make_glcm2
+NumericMatrix C_make_glcm2(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm);
+RcppExport SEXP _GLCMTextures_C_make_glcm2(SEXP xSEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n_levels(n_levelsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type shift(shiftSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_make_glcm2(x, n_levels, shift, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // C_make_glcm_counts
 IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, String na_opt);
 RcppExport SEXP _GLCMTextures_C_make_glcm_counts(SEXP xSEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_optSEXP) {
@@ -79,8 +107,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // C_glcm_textures_helper2
-NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, String na_opt, size_t ni, size_t nw);
-RcppExport SEXP _GLCMTextures_C_glcm_textures_helper2(SEXP xSEXP, SEXP w2SEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_optSEXP, SEXP niSEXP, SEXP nwSEXP) {
+NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, bool na_rm, size_t ni, size_t nw);
+RcppExport SEXP _GLCMTextures_C_glcm_textures_helper2(SEXP xSEXP, SEXP w2SEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_rmSEXP, SEXP niSEXP, SEXP nwSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -88,10 +116,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type w2(w2SEXP);
     Rcpp::traits::input_parameter< int >::type n_levels(n_levelsSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type shift(shiftSEXP);
-    Rcpp::traits::input_parameter< String >::type na_opt(na_optSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< size_t >::type ni(niSEXP);
     Rcpp::traits::input_parameter< size_t >::type nw(nwSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_glcm_textures_helper2(x, w2, n_levels, shift, na_opt, ni, nw));
+    rcpp_result_gen = Rcpp::wrap(C_glcm_textures_helper2(x, w2, n_levels, shift, na_rm, ni, nw));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -99,6 +127,8 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_GLCMTextures_C_extract_window_int", (DL_FUNC) &_GLCMTextures_C_extract_window_int, 3},
     {"_GLCMTextures_C_make_glcm", (DL_FUNC) &_GLCMTextures_C_make_glcm, 4},
+    {"_GLCMTextures_C_make_glcm_counts2", (DL_FUNC) &_GLCMTextures_C_make_glcm_counts2, 4},
+    {"_GLCMTextures_C_make_glcm2", (DL_FUNC) &_GLCMTextures_C_make_glcm2, 4},
     {"_GLCMTextures_C_make_glcm_counts", (DL_FUNC) &_GLCMTextures_C_make_glcm_counts, 4},
     {"_GLCMTextures_C_glcm_metrics", (DL_FUNC) &_GLCMTextures_C_glcm_metrics, 1},
     {"_GLCMTextures_C_glcm_textures_helper", (DL_FUNC) &_GLCMTextures_C_glcm_textures_helper, 5},

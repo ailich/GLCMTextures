@@ -91,6 +91,68 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, St
 
 //Make GLCM (non-normalized)
 // [[Rcpp::export]]
+IntegerMatrix C_make_glcm_counts2(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
+  IntegerMatrix GLCM(n_levels, n_levels);//initialize GLCM
+  int nr= x.nrow();
+  int nc= x.ncol();
+
+  if((!na_rm) && (is_true(any(is_na(x))))){
+    GLCM.fill(NA_INTEGER);
+    return GLCM;
+  }  //Return window of NA's if any vals in window are NA
+
+  if(na_rm && (is_true(all(is_na(x))))){
+    GLCM.fill(NA_INTEGER);
+    return GLCM;
+  }  //Return window of NA's if all values in window is NA
+
+  for(int i=0; i < nr; ++i){
+    for(int j=0; j < nc; ++j){
+      IntegerVector focalval_neighborval(2);
+      focalval_neighborval[0] = x(i,j); //focal val
+      IntegerVector neighbor_idx(2, 0);
+      neighbor_idx(0) = i-shift(1);
+      neighbor_idx(1) = j+shift(0);
+      if((neighbor_idx(0) < nr) && (neighbor_idx(1) < nc) && (neighbor_idx(0) >= 0) && (neighbor_idx(1) >= 0)){
+        focalval_neighborval(1) = x(neighbor_idx(0), neighbor_idx(1)); //neighbor val
+        if(is_false(any(is_na(focalval_neighborval)))){
+          GLCM(focalval_neighborval[0],focalval_neighborval[1]) = GLCM(focalval_neighborval[0],focalval_neighborval[1])+1;
+          GLCM(focalval_neighborval[1],focalval_neighborval[0]) = GLCM(focalval_neighborval[1],focalval_neighborval[0])+1;
+        }
+      }}}
+
+  IntegerVector uni_vals = unique(GLCM);
+  if(is_true(all(uni_vals==0))){
+    IntegerMatrix GLCM(n_levels, n_levels);
+    GLCM.fill(NA_INTEGER);
+    return GLCM;
+    } //If no counts were filled in return NA's
+  return GLCM;
+  }
+
+//Make GLCM (normalized)
+// [[Rcpp::export]]
+NumericMatrix C_make_glcm2(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
+  IntegerMatrix GLCM = C_make_glcm_counts2(x, n_levels, shift, na_rm); //tabulate counts
+  NumericMatrix GLCM_Norm(n_levels, n_levels);
+  IntegerVector uni_vals = unique(GLCM);
+  if(is_true(any(is_na(uni_vals)))){
+    GLCM_Norm.fill(NA_REAL);
+    return GLCM_Norm;
+  } //If GLCM is NA return NA
+
+  double total=0;
+  for(int k=0; k < GLCM.size(); ++k){
+    total = total + GLCM[k];
+  }
+  for(int m=0; m < GLCM.size(); ++m){
+    GLCM_Norm[m] = (GLCM[m]*1.0)/total;
+  } //Normalize
+  return GLCM_Norm;
+}
+
+//Make GLCM (non-normalized)
+// [[Rcpp::export]]
 IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, String na_opt){
   if((na_opt== "any") && (is_true(any(is_na(x))))){
     IntegerMatrix GLCM(n_levels, n_levels);
@@ -203,30 +265,24 @@ NumericMatrix C_glcm_textures_helper(IntegerMatrix rq, IntegerVector w, int n_le
 
 //GLCM across matrix using sliding window (terra)
 // [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, String na_opt, size_t ni, size_t nw){
+NumericMatrix C_glcm_textures_helper2(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, bool na_rm, size_t ni, size_t nw){
 
-  NumericMatrix out = NumericMatrix(ni, 8);
+  NumericMatrix out(ni, 8);
   out.fill(NA_REAL);
   colnames(out)= CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation");
 
   for(size_t i=0; i<ni; i++) {
-    //Rcout << "i: " << i << "\n"; //print i
     size_t start = i*nw;
     size_t end = start+nw-1;
     IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of values
-    //IntegerVector xw = as<IntegerVector>(wrap(x[Rcpp::Range(start,end)])); //Current window of values
-    //Rf_PrintValue(xw); //print xw
-    //Rcout << "xw: " << xw << "\n"; //print xw
     IntegerMatrix curr_window(w2[0],w2[1]);
     for(int r=0; r < w2[0]; r++){
       for(int c=0; c < w2[1]; c++){
         curr_window(r,c) = xw[r*(w2[1])+c];
       }
     } //fill in matrix by row
-    NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_opt); //Tabulate the GLCM
-    //Rcout << "GLCM: " << curr_GLCM << "\n"; //print GLCM
+    NumericMatrix curr_GLCM = C_make_glcm2(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
     NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
-    //Rf_PrintValue(curr_textures["glcm_contrast"]);
     out(i, 0) = curr_textures["glcm_contrast"];
     out(i, 1) = curr_textures["glcm_dissimilarity"];
     out(i, 2) = curr_textures["glcm_homogeneity"];

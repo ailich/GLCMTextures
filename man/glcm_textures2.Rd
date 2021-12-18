@@ -14,7 +14,8 @@ glcm_textures2(
   quantization,
   min_val = NULL,
   max_val = NULL,
-  na_opt = "any"
+  na_opt = "any",
+  silent = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ glcm_textures2(
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
 
 \item{na_opt}{A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.}
+
+\item{silent}{useful for debugging}
 }
 \value{
 a SpatRaster or Raster* Object
