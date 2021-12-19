@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: Calculates GLCM Textures of raster layers
-Version: 0.2.1
+Version: 0.3
 Authors@R: 
     person(given = "Alex",
            family = "Ilich",
@@ -18,4 +18,5 @@ LinkingTo:
     RcppArmadillo
 Imports: 
     Rcpp,
+    terra,
     raster

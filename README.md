@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-November 08, 2021
+December 19, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -47,6 +47,13 @@ Then to install this package use the code
 `remotes::install_github("ailich/GLCMTextures")` (you may need to
 install Rtools using the instructions found
 [here](https://cran.r-project.org/bin/windows/Rtools/))
+
+This package relies on the `terra` package for handling of spatial
+raster data. To install the development version of `terra`, use
+`install.packages('terra', repos='https://rspatial.r-universe.dev')`.
+This package is also backwards compatible with the `raster` package. To
+install the development version of `raster` use
+`install.packages('raster', repos='https://rspatial.r-universe.dev')`
 
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 
@@ -110,7 +117,7 @@ having gray levels i & j
 Load packages
 
 ``` r
-library(raster) #Load raster package
+library(terra) #Load terra package
 library(GLCMTextures) #Load GLCMTextures package
 ```
 
@@ -138,8 +145,8 @@ print(test_matrix)
 This test matrix has 3 rows and 3 columns and contains values from 0-3
 (4 gray levels).
 
-We can use the ***make\_glcm*** function to create a normalized
-symmetric GLCM.
+We can use the`make_glcm` function to create a normalized symmetric
+GLCM.
 
 A GLCM is a tabulation of counts and has the dimensions of the number of
 gray levels. The GLCM is initialized with all zeros and then we add as
@@ -226,8 +233,8 @@ the size of the GLCM corresponds to the number of gray levels, not the
 size of the input matrix.
 
 Once the GLCM has been constructed, we can use this to calculate texture
-metrics using the ***glcm\_metrics*** function to calculate the GLCM
-texture metrics
+metrics using the`glcm_metrics` function to calculate the GLCM texture
+metrics
 
 ``` r
 glcm_metrics(horizontal_glcm)
@@ -244,7 +251,7 @@ Now we can move from calculating a single value of a given texture
 metric to calculating raster surfaces of texture metrics.
 
 ``` r
-r<- raster(volcano) #Use preloaded volcano dataset as a raster
+r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200") #Use preloaded volcano dataset as a raster
 plot(r) #plot values
 ```
 
@@ -256,7 +263,7 @@ Our test image had integer values that range from 0 to 3. Raster data
 often represent continuous data that cover a potentially large range and
 may not be confined to integer values greater than or equal to zero. The
 first step is therefore to quantize the raster image to a discrete
-number of gray levels. This can be done using the ***quantize\_raster***
+number of gray levels. This can be done using the`quantize_raster`
 function. Typically data are quantized to 16 (4 bit; 2<sup>4</sup>) or
 32 (5 bit; 2<sup>5</sup>) gray levels. With increasing number of gray
 levels, the computation cost increases.
@@ -288,7 +295,7 @@ Since we used equal probability quantization, each value has
 approximately the same count
 
 ``` r
-freq(rq_equalprob)
+freq(rq_equalprob)[,c("value", "count")]
 ```
 
     ##       value count
@@ -338,7 +345,7 @@ size around the central pixel (note: window size must be odd). This
 extracted window is then run through the process shown before for
 test\_matrix, and the resulting value of a texture metric is assigned as
 the value for the position corresponding with the central pixel. To do
-this, we can use the ***glcm\_textures*** function.
+this, we can use the`glcm_textures` function.
 
 For example, below we calculate textures using a window size of 3 rows
 by 5 columns
@@ -358,7 +365,7 @@ the glcm\_textures function
 
 ``` r
 textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
-identical(textures1, textures2)
+all.equal(values(textures1), values(textures2))
 ```
 
     ## [1] TRUE
@@ -381,20 +388,7 @@ By default all calculated texture metrics are returned; however you can
 have only a subset returned by specifying which ones you want using the
 `metrics` argument.
 
-You can also use `na_opt` to specify how you want to handle NA’s.
-`na_opt="any"` by default meaning that if any values are NA, the
-textures will evaluate to NA. If `na_opt="center"` means that the
-textures will evaluate to NA only if the central pixel is equal to NA.
-Lastly, setting `na_opt = "all"` means that the textures will only
-evaluate to NA if all values in the extracted window are NA.
-
-The `pad` argument can be used to deal with edge effects. By default
-`pad=FALSE`, so if a pixel is on one of the the edges of the raster
-image (meaning that a full window cannot be extracted around that
-pixel), the textures will evaluate to NA. Setting `pad=TRUE` pads the
-raster with rows/columns of NA’s so that these are no longer edge
-pixels. The returned surface is cropped back to the original raster
-size. Note, if `pad=TRUE` `na_opt` must be set to `"center"` or `"all"`.
+You can also use `na.rm` to specify how you want to handle `NA` values.
 
 # References
 

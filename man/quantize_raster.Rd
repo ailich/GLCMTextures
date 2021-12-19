@@ -4,10 +4,18 @@
 \alias{quantize_raster}
 \title{Quantizes raster to a set number of discrete levels}
 \usage{
-quantize_raster(r, n_levels, method, min_val = NULL, max_val = NULL)
+quantize_raster(
+  r,
+  n_levels,
+  method,
+  min_val = NULL,
+  max_val = NULL,
+  filename = NULL,
+  overwrite = FALSE
+)
 }
 \arguments{
-\item{r}{A raster layer}
+\item{r}{A single layer SpatRaster or RasterLayer.}
 
 \item{n_levels}{number of levels to quantize to}
 
@@ -16,7 +24,22 @@ quantize_raster(r, n_levels, method, min_val = NULL, max_val = NULL)
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
+
+\item{filename}{character Output filename.}
+
+\item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
+}
+\value{
+a single layer SpatRaster or RasterLayer with integer values ranging from 0 to n_levels-1
 }
 \description{
 Quantizes raster to a set number of discrete levels starting at 0. There are 2 methods of quantization are available: "uniform" and "equal prob"
+}
+\details{
+Equal probability quantization is the method recommended in Haralick et al., 1973. However, equal range may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur. When equal probability quantization is used, quantiles are generated using type 8 as recommended by Hyndman and Fan (1996). This method provides estimates that are approximately median-unbiased regardless of the distribution of x.
+}
+\references{
+Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
+
+Hyndman, R.J., Fan, Y., 1996. Sample Quantiles in Statistical Packages. The American Statistician 50, 361–365. https://doi.org/10.1080/00031305.1996.10473566
 }

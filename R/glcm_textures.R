@@ -1,7 +1,7 @@
 #' Calculates GLCM texture metrics of a Raster Layer
 #'
 #' Calculates GLCM texture metrics of a RasterLayer over a sliding rectangular window
-#' @param r A raster layer. If already quantized set quantization to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).
+#' @param r A single layer SpatRaster or RasterLayer. If already quantized set quantization to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).
 #' @param w A vector of length 2 specifying the dimensions of the rectangular window to use where the first number is the number of rows and the second number is the number of columns. Window size must be an odd number.
 #' @param n_levels Number of grey levels used in the quantization
 #' @param shift A vector of length 2, or a list of vectors each of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0). To average over "all directions" you can use shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), which is the default.
@@ -9,14 +9,34 @@
 #' @param quantization quantization method (either "equal range", "equal prob", or "none"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples. "none" means the layer has already been quantized.
 #' @param min_val minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)
 #' @param max_val maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)
-#' @param na_opt A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.
-#' @param pad logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default). If pad is TRUE, na_opt musy be set to "center" or "all".
+#' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
+#' @param filename character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer
+#' @param overwrite logical. If TRUE, filename is overwritten (default is FALSE).
+#' @return a SpatRaster or Raster* Object
+#' @import terra
+#' @importFrom raster raster
+#' @importFrom raster stack
+#' @importFrom raster writeRaster
+
+#' @references
+#' Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
 #'
-#' @return a RasterBrick of Texture Metrics (or RasterLayer if just one metric is calculated)
-#' @import raster
+#' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
 #'
-glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na_opt= "any", pad=FALSE){
+glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na.rm= FALSE, filename=NULL, overwrite=FALSE){
+  og_class<- class(r)[1]
+  if(og_class=="RasterLayer"){
+    r<- terra::rast(r) #Convert to SpatRaster
+  }
+  all_metrics<- c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")
+  # Input checks
+  if(!(og_class %in% c("RasterLayer", "SpatRaster"))){
+    stop("Error: Input must be a 'SpatRaster' or 'RasterLayer'")
+  }
+  if(terra::nlyr(r)!=1){
+    stop("Error: Input raster must be one layer.")
+  }
   if(length(w)==1){
     w<- rep(w,2)}
   if(length(w)>2){
@@ -27,87 +47,63 @@ glcm_textures<- function(r, w, n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1
   if(all(w<3)){
     stop("Error: w must be greater or equal to 3 in at least one dimension")
   }
-  if (!any(na_opt==c("any", "center", "all"))){
-    stop("na_opt must be 'any', 'center', or 'all'")
-  }
   if(class(shift)!="list"){shift=list(shift)}
-  #Maybe put check for shift size < windowsize-1/2
+  if(any(sapply(shift, length)!=2)){
+    stop("Error: each shift must be a vector of length 2")
+  }
+  if(!all((sapply(shift, class)=="numeric") | (sapply(shift, class)=="integer"))){
+    stop("Error: shifts must be a numeric or integer")
+  }
+  if (any(!(metrics %in% all_metrics))){
+    stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation'")
+  }
+
   out_list<- vector(mode = "list", length=length(shift))
-  if(pad==TRUE){
-    if(na_opt=="any"){
-      stop("if pad=TRUE, na_opt must be 'center' or 'all'")}
-    og_extent<- raster::extent(r)
-    r<- raster::extend(r, c((w[1]-1)/2, (w[2]-1)/2), value=NA)
-    }
   if(quantization!="none"){
     r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val)
-  }
-  if((raster::cellStats(r, stat = max) > (n_levels-1)) | (raster::cellStats(r, stat = min) < 0)){
-    stop("Error: raster layer must have values between 0 and n_levels-1")}
+    } else if(!terra::is.int(r)){
+    r<- terra::as.int(r) #Make it an integer raster
+    }
+  if((unlist(terra::global(r, fun = max, na.rm=TRUE)) > (n_levels-1)) | (unlist(terra::global(r, fun = min, na.rm=TRUE)) < 0)){
+    stop("Error: raster must have values between 0 and n_levels-1")}
 
   out_list<- vector(mode = "list", length=length(shift))
-
-  run_in_blocks<- !raster::canProcessInMemory(r, n = (8*length(shift))+1)
-  if(run_in_blocks==FALSE){
-    for (k in 1:length(shift)) {
-      out_list[[k]]<- raster::brick(r, nl=8, values=FALSE)
-      curr_vals<- C_glcm_textures_helper(rq= as.matrix(r), w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
-      values(out_list[[k]])<- curr_vals
-      names(out_list[[k]])<- colnames(curr_vals)
-      out_list[[k]]<- raster::subset(out_list[[k]], metrics, drop=TRUE)
-    }
-    } else{
-      block_overlap<- (w[1]-1)/2
-      nr<- nrow(r)
-      nc<- ncol(r)
-      for (k in 1:length(shift)) {
-        #print(paste("Starting Shift", k))
-        f_out <- raster::rasterTmpFile()
-        out_list[[k]]<- raster::brick(r, nl=8, values=FALSE)
-        out_list[[k]] <- raster::writeStart(out_list[[k]], filename = f_out)
-        block_idx<- raster::blockSize(r, n = 8, minblocks = 2, minrows = w[1])
-
-        for (i in 1:block_idx$n) {
-          #print(paste(i, "of", block_idx$n))
-          min_row<- max(c(block_idx$row[[i]] - block_overlap), 1)
-          max_row<- min(c(block_idx$row[[i]] + block_idx$nrows[[i]] - 1 + block_overlap, nr))
-          curr_block <- raster::getValues(r, row = min_row, nrows = max_row-min_row+1, format="matrix")
-
-          out_block<-  C_glcm_textures_helper(rq= curr_block, w=w, n_levels=n_levels, shift=shift[[k]], na_opt=na_opt)
-          #out_block is a formatted as matrix where each column corresponds to a raster layer (this is how writeRaster needs it to be formatted)
-          #As you go down rows in this matrix you move across rows in the raster object
-          if(i==1){
-            out_block<- out_block[1:(nrow(out_block)-(block_overlap*nc)),] #Trim bottom edge of raster
-          } else if (i != block_idx$n){
-            out_block<- out_block[(1+block_overlap*nc):(nrow(out_block)-(block_overlap*nc)),] #Trim top and bottom edge of raster
-          } else {
-            out_block<- out_block[(1+block_overlap*nc):nrow(out_block),] #Trim top edge of raster
-            }
-          raster::writeValues(out_list[[k]], v= out_block, start= block_idx$row[i])
-        }
-        out_list[[k]]<- raster::writeStop(out_list[[k]])
-        names(out_list[[k]])<- colnames(out_block)
-        out_list[[k]]<- raster::subset(out_list[[k]], metrics, drop=TRUE)
-        }
+  for (k in 1:length(shift)) {
+    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, silent=silent)
+    out_list[[k]]<- terra::subset(out_list[[k]], metrics)
     }
 
-  n_layers<- raster::nlayers(out_list[[1]])
+  n_layers<- length(metrics)
   avg_shifts<- length(shift) > 1
   if(avg_shifts){
-    output<- stack()
+    output<- terra::rast()
     for (j in 1:n_layers) {
-      out_layer<- mean(do.call(raster::stack, lapply(out_list, raster::subset,j))) #Average across all shifts
-      output<- raster::stack(output, out_layer) #Create new stack of averaged values
+      out_layer<- mean(do.call(c, lapply(out_list, terra::subset,j))) #Average across all shifts
+      output<- c(output, out_layer, warn=FALSE) #Create new stack of averaged values
     }} else{
       output<- out_list[[1]]
     }
-
-  if(class(output)[1]=="RasterStack"){
-    output<- raster::brick(output)}
-
-  if(pad==TRUE){
-    output<- raster::crop(output, og_extent)
-  }
   names(output)<- metrics #preserve names in case they were lost
+
+  if(og_class=="RasterLayer"){
+    if(terra::nlyr(output) > 1){
+      output<- raster::stack(output) #Convert to RasterStack
+      if(!is.null(filename)){
+        if(length(filename)==1){
+          return(raster::writeRaster(output, filename=filename, overwrite=overwrite, bylayer=FALSE))
+        } else{
+          return(raster::writeRaster(output, filename=filename, overwrite=overwrite, bylayer=TRUE))
+        }
+        }
+      } else{
+        output<- raster::raster(output)
+        if(!is.null(filename)){
+          return(raster::writeRaster(output, filename=filename, overwrite=overwrite))
+        }
+      }
+  }
+  if(!is.null(filename)){
+    return(terra::writeRaster(output, filename=filename, overwrite=overwrite))
+    }
   return(output)
 }
