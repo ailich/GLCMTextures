@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-December 17, 2021
+December 19, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -281,7 +281,7 @@ quantization method suggested in the original paper (Haralick and
 Shanmugam 1973).
 
 ``` r
-rq_equalprob<- quantize_raster2(r = r, n_levels = 16, method = "equal prob")
+rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
@@ -295,26 +295,26 @@ Since we used equal probability quantization, each value has
 approximately the same count
 
 ``` r
-freq(rq_equalprob)
+freq(rq_equalprob)[,c("value", "count")]
 ```
 
-    ##       layer value count
-    ##  [1,]     1     0   304
-    ##  [2,]     1     1   344
-    ##  [3,]     1     2   269
-    ##  [4,]     1     3   313
-    ##  [5,]     1     4   394
-    ##  [6,]     1     5   302
-    ##  [7,]     1     6   340
-    ##  [8,]     1     7   354
-    ##  [9,]     1     8   332
-    ## [10,]     1     9   342
-    ## [11,]     1    10   341
-    ## [12,]     1    11   330
-    ## [13,]     1    12   321
-    ## [14,]     1    13   323
-    ## [15,]     1    14   339
-    ## [16,]     1    15   359
+    ##       value count
+    ##  [1,]     0   304
+    ##  [2,]     1   344
+    ##  [3,]     2   269
+    ##  [4,]     3   313
+    ##  [5,]     4   394
+    ##  [6,]     5   302
+    ##  [7,]     6   340
+    ##  [8,]     7   354
+    ##  [9,]     8   332
+    ## [10,]     9   342
+    ## [11,]    10   341
+    ## [12,]    11   330
+    ## [13,]    12   321
+    ## [14,]    13   323
+    ## [15,]    14   339
+    ## [16,]    15   359
 
 We can also use equal range quantization. By default the function will
 scale the values using the min and max of the data set. By default the
@@ -326,7 +326,7 @@ consistent way to the original data, as you can supply the global
 max/min or the theoretical max/min values that could occur.
 
 ``` r
-rq_equalrange<- quantize_raster2(r = r, n_levels = 16, method = "equal range")
+rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
@@ -351,7 +351,7 @@ For example, below we calculate textures using a window size of 3 rows
 by 5 columns
 
 ``` r
-textures1<- glcm_textures2(rq_equalprob, w = c(3,5), n_levels = 16, quantization = "none", shift = c(1,0)) 
+textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization = "none", shift = c(1,0)) 
 plot(textures1)
 ```
 
@@ -364,7 +364,7 @@ We could instead call the original raster and have it quantized within
 the glcm\_textures function
 
 ``` r
-textures2<- glcm_textures2(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
+textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
 all.equal(values(textures1), values(textures2))
 ```
 
@@ -376,7 +376,7 @@ directionally/rotationally invariant textures that are averaged across
 all 4 directions `shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))`.
 
 ``` r
-textures3<- glcm_textures2(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
+textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
 plot(textures3)
 ```
 

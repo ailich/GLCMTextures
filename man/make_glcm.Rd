@@ -4,7 +4,7 @@
 \alias{make_glcm}
 \title{Creates a symmetrical normalized GLCM for a given matrix and shift}
 \usage{
-make_glcm(x, n_levels, shift, na_opt = "any", normalize = TRUE)
+make_glcm(x, n_levels, shift, na.rm = FALSE, normalize = TRUE)
 }
 \arguments{
 \item{x}{a matrix of integers representing quantized values. The valid range of values is from 0 to n_levels-1 (e.g. a matrix with 32 grey levels would have a valid range of 0-31).}
@@ -13,7 +13,7 @@ make_glcm(x, n_levels, shift, na_opt = "any", normalize = TRUE)
 
 \item{shift}{A vector of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0)}
 
-\item{na_opt}{A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA (only valid if dimensions of x are odd). "all" means that NA will be returned only if all values in the window are NA.}
+\item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
 
 \item{normalize}{a logical specifying whether to normalize the counts to probabilities by dividing by the sum of the GLCM (TRUE, the default) or to express the GLCM as counts (FALSE)}
 }

@@ -12,9 +12,12 @@
 #' @export
 
 make_glcm<- function(x, n_levels, shift, na.rm = FALSE, normalize=TRUE){
-	if(normalize){
-	  return(C_make_glcm2(x=x, n_levels=n_levels, shift=shift, na_rm=na.rm))
+	if(any(isTRUE(x > (n_levels-1))) | any(isTRUE(x < 0))){
+	  stop("Error: x must have values between 0 and n_levels-1")
+	  }
+  if(normalize){
+	  return(C_make_glcm(x=x, n_levels=n_levels, shift=shift, na_rm=na.rm))
 	  } else{
-	    return(C_make_glcm_counts2(x=x, n_levels=n_levels, shift=shift, na_rm=na.rm))
+	    return(C_make_glcm_counts(x=x, n_levels=n_levels, shift=shift, na_rm=na.rm))
 	  }
   }

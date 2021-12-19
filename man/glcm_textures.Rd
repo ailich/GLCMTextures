@@ -6,7 +6,7 @@
 \usage{
 glcm_textures(
   r,
-  w,
+  w = c(3, 3),
   n_levels,
   shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)),
   metrics = c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
@@ -14,12 +14,13 @@ glcm_textures(
   quantization,
   min_val = NULL,
   max_val = NULL,
-  na_opt = "any",
-  pad = FALSE
+  na.rm = FALSE,
+  filename = NULL,
+  overwrite = FALSE
 )
 }
 \arguments{
-\item{r}{A raster layer. If already quantized set quantization to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).}
+\item{r}{A single layer SpatRaster or RasterLayer. If already quantized set quantization to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).}
 
 \item{w}{A vector of length 2 specifying the dimensions of the rectangular window to use where the first number is the number of rows and the second number is the number of columns. Window size must be an odd number.}
 
@@ -35,13 +36,20 @@ glcm_textures(
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
 
-\item{na_opt}{A character vector indicating how to consider NA values. "any" means that NA will be returned if any values in the window are NA. "center" means that NA will be returned only if the central pixel in the window is NA. "all" means that NA will be returned only if all values in the window are NA. "any" is the default.}
+\item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
 
-\item{pad}{logical value specifying whether rows/columns of NA's should be padded to the edge of the raster to remove edge effects (FALSE by default). If pad is TRUE, na_opt musy be set to "center" or "all".}
+\item{filename}{character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer}
+
+\item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
 }
 \value{
-a RasterBrick of Texture Metrics (or RasterLayer if just one metric is calculated)
+a SpatRaster or Raster* Object
 }
 \description{
 Calculates GLCM texture metrics of a RasterLayer over a sliding rectangular window
+}
+\references{
+Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
+
+Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 }
