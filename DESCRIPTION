@@ -2,11 +2,11 @@ Package: GLCMTextures
 Title: Calculates GLCM Textures of raster layers
 Version: 0.3
 Authors@R: 
-    person(given = "Alex",
+    person(given = "Alexander",
            family = "Ilich",
            role = c("aut", "cre"),
            email = "ailich@usf.edu",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0003-1758-8499"))
 Description: Calculates GLCM textures of raster layers using a sliding rectangular window. Also includes functions to quantize a raster into grey levels as well as tabulate a glcm and calculate glcm texture metrics for a matrix.
 License:MIT + file LICENSE
 Encoding: UTF-8
