@@ -69,7 +69,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
 
   out_list<- vector(mode = "list", length=length(shift))
   for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, silent=silent)
+    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm)
     out_list[[k]]<- terra::subset(out_list[[k]], metrics)
     }
 
