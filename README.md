@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-December 19, 2021
+December 22, 2021
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -60,14 +60,14 @@ install the development version of `raster` use
 The convention for specifying the direction of the neighboring pixel
 (the shift) is shown in the image below. The blue pixel in the center is
 treated as the focal pixel in the example. Shifts are specified as
-c(x\_shift, y\_shift). So, a shift of c(1,0) refers to a the neighboring
-pixel being 1 to the right and 0 upwards of the focal pixel. Since a
-symmetric GLCM is created, this means each pixel is counted as both a
-focal and a neighboring pixel, so it also tabulates the shift in the
-opposite direction c(-1,0), which is the dotted blue line. Therefore,
-these two shifts will produce equivalent results. Although neighboring
-pixels are typically considered as those one away in a given direction,
-the shift value can be specified as any integer value.
+`c(x_shift, y_shift)`. So, a shift of `c(1,0)` refers to a the
+neighboring pixel being 1 to the right and 0 upwards of the focal pixel.
+Since a symmetric GLCM is created, this means each pixel is counted as
+both a focal and a neighboring pixel, so it also tabulates the shift in
+the opposite direction `c(-1,0)`, which is the dotted blue line.
+Therefore, these two shifts will produce equivalent results. Although
+neighboring pixels are typically considered as those one away in a given
+direction, the shift value can be specified as any integer value.
 
 ![GLCM Shift](images/GLCM_Shift.png)
 
@@ -163,7 +163,7 @@ we tabulate counts.
 The row and column number refers to the gray value of the focal and
 neighboring pixel (Since gray levels start at a value of 0, the
 row/column number is 1 larger than the corresponding gray level).We will
-use a shift of c(1,0) meaning that the neighboring pixels is the pixel
+use a shift of `c(1,0)` meaning that the neighboring pixels is the pixel
 directly to the right of the focal pixel. We start in the top left
 corner and we can see that we have a 2 as the focal value and a 3 as the
 neighboring value directly to the right, so we add 1 to the
@@ -268,24 +268,43 @@ function. Typically data are quantized to 16 (4 bit; 2<sup>4</sup>) or
 32 (5 bit; 2<sup>5</sup>) gray levels. With increasing number of gray
 levels, the computation cost increases.
 
-There are two methods of quantization available in the quantize\_raster
-function. `method = "equal range"` will create bins that cover a range
-of equal size (e.g. if the original data ranged from 0-20 and was
-quantized to 4 levels, \[0-5) would be reassigned to 0, \[5-10) would be
-reassigned to 1, \[10-15) would be reassigned to 2, and \[15-20\] would
-be reassigned to 4). This is the simplest and most common quantization
-method. `method = "equal prob"` performs equal probability quantization
-and will use quantiles (Hyndman and Fan 1996) to create bins that
-contain an approximately equal number of samples, which is the
-quantization method suggested in the original paper (Haralick and
-Shanmugam 1973).
+There are two methods of quantization available in the `quantize_raster`
+function. The first way, `method = "equal range"`, will create bins that
+cover a range of equal size (e.g. if the original data ranged from 0-20
+and was quantized to 4 levels, \[0-5) would be reassigned to 0, \[5-10)
+would be reassigned to 1, \[10-15) would be reassigned to 2, and
+\[15-20\] would be reassigned to 4). This is the simplest and most
+common quantization method. By default the raster is scaled using the
+min and max of the data set, but a max and min value can be supplied to
+the `max_val` and `min_val` parameters. This may be more desirable if
+making comparisons across several different rasters where you need the
+gray levels to correspond in a consistent way to the original data, as
+you can supply the global max/min or the theoretical max/min values that
+could occur.
+
+``` r
+rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
+plot(rq_equalrange, col=grey.colors(16))
+```
+
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+    ## [1] "Min Val = 0"
+
+    ## [1] "Max Val = 15"
+
+The second way to perform quantization is `method = "equal prob"` which
+performs equal probability quantization and will use quantiles (Hyndman
+and Fan 1996) to create bins that contain an approximately equal number
+of samples. This is the quantization method suggested in the original
+paper (Haralick and Shanmugam 1973).
 
 ``` r
 rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
     ## [1] "Min Val = 0"
 
@@ -316,22 +335,6 @@ freq(rq_equalprob)[,c("value", "count")]
     ## [15,]    14   339
     ## [16,]    15   359
 
-We can also use equal range quantization. By default the function will
-scale the values using the min and max of the data set. By default the
-raster is scaled using the min and max of the data set, but a max and
-min value can be supplied to the `max_val` and `min_val` parameters.
-This may be more desirable if making comparisons across several
-different rasters where you need the gray levels to correspond in a
-consistent way to the original data, as you can supply the global
-max/min or the theoretical max/min values that could occur.
-
-``` r
-rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
-plot(rq_equalrange, col=grey.colors(16))
-```
-
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
 #### Calculate Texture Metrics Raster Surfaces
 
 For raster data sets, rather than calculating a single value of the
@@ -355,13 +358,13 @@ textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization 
 plot(textures1)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
-You may have noticed in the example above that quantization was set to
-“none”. This is because we supplied a raster that was already quantized.
+You may have noticed in the example above that `quantization = "none"`.
+This is because we supplied a raster that was already quantized.
 
 We could instead call the original raster and have it quantized within
-the glcm\_textures function
+the `glcm_textures` function.
 
 ``` r
 textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
@@ -380,7 +383,7 @@ textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal pr
 plot(textures3)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 **Some Other Options**
 
