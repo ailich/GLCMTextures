@@ -78,7 +78,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
   if(avg_shifts){
     output<- terra::rast()
     for (j in 1:n_layers) {
-      out_layer<- mean(do.call(c, lapply(out_list, terra::subset,j))) #Average across all shifts
+      out_layer<- terra::mean(do.call(c, lapply(out_list, terra::subset,j)), na.rm=na.rm) #Average across all shifts
       output<- c(output, out_layer, warn=FALSE) #Create new stack of averaged values
     }} else{
       output<- out_list[[1]]
