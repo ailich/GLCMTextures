@@ -103,8 +103,7 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
       }
     } //fill in matrix by row
     NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
-    NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
-    out(i, _) = curr_textures;
+    out(i, _) =  C_glcm_metrics(curr_GLCM);
   }
   return(out);
 }
