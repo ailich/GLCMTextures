@@ -12,7 +12,12 @@
 #' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
 #' @param filename character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer
 #' @param overwrite logical. If TRUE, filename is overwritten (default is FALSE).
+#' @param wopt list with named options for writing files as in writeRaster
 #' @return a SpatRaster or Raster* Object
+#' @examples
+#' r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
+#' txt <- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)))
+#' plot(txt)
 #' @import terra
 #' @importFrom raster raster
 #' @importFrom raster stack
@@ -24,7 +29,7 @@
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
 #'
-glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na.rm= FALSE, filename=NULL, overwrite=FALSE){
+glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na.rm= FALSE, filename=NULL, overwrite=FALSE, wopt=list()){
   og_class<- class(r)[1]
   if(og_class=="RasterLayer"){
     r<- terra::rast(r) #Convert to SpatRaster
@@ -60,27 +65,23 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
 
   out_list<- vector(mode = "list", length=length(shift))
   if(quantization!="none"){
-    r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val)
+    r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val, wopt=wopt)
     } else if(!terra::is.int(r)){
-    r<- terra::as.int(r) #Make it an integer raster
+    r<- terra::as.int(r, wopt=wopt) #Make it an integer raster
     }
   if((unlist(terra::global(r, fun = max, na.rm=TRUE)) > (n_levels-1)) | (unlist(terra::global(r, fun = min, na.rm=TRUE)) < 0)){
     stop("Error: raster must have values between 0 and n_levels-1")}
 
   out_list<- vector(mode = "list", length=length(shift))
   for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm)
-    out_list[[k]]<- terra::subset(out_list[[k]], metrics)
+    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, wopt=wopt)
+    out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt)
     }
 
   n_layers<- length(metrics)
-  avg_shifts<- length(shift) > 1
-  if(avg_shifts){
-    output<- terra::rast()
-    for (j in 1:n_layers) {
-      out_layer<- terra::mean(do.call(c, lapply(out_list, terra::subset,j)), na.rm=na.rm) #Average across all shifts
-      output<- c(output, out_layer, warn=FALSE) #Create new stack of averaged values
-    }} else{
+  if(length(shift) > 1){
+    output<- terra::app(terra::sds(out_list), fun=mean, na.rm=na.rm, wopt=wopt)
+    } else{
       output<- out_list[[1]]
     }
   names(output)<- metrics #preserve names in case they were lost
@@ -103,7 +104,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
       }
   }
   if(!is.null(filename)){
-    return(terra::writeRaster(output, filename=filename, overwrite=overwrite))
+    return(terra::writeRaster(output, filename=filename, overwrite=overwrite, wopt=wopt))
     }
   return(output)
 }

@@ -104,15 +104,7 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
     } //fill in matrix by row
     NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
     NumericVector curr_textures = C_glcm_metrics(curr_GLCM);
-    out(i, 0) = curr_textures["glcm_contrast"];
-    out(i, 1) = curr_textures["glcm_dissimilarity"];
-    out(i, 2) = curr_textures["glcm_homogeneity"];
-    out(i, 3) = curr_textures["glcm_ASM"];
-    out(i, 4) = curr_textures["glcm_entropy"];
-    out(i, 5) = curr_textures["glcm_mean"];
-    out(i, 6) = curr_textures["glcm_variance"];
-    out(i, 7) = curr_textures["glcm_correlation"];
+    out(i, _) = curr_textures;
   }
   return(out);
 }
-

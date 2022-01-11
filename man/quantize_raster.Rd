@@ -11,7 +11,8 @@ quantize_raster(
   min_val = NULL,
   max_val = NULL,
   filename = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  wopt = list()
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ quantize_raster(
 \item{filename}{character Output filename.}
 
 \item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
+
+\item{wopt}{list with named options for writing files as in writeRaster}
 }
 \value{
 a single layer SpatRaster or RasterLayer with integer values ranging from 0 to n_levels-1
@@ -37,6 +40,11 @@ Quantizes raster to a set number of discrete levels starting at 0. There are 2 m
 }
 \details{
 Equal probability quantization is the method recommended in Haralick et al., 1973. However, equal range may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur. When equal probability quantization is used, quantiles are generated using type 8 as recommended by Hyndman and Fan (1996). This method provides estimates that are approximately median-unbiased regardless of the distribution of x.
+}
+\examples{
+r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
+rq1 <- quantize_raster(r = r, n_levels = 16, method = "equal prob")
+rq2 <- quantize_raster(r = r, n_levels = 16, method = "equal range")
 }
 \references{
 Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314

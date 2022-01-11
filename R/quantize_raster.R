@@ -9,6 +9,11 @@
 #' @param filename character Output filename.
 #' @param overwrite logical. If TRUE, filename is overwritten (default is FALSE).
 #' @return a single layer SpatRaster or RasterLayer with integer values ranging from 0 to n_levels-1
+#' @param wopt list with named options for writing files as in writeRaster
+#' @examples
+#' r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
+#' rq1 <- quantize_raster(r = r, n_levels = 16, method = "equal prob")
+#' rq2 <- quantize_raster(r = r, n_levels = 16, method = "equal range")
 #' @import  terra
 #' @importFrom  raster raster
 #' @importFrom raster writeRaster
@@ -19,7 +24,7 @@
 #' Hyndman, R.J., Fan, Y., 1996. Sample Quantiles in Statistical Packages. The American Statistician 50, 361–365. https://doi.org/10.1080/00031305.1996.10473566
 #' @export
 
-quantize_raster<- function(r, n_levels, method, min_val=NULL, max_val=NULL, filename= NULL, overwrite = FALSE){
+quantize_raster<- function(r, n_levels, method, min_val=NULL, max_val=NULL, filename= NULL, overwrite = FALSE, wopt=list()){
   og_class<- class(r)[1]
   if(og_class =="RasterLayer"){
     r<- terra::rast(r) #Convert to SpatRaster
@@ -36,8 +41,8 @@ quantize_raster<- function(r, n_levels, method, min_val=NULL, max_val=NULL, file
   } else {
     message("Error: method must be 'equal range' or 'equal prob'")
   }
-  rq <- terra::classify(r, rcl = qrules, include.lowest = TRUE, right = FALSE)
-  rq<- terra::as.int(rq)
+  rq <- terra::classify(r, rcl = qrules, include.lowest = TRUE, right = FALSE, wopt=wopt)
+  rq<- terra::as.int(rq, wopt=wopt)
 
   if(og_class =="RasterLayer"){
     rq<- raster::raster(rq)
@@ -46,7 +51,7 @@ quantize_raster<- function(r, n_levels, method, min_val=NULL, max_val=NULL, file
       }
   }
   if(!is.null(filename)){
-    return(terra::writeRaster(rq, filename=filename, overwrite=overwrite))
+    return(terra::writeRaster(rq, filename=filename, overwrite=overwrite, wopt=wopt))
     }
   return(rq)
   }
