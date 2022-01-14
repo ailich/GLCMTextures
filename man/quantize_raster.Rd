@@ -42,6 +42,7 @@ Quantizes raster to a set number of discrete levels starting at 0. There are 2 m
 Equal probability quantization is the method recommended in Haralick et al., 1973. However, equal range may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur. When equal probability quantization is used, quantiles are generated using type 8 as recommended by Hyndman and Fan (1996). This method provides estimates that are approximately median-unbiased regardless of the distribution of x.
 }
 \examples{
+library(terra)
 r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
 rq1 <- quantize_raster(r = r, n_levels = 16, method = "equal prob")
 rq2 <- quantize_raster(r = r, n_levels = 16, method = "equal range")

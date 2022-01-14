@@ -20,6 +20,13 @@ make_glcm(x, n_levels, shift, na.rm = FALSE, normalize = TRUE)
 \description{
 Creates a symmetrical normalized GLCM for a given matrix and shift
 }
+\examples{
+test_matrix<- matrix(data=c(2,0,1,3,0,0,0,3,2), nrow = 3, ncol=3)
+Tabulate a GLCM of counts
+horizontal_glcm_counts<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = FALSE)
+Calculate a normalized GLCM of probabilities
+horizontal_glcm_norm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
+}
 \references{
 Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
 

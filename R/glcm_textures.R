@@ -15,6 +15,7 @@
 #' @param wopt list with named options for writing files as in writeRaster
 #' @return a SpatRaster or Raster* Object
 #' @examples
+#' library(terra)
 #' r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
 #' txt <- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)))
 #' plot(txt)
@@ -74,7 +75,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
 
   out_list<- vector(mode = "list", length=length(shift))
   for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, wopt=wopt)
+    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, fillvalue=NA, wopt=wopt)
     out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt)
     }
 
