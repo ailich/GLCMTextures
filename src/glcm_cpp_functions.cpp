@@ -37,9 +37,9 @@ IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector sh
 
 //Make GLCM (normalized)
 // [[Rcpp::export]]
-NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
+arma::mat C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
   IntegerMatrix GLCM = C_make_glcm_counts(x, n_levels, shift, na_rm); //tabulate counts
-  NumericMatrix GLCM_Norm(n_levels, n_levels);
+  arma::mat GLCM_Norm(n_levels, n_levels);
   if(is_true(any(is_na(GLCM)))){
     GLCM_Norm.fill(NA_REAL);
     return GLCM_Norm;
@@ -57,40 +57,56 @@ NumericMatrix C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bo
 
 //Calculate Texture Metrics
 // [[Rcpp::export]]
-NumericVector C_glcm_metrics(NumericMatrix GLCM){
-  NumericVector textures = rep(NA_REAL,8);
-  textures.names() = CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity","glcm_ASM","glcm_entropy","glcm_mean","glcm_variance","glcm_correlation");
-  if(is_true(any(is_na(GLCM)))){
+NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, CharacterVector metrics){
+
+  NumericVector textures = rep(NA_REAL,metrics.length());
+  textures.names() = metrics;
+  if(!is_finite(Pij)){
     return textures;}
-  int GLCM_dims = GLCM.nrow(); //Size of GLCM (they are square so nrows=ncols)
-  arma::mat Pij = as<arma::mat>(GLCM);
-  arma::mat i_mat(GLCM_dims,GLCM_dims);
-  arma::mat j_mat(GLCM_dims,GLCM_dims);
-  for(int i=0; i<GLCM_dims; ++i){
-    for(int j=0; j<GLCM_dims; ++j){
-      i_mat(i,j)=i;
-      j_mat(i,j)=j;
-    }}
-  textures["glcm_contrast"] = accu(Pij % pow(i_mat-j_mat,2)); //Contrast= sum(P_ij*(i-j)^2)
-  textures["glcm_dissimilarity"]= accu(Pij % abs(i_mat-j_mat)); //Dissimilarity= sum(P_ij*|i-j|)
-  textures["glcm_homogeneity"]= accu(Pij/(1+(pow(i_mat-j_mat,2)))); //Homogeneity= sum(P_ij / (1+(i-j)^2))
-  textures["glcm_ASM"]= accu(pow(Pij,2)); //ASM= sum(P_ij^2)
-  textures["glcm_mean"]= accu(Pij % i_mat); //mean= sum(i*(P_ij))
-  textures["glcm_variance"]= accu(Pij % pow(i_mat-textures["glcm_mean"],2)); //varaince= sum(P_ij*(i-u)^2
-  textures["glcm_correlation"]= accu(Pij % (((i_mat-textures["glcm_mean"]) % (j_mat-textures["glcm_mean"]))/(textures["glcm_variance"]))); //Correlation= sum(P_ij*[((i-u)*(j-u))/(var)])
-  arma::mat glcm_entropy_mat = Pij % ((-1) * log(Pij));
-  glcm_entropy_mat.replace(datum::nan,0.0);
-  textures["glcm_entropy"]= accu(glcm_entropy_mat); //Entropy= sum(P_ij * (-ln(P_ij))) ; 0*ln(0)=0
+  if(in(CharacterVector::create("glcm_contrast"), metrics)){
+    textures["glcm_contrast"] = accu(Pij % pow(i_mat-j_mat,2)); //Contrast= sum(P_ij*(i-j)^2)
+    }
+  if(in(CharacterVector::create("glcm_dissimilarity"), metrics)){
+    textures["glcm_dissimilarity"]= accu(Pij % abs(i_mat-j_mat)); //Dissimilarity= sum(P_ij*|i-j|)
+    }
+  if(in(CharacterVector::create("glcm_homogeneity"), metrics)){
+    textures["glcm_homogeneity"]= accu(Pij/(1+(pow(i_mat-j_mat,2)))); //Homogeneity= sum(P_ij / (1+(i-j)^2))
+    }
+  if(in(CharacterVector::create("glcm_ASM"), metrics)){
+    textures["glcm_ASM"]= accu(pow(Pij,2)); //ASM= sum(P_ij^2)
+    }
+  if(in(CharacterVector::create("glcm_mean"), metrics)){
+    textures["glcm_mean"]= accu(Pij % i_mat); //mean= sum(i*(P_ij))
+    }
+  if(in(CharacterVector::create("glcm_variance"), metrics)){
+    textures["glcm_variance"]= accu(Pij % pow(i_mat-textures["glcm_mean"],2)); //varaince= sum(P_ij*(i-u)^2
+    }
+  if(in(CharacterVector::create("glcm_correlation"), metrics)){
+    textures["glcm_correlation"]= accu(Pij % (((i_mat-textures["glcm_mean"]) % (j_mat-textures["glcm_mean"]))/(textures["glcm_variance"]))); //Correlation= sum(P_ij*[((i-u)*(j-u))/(var)])
+    }
+  if(in(CharacterVector::create("glcm_entropy"), metrics)){
+    arma::mat glcm_entropy_mat = Pij % ((-1) * log(Pij));
+    glcm_entropy_mat.replace(datum::nan,0.0);
+    textures["glcm_entropy"]= accu(glcm_entropy_mat); //Entropy= sum(P_ij * (-ln(P_ij))) ; 0*ln(0)=0
+    }
   return(textures);
 }
 
 //GLCM across matrix using sliding window (terra)
 // [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, bool na_rm, size_t ni, size_t nw){
+NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, CharacterVector metrics, bool na_rm, size_t ni, size_t nw){
 
-  NumericMatrix out(ni, 8);
+  NumericMatrix out(ni, metrics.length());
   out.fill(NA_REAL);
-  colnames(out)= CharacterVector::create("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation");
+  colnames(out)= metrics;
+
+  arma::mat i_mat(n_levels,n_levels);
+  arma::mat j_mat(n_levels,n_levels);
+  for(int i=0; i<n_levels; ++i){
+    for(int j=0; j<n_levels; ++j){
+      i_mat(i,j)=i;
+      j_mat(i,j)=j;
+    }} //Set up i_mat and j_mat outside of loop so they don't need to be redefined each time
 
   for(size_t i=0; i<ni; i++) {
     size_t start = i*nw;
@@ -102,8 +118,8 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
         curr_window(r,c) = xw[r*(w2[1])+c];
       }
     } //fill in matrix by row
-    NumericMatrix curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
-    out(i, _) =  C_glcm_metrics(curr_GLCM);
+    arma::mat curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
+    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, metrics);
   }
   return(out);
 }

@@ -9,11 +9,11 @@ C_make_glcm <- function(x, n_levels, shift, na_rm) {
     .Call(`_GLCMTextures_C_make_glcm`, x, n_levels, shift, na_rm)
 }
 
-C_glcm_metrics <- function(GLCM) {
-    .Call(`_GLCMTextures_C_glcm_metrics`, GLCM)
+C_glcm_metrics <- function(Pij, i_mat, j_mat, metrics) {
+    .Call(`_GLCMTextures_C_glcm_metrics`, Pij, i_mat, j_mat, metrics)
 }
 
-C_glcm_textures_helper <- function(x, w2, n_levels, shift, na_rm, ni, nw) {
-    .Call(`_GLCMTextures_C_glcm_textures_helper`, x, w2, n_levels, shift, na_rm, ni, nw)
+C_glcm_textures_helper <- function(x, w2, n_levels, shift, metrics, na_rm, ni, nw) {
+    .Call(`_GLCMTextures_C_glcm_textures_helper`, x, w2, n_levels, shift, metrics, na_rm, ni, nw)
 }
 

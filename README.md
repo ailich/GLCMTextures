@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-January 11, 2022
+February 04, 2022
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 

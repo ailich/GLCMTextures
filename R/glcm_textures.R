@@ -3,7 +3,7 @@
 #' Calculates GLCM texture metrics of a RasterLayer over a sliding rectangular window
 #' @param r A single layer SpatRaster or RasterLayer. If already quantized set quantization to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).
 #' @param w A vector of length 2 specifying the dimensions of the rectangular window to use where the first number is the number of rows and the second number is the number of columns. Window size must be an odd number.
-#' @param n_levels Number of grey levels used in the quantization
+#' @param n_levels Number of grey levels used in the quantization (Typically set to 16 or 32).
 #' @param shift A vector of length 2, or a list of vectors each of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0). To average over "all directions" you can use shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), which is the default.
 #' @param metrics A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".
 #' @param quantization quantization method (either "equal range", "equal prob", or "none"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples. "none" means the layer has already been quantized.
@@ -64,6 +64,21 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
     stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation'")
   }
 
+  if(n_levels > 32){
+    warning("n_levels is > 32. This may be very computationally expensive.")
+    }
+
+  needed_metrics<- metrics
+  if(("glcm_variance" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
+    needed_metrics<- c(needed_metrics, "glcm_mean")
+  }
+  if(("glcm_correlation" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
+    needed_metrics<- c(needed_metrics, "glcm_mean")
+  }
+  if(("glcm_correlation" %in% needed_metrics) & (!("glcm_variance" %in% needed_metrics))){
+    needed_metrics<- c(needed_metrics, "glcm_variance")
+  } #Some metrics needed to calculate others
+
   out_list<- vector(mode = "list", length=length(shift))
   if(quantization!="none"){
     r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val, wopt=wopt)
@@ -75,8 +90,8 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
 
   out_list<- vector(mode = "list", length=length(shift))
   for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], na_rm=na.rm, fillvalue=NA, wopt=wopt)
-    out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt)
+    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], metrics = needed_metrics, na_rm=na.rm, fillvalue=NA, wopt=wopt)
+    out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt) #Subset from needed to requested metrics
     }
 
   n_layers<- length(metrics)

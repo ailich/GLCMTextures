@@ -4,10 +4,16 @@
 \alias{glcm_metrics}
 \title{Calculates the GLCM Texture Metrics from a GLCM}
 \usage{
-glcm_metrics(GLCM)
+glcm_metrics(
+  GLCM,
+  metrics = c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
+    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")
+)
 }
 \arguments{
 \item{GLCM}{A numeric matrix representing a Normalized GLCM}
+
+\item{metrics}{A vector of texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
 }
 \description{
 Calculates the GLCM Texture Metrics from a GLCM
@@ -15,7 +21,7 @@ Calculates the GLCM Texture Metrics from a GLCM
 \examples{
 test_matrix<- matrix(data=c(2,0,1,3,0,0,0,3,2), nrow = 3, ncol=3)
 horizontal_glcm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
-metrics<-glcm_metrics(horizontal_glcm)
+metrics<-glcm_metrics(horizontal_glcm, metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"))
 }
 \references{
 Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.

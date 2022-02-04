@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: Calculates GLCM Textures of raster layers
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: 
     person(given = "Alexander",
            family = "Ilich",
