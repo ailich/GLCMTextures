@@ -45,10 +45,7 @@ arma::mat C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool n
     return GLCM_Norm;
   } //If GLCM is NA return NA
 
-  double total=0;
-  for(int k=0; k < GLCM.size(); ++k){
-    total = total + GLCM[k];
-  }
+  double total= sum(GLCM);
   for(int m=0; m < GLCM.size(); ++m){
     GLCM_Norm[m] = (GLCM[m]*1.0)/total;
   } //Normalize
