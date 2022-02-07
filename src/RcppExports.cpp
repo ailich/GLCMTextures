@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // C_make_glcm_counts
-IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm);
+arma::mat C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm);
 RcppExport SEXP _GLCMTextures_C_make_glcm_counts(SEXP xSEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

@@ -5,18 +5,18 @@ using namespace arma;
 
 //Make GLCM (non-normalized)
 // [[Rcpp::export]]
-IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
-  IntegerMatrix GLCM(n_levels, n_levels);//initialize GLCM
+arma::mat C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
+  arma::mat GLCM(n_levels, n_levels);//initialize GLCM
   int nr= x.nrow();
   int nc= x.ncol();
 
   if((!na_rm) && (is_true(any(is_na(x))))){
-    GLCM.fill(NA_INTEGER);
+    GLCM.fill(NA_REAL);
     return GLCM;
   }  //Return window of NA's if any vals in window are NA
 
   if(na_rm && (is_true(all(is_na(x))))){
-    GLCM.fill(NA_INTEGER);
+    GLCM.fill(NA_REAL);
     return GLCM;
   }  //Return window of NA's if all values in window is NA
   IntegerVector focalval_neighborval(2);
@@ -29,30 +29,22 @@ IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector sh
         focalval_neighborval["neighborval"] = x(neighbor_idx[0], neighbor_idx[1]); //neighbor val
         if(is_false(any(is_na(focalval_neighborval)))){
           GLCM(focalval_neighborval["focal_val"],focalval_neighborval["neighborval"]) = GLCM(focalval_neighborval["focal_val"],focalval_neighborval["neighborval"])+1;
-          GLCM(focalval_neighborval["neighborval"],focalval_neighborval["focal_val"]) = GLCM(focalval_neighborval["neighborval"],focalval_neighborval["focal_val"])+1;
         }
       }}}
+  GLCM = GLCM + GLCM.t(); //add transpose
   return GLCM;
 }
 
 //Make GLCM (normalized)
 // [[Rcpp::export]]
 arma::mat C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
-  IntegerMatrix GLCM = C_make_glcm_counts(x, n_levels, shift, na_rm); //tabulate counts
-  arma::mat GLCM_Norm(n_levels, n_levels);
-  if(is_true(any(is_na(GLCM)))){
-    GLCM_Norm.fill(NA_REAL);
-    return GLCM_Norm;
+  arma::mat GLCM = C_make_glcm_counts(x, n_levels, shift, na_rm); //tabulate counts
+  //arma::mat GLCM_Norm(n_levels, n_levels);
+  if(!is_finite(GLCM)){
+    return GLCM;
   } //If GLCM is NA return NA
-
-  double total=0;
-  for(int k=0; k < GLCM.size(); ++k){
-    total = total + GLCM[k];
-  }
-  for(int m=0; m < GLCM.size(); ++m){
-    GLCM_Norm[m] = (GLCM[m]*1.0)/total;
-  } //Normalize
-  return GLCM_Norm;
+  GLCM = GLCM/accu(GLCM); //Normalize
+  return GLCM;
 }
 
 //Calculate Texture Metrics
