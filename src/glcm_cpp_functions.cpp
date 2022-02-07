@@ -43,7 +43,8 @@ arma::mat C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool n
   if(!is_finite(GLCM)){
     return GLCM;
   } //If GLCM is NA return NA
-  GLCM = GLCM/accu(GLCM); //Normalize
+  double total=accu(GLCM);
+  GLCM = GLCM/total; //Normalize
   return GLCM;
 }
 
