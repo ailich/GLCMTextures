@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-February 07, 2022
+February 08, 2022
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
@@ -44,16 +44,21 @@ If you don’t already have remotes installed, use the code
 `install.packages("remotes")`
 
 Then to install this package use the code
-`remotes::install_github("ailich/GLCMTextures")` (you may need to
-install Rtools using the instructions found
-[here](https://cran.r-project.org/bin/windows/Rtools/))
+`remotes::install_github("ailich/MultiscaleDEM")` (If you are using
+Windows, you may need to install Rtools using the instructions found
+[here](https://cran.r-project.org/bin/windows/Rtools/)).
 
 This package relies on the `terra` package for handling of spatial
-raster data. To install the development version of `terra`, use
+raster data. The CRAN version of `terra` may not have all necessary
+functions, so it is recommended to install the development version of
+`terra`. The easiest way to install the development version of `terra`
+on Windows or Mac is to use
 `install.packages('terra', repos='https://rspatial.r-universe.dev')`.
-This package is also backwards compatible with the `raster` package. To
-install the development version of `raster` use
-`install.packages('raster', repos='https://rspatial.r-universe.dev')`
+For Linux, use `remotes::install_github("rspatial/terra")`. This package
+is also backwards compatible with the `raster` package. To install the
+development version of `raster` use
+`install.packages('raster', repos='https://rspatial.r-universe.dev')` on
+Windows or Mac or `remotes::install_github("rspatial/raster")` on Linux.
 
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 
