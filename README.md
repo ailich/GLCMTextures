@@ -44,7 +44,7 @@ If you don’t already have remotes installed, use the code
 `install.packages("remotes")`
 
 Then to install this package use the code
-`remotes::install_github("ailich/MultiscaleDEM")` (If you are using
+`remotes::install_github("ailich/GLCMTextures")` (If you are using
 Windows, you may need to install Rtools using the instructions found
 [here](https://cran.r-project.org/bin/windows/Rtools/)).
 
