@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: Calculates GLCM Textures of raster layers
-Version: 0.3.3.1
+Version: 0.3.5
 Authors@R: 
     person(given = "Alexander",
            family = "Ilich",
@@ -8,15 +8,15 @@ Authors@R:
            email = "ailich@usf.edu",
            comment = c(ORCID = "0000-0003-1758-8499"))
 Description: Calculates GLCM textures of raster layers using a sliding rectangular window. Also includes functions to quantize a raster into grey levels as well as tabulate a glcm and calculate glcm texture metrics for a matrix.
-License:MIT + file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
+Depends: terra
 LinkingTo: 
     Rcpp,
     RcppArmadillo
 Imports: 
     Rcpp,
-    terra,
     raster

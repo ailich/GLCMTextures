@@ -15,7 +15,6 @@
 #' @param wopt list with named options for writing files as in writeRaster
 #' @return a SpatRaster or Raster* Object
 #' @examples
-#' library(terra)
 #' r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
 #' txt <- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)))
 #' plot(txt)

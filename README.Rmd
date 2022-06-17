@@ -35,7 +35,7 @@ If you don't already have remotes installed, use the code `install.packages("rem
 
 Then to install this package use the code `remotes::install_github("ailich/GLCMTextures")` (If you are using Windows, you may need to install Rtools using the instructions found [here](https://cran.r-project.org/bin/windows/Rtools/)).
 
-This package relies on the `terra` package for handling of spatial raster data. The CRAN version of `terra` may not have all necessary functions, so it is recommended to install the development version of `terra`. The easiest way to install the development version of `terra` on Windows or Mac is to use `install.packages('terra', repos='https://rspatial.r-universe.dev')`. For Linux, use `remotes::install_github("rspatial/terra")`. This package is also backwards compatible with the `raster` package. To install the development version of `raster` use `install.packages('raster', repos='https://rspatial.r-universe.dev')` on Windows or Mac or `remotes::install_github("rspatial/raster")` on Linux.
+This package relies on the `terra` package for handling of spatial raster data.
 
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 
@@ -78,7 +78,6 @@ $\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\si
 Load packages
 
 ```{r}
-library(terra) #Load terra package
 library(GLCMTextures) #Load GLCMTextures package
 ```
 
