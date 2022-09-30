@@ -19,3 +19,6 @@ LinkingTo:
 Imports: 
     Rcpp,
     raster
+Suggests:
+  knitr,
+  rmarkdown
