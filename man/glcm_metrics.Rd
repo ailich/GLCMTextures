@@ -11,7 +11,7 @@ glcm_metrics(
 )
 }
 \arguments{
-\item{GLCM}{A numeric matrix representing a Normalized GLCM}
+\item{GLCM}{A numeric matrix representing a Normalized GLCM.}
 
 \item{metrics}{A vector of texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
 }
