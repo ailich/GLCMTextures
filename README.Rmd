@@ -233,4 +233,4 @@ You can also use `na.rm` to specify how you want to handle `NA` values.
 
 Haralick, Robert M, Karthikeyan Shanmugam, and Its'Hak Dinstein. 1973. "Textural features for image classification." IEEE Transactions on systems, man, and cybernetics (6):610-621.
 
-Hyndman, Rob J, and Yanan Fan. 1996. "Sample quantiles in statistical packages." The American Statistician 50 (4):361-365.
+Hyndman, Rob J, and Yanan Fan. 1996. "Sample quantiles in statistical packages." The American Statistician 50 (4):361-365. 

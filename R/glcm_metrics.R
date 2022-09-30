@@ -1,6 +1,6 @@
 #' Calculates the GLCM Texture Metrics from a GLCM
 #'
-#' @param GLCM A numeric matrix representing a Normalized GLCM
+#' @param GLCM A numeric matrix representing a Normalized GLCM.
 #' @param metrics A vector of texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".
 #' @return GLCM based texture measures as a numeric vector.
 #' @examples
