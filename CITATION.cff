@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.2.3
+# CITATION file created with {cffr} R package, v0.3.0
 # See also: https://docs.ropensci.org/cffr/
 # -----------------------------------------------------------
  
@@ -46,7 +46,7 @@ references:
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
   year: '2022'
-  url: https://rspatial.org/terra/
+  url: https://CRAN.R-project.org/package=terra
 - type: software
   title: Rcpp
   abstract: 'Rcpp: Seamless R and C++ Integration'
@@ -100,4 +100,4 @@ references:
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
   year: '2022'
-  url: https://rspatial.org/raster
+  url: https://CRAN.R-project.org/package=raster
