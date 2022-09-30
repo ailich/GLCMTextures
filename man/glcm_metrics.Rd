@@ -15,16 +15,22 @@ glcm_metrics(
 
 \item{metrics}{A vector of texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
 }
+\value{
+GLCM based texture measures as a numeric vector.
+}
 \description{
 Calculates the GLCM Texture Metrics from a GLCM
 }
 \examples{
 test_matrix<- matrix(data=c(2,0,1,3,0,0,0,3,2), nrow = 3, ncol=3)
-horizontal_glcm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
-metrics<-glcm_metrics(horizontal_glcm, metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"))
+horizontal_glcm<- make_glcm(test_matrix, n_levels = 4,
+shift = c(1,0), normalize = TRUE)
+metrics<-glcm_metrics(horizontal_glcm, metrics= c("glcm_contrast",
+"glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
+"glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"))
 }
 \references{
-Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
+Hall-Beyer, M., 2017. GLCM Texture: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
 
 Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 }

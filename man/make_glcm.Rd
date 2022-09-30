@@ -17,6 +17,9 @@ make_glcm(x, n_levels, shift, na.rm = FALSE, normalize = TRUE)
 
 \item{normalize}{a logical specifying whether to normalize the counts to probabilities by dividing by the sum of the GLCM (TRUE, the default) or to express the GLCM as counts (FALSE)}
 }
+\value{
+A symmetric GLCM as a matrix
+}
 \description{
 Creates a symmetrical normalized GLCM for a given matrix and shift
 }
@@ -28,7 +31,7 @@ horizontal_glcm_counts<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), no
 horizontal_glcm_norm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
 }
 \references{
-Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
+Hall-Beyer, M., 2017. GLCM Texture: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
 
 Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 }

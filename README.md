@@ -1,14 +1,20 @@
 README
 ================
 Alexander Ilich
-June 17, 2022
+September 30, 2022
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/ailich/GLCMTextures/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ailich/GLCMTextures/actions/workflows/R-CMD-check.yaml)
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
+
+<!-- badges: end -->
 
 Please cite as
 
 Ilich, Alexander R. 2020. “GLCMTextures.”,
-<doi:http://doi.org/10.5281/zenodo.4310187>.
+<https://doi.org/10.5281/zenodo.4310186>.
 <https://github.com/ailich/GLCMTextures>.
 
 # GLCMTextures
@@ -65,7 +71,7 @@ Therefore, these two shifts will produce equivalent results. Although
 neighboring pixels are typically considered as those one away in a given
 direction, the shift value can be specified as any integer value.
 
-![GLCM Shift](images/GLCM_Shift.png)
+![GLCM Shift](man/figures/GLCM_Shift.png)
 
 ## Available Metrics
 
@@ -130,12 +136,11 @@ will work with a small matrix.
 ``` r
 test_matrix<- matrix(data=c(2,0,1,3,0,0,0,3,2), nrow = 3, ncol=3)
 print(test_matrix)
+#>      [,1] [,2] [,3]
+#> [1,]    2    3    0
+#> [2,]    0    0    3
+#> [3,]    1    0    2
 ```
-
-    ##      [,1] [,2] [,3]
-    ## [1,]    2    3    0
-    ## [2,]    0    0    3
-    ## [3,]    1    0    2
 
 This test matrix has 3 rows and 3 columns and contains values from 0-3
 (4 gray levels).
@@ -149,11 +154,11 @@ we tabulate counts.
 
 **Initialzed GLCM**
 
-    ##      [,1] [,2] [,3] [,4]
-    ## [1,]    0    0    0    0
-    ## [2,]    0    0    0    0
-    ## [3,]    0    0    0    0
-    ## [4,]    0    0    0    0
+    #>      [,1] [,2] [,3] [,4]
+    #> [1,]    0    0    0    0
+    #> [2,]    0    0    0    0
+    #> [3,]    0    0    0    0
+    #> [4,]    0    0    0    0
 
 The row and column number refers to the gray value of the focal and
 neighboring pixel (Since gray levels start at a value of 0, the
@@ -167,11 +172,11 @@ Since we would like to create a symmetric GLCM where each pixel is
 treated as both a focal and neighbor value, we also add to row 4/column
 3.
 
-    ##      [,1] [,2] [,3] [,4]
-    ## [1,]    0    0    0    0
-    ## [2,]    0    0    0    0
-    ## [3,]    0    0    0    1
-    ## [4,]    0    0    1    0
+    #>      [,1] [,2] [,3] [,4]
+    #> [1,]    0    0    0    0
+    #> [2,]    0    0    0    0
+    #> [3,]    0    0    0    1
+    #> [4,]    0    0    1    0
 
 We then continue this process throughout the whole image, moving right
 to the next focal pixel, and down to start the next row when a given row
@@ -181,13 +186,12 @@ symmetric about the diagonal.
 ``` r
 horizontal_glcm<- make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = FALSE)
 horizontal_glcm
+#>      [,1] [,2] [,3] [,4]
+#> [1,]    2    1    1    2
+#> [2,]    1    0    0    0
+#> [3,]    1    0    0    1
+#> [4,]    2    0    1    0
 ```
-
-    ##      [,1] [,2] [,3] [,4]
-    ## [1,]    2    1    1    2
-    ## [2,]    1    0    0    0
-    ## [3,]    1    0    0    1
-    ## [4,]    2    0    1    0
 
 Once we have finished tabulating all the counts we “normailize” the GLCM
 by dividing the each element by the sum of all the counts to get
@@ -198,26 +202,24 @@ therefore sum to 1.
 ``` r
 horizontal_glcm<- horizontal_glcm/sum(horizontal_glcm)
 horizontal_glcm
+#>            [,1]       [,2]       [,3]       [,4]
+#> [1,] 0.16666667 0.08333333 0.08333333 0.16666667
+#> [2,] 0.08333333 0.00000000 0.00000000 0.00000000
+#> [3,] 0.08333333 0.00000000 0.00000000 0.08333333
+#> [4,] 0.16666667 0.00000000 0.08333333 0.00000000
 ```
-
-    ##            [,1]       [,2]       [,3]       [,4]
-    ## [1,] 0.16666667 0.08333333 0.08333333 0.16666667
-    ## [2,] 0.08333333 0.00000000 0.00000000 0.00000000
-    ## [3,] 0.08333333 0.00000000 0.00000000 0.08333333
-    ## [4,] 0.16666667 0.00000000 0.08333333 0.00000000
 
 This could be accomplished in one line of code by setting the argument
 `normalize=TRUE` which is the default.
 
 ``` r
 make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
+#>            [,1]       [,2]       [,3]       [,4]
+#> [1,] 0.16666667 0.08333333 0.08333333 0.16666667
+#> [2,] 0.08333333 0.00000000 0.00000000 0.00000000
+#> [3,] 0.08333333 0.00000000 0.00000000 0.08333333
+#> [4,] 0.16666667 0.00000000 0.08333333 0.00000000
 ```
-
-    ##            [,1]       [,2]       [,3]       [,4]
-    ## [1,] 0.16666667 0.08333333 0.08333333 0.16666667
-    ## [2,] 0.08333333 0.00000000 0.00000000 0.00000000
-    ## [3,] 0.08333333 0.00000000 0.00000000 0.08333333
-    ## [4,] 0.16666667 0.00000000 0.08333333 0.00000000
 
 You may have noticed that pixels in the last column of the test matrix
 did not have a neighboring pixel to the right, so you would not tabulate
@@ -233,12 +235,11 @@ metrics
 
 ``` r
 glcm_metrics(horizontal_glcm)
+#>      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM 
+#>           4.000000           1.666667           0.400000           0.125000 
+#>       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation 
+#>           2.138333           1.166667           1.638889          -0.220339
 ```
-
-    ##      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM 
-    ##           4.000000           1.666667           0.400000           0.125000 
-    ##       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation 
-    ##           2.138333           1.166667           1.638889          -0.220339
 
 ### Raster Data
 
@@ -250,7 +251,7 @@ r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478
 plot(r) #plot values
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
 #### Raster Quantization
 
@@ -282,11 +283,10 @@ rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
-    ## [1] "Min Val = 0"
-
-    ## [1] "Max Val = 15"
+    #> [1] "Min Val = 0"
+    #> [1] "Max Val = 15"
 
 The second way to perform quantization is `method = "equal prob"` which
 performs equal probability quantization and will use quantiles (Hyndman
@@ -299,36 +299,34 @@ rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
 
-    ## [1] "Min Val = 0"
-
-    ## [1] "Max Val = 15"
+    #> [1] "Min Val = 0"
+    #> [1] "Max Val = 15"
 
 Since we used equal probability quantization, each value has
 approximately the same count
 
 ``` r
 freq(rq_equalprob)[,c("value", "count")]
+#>    value count
+#> 1      0   304
+#> 2      1   344
+#> 3      2   269
+#> 4      3   313
+#> 5      4   394
+#> 6      5   302
+#> 7      6   340
+#> 8      7   354
+#> 9      8   332
+#> 10     9   342
+#> 11    10   341
+#> 12    11   330
+#> 13    12   321
+#> 14    13   323
+#> 15    14   339
+#> 16    15   359
 ```
-
-    ##       value count
-    ##  [1,]     0   304
-    ##  [2,]     1   344
-    ##  [3,]     2   269
-    ##  [4,]     3   313
-    ##  [5,]     4   394
-    ##  [6,]     5   302
-    ##  [7,]     6   340
-    ##  [8,]     7   354
-    ##  [9,]     8   332
-    ## [10,]     9   342
-    ## [11,]    10   341
-    ## [12,]    11   330
-    ## [13,]    12   321
-    ## [14,]    13   323
-    ## [15,]    14   339
-    ## [16,]    15   359
 
 #### Calculate Texture Metrics Raster Surfaces
 
@@ -353,7 +351,7 @@ textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization 
 plot(textures1)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
 
 You may have noticed in the example above that `quantization = "none"`.
 This is because we supplied a raster that was already quantized.
@@ -364,9 +362,8 @@ the `glcm_textures` function.
 ``` r
 textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
 all.equal(values(textures1), values(textures2))
+#> [1] TRUE
 ```
-
-    ## [1] TRUE
 
 We can also calculate the value of textures across multiple shifts by
 supplying a list. In fact, the default is to return
@@ -378,7 +375,7 @@ textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal pr
 plot(textures3)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
 
 **Some Other Options**
 
@@ -390,7 +387,7 @@ You can also use `na.rm` to specify how you want to handle `NA` values.
 
 # References
 
-[Hall-Beyer, Mryka. 2017. “GLCM Textrure Tutorial
+[Hall-Beyer, Mryka. 2017. “GLCM Texture Tutorial
 v3.0.](https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf)
 
 Haralick, Robert M, Karthikeyan Shanmugam, and Its’Hak Dinstein. 1973.

@@ -52,12 +52,15 @@ a SpatRaster or Raster* Object
 Calculates GLCM texture metrics of a RasterLayer over a sliding rectangular window
 }
 \examples{
-r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
-txt <- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)))
+r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10,
+6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200")
+txt <- glcm_textures(r, w = c(3,5), n_levels = 16,
+quantization = "equal prob", shift = list(c(1, 0), c(1, 1),
+c(0, 1), c(-1, 1)))
 plot(txt)
 }
 \references{
-Hall-Beyer, M., 2017. GLCM Textrure: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
+Hall-Beyer, M., 2017. GLCM Texture: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
 
 Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 }

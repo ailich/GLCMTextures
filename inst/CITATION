@@ -1,0 +1,10 @@
+citHeader("To cite GLCMTextures in publications use:")
+
+citEntry(entry = "misc",
+  author = person("Alexander R.", "Ilich"),
+  title = "GLCMTextures",
+  year= "2020",
+  doi = "10.5281/zenodo.4310186",
+  url = "https://github.com/ailich/GLCMTextures",
+  textVersion = "Ilich, Alexander R. 2020. “GLCMTextures”, doi:10.5281/zenodo.4310186. https://github.com/ailich/GLCMTextures."
+)
