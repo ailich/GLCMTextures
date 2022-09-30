@@ -11,7 +11,7 @@ title: 'GLCMTextures: GLCM Textures of Raster Layers'
 version: 0.3.5
 doi: 10.5281/zenodo.4310186
 abstract: 'Calculates grey level co-occurence matrix (GLCM) based texture measures
-  (Hall-Beyer (2017) <[https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf]https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>;
+  (Hall-Beyer (2017) <https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>;
   Haralick et al. (1973) <doi: 10.1109/TSMC.1973.4309314>) of raster layers using
   a sliding rectangular window. It also includes functions to quantize a raster into
   grey levels as well as tabulate a glcm and calculate glcm texture metrics for a
