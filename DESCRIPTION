@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "ailich@usf.edu",
            comment = c(ORCID = "0000-0003-1758-8499"))
-Description: Calculates grey level co-occurence matrix (GLCM) based texture measures (Hall-Beyer (2017) <[https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf]https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>; Haralick et al. (1973) <doi: 10.1109/TSMC.1973.4309314>) of raster layers using a sliding rectangular window. It also includes functions to quantize a raster into grey levels as well as tabulate a glcm and calculate glcm texture metrics for a matrix.
+Description: Calculates grey level co-occurence matrix (GLCM) based texture measures (Hall-Beyer (2017) <https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>; Haralick et al. (1973) <doi: 10.1109/TSMC.1973.4309314>) of raster layers using a sliding rectangular window. It also includes functions to quantize a raster into grey levels as well as tabulate a glcm and calculate glcm texture metrics for a matrix.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
