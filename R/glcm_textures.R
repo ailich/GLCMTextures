@@ -55,7 +55,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
   if(all(w<3)){
     stop("Error: w must be greater or equal to 3 in at least one dimension")
   }
-  if(class(shift)!="list"){shift=list(shift)}
+  if(!is.list(shift)){shift=list(shift)}
   if(any(sapply(shift, length)!=2)){
     stop("Error: each shift must be a vector of length 2")
   }
