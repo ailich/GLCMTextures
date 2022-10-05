@@ -39,11 +39,10 @@ When comparing results across different software that calculate GLCM texture met
 
 ## Install and Load Package
 
-If you don't already have remotes installed, use the code `install.packages("remotes")`
-
-Then to install this package use the code `remotes::install_github("ailich/GLCMTextures")` (If you are using Windows, you may need to install Rtools using the instructions found [here](https://cran.r-project.org/bin/windows/Rtools/)).
+The package can be installed from CRAN using `install.packages("GLCMTextures")` or the development version can be installed from github using the code `remotes::install_github("ailich/GLCMTextures")`. If you are using Windows, you may need to install Rtools using the instructions found [here](https://cran.r-project.org/bin/windows/Rtools/)). To install from github you must already have the remotes package installed, which can be installed using `install.packages("remotes")`
 
 This package relies on the `terra` package for handling of spatial raster data.
+
 
 ## Specifying the Relationship Between Focal and Neighbor Pixels
 

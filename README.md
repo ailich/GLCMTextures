@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-October 04, 2022
+October 05, 2022
 
 <!-- badges: start -->
 
@@ -46,13 +46,14 @@ how and if the data should be quantized.
 
 ## Install and Load Package
 
-If you don’t already have remotes installed, use the code
-`install.packages("remotes")`
-
-Then to install this package use the code
-`remotes::install_github("ailich/GLCMTextures")` (If you are using
+The package can be installed from CRAN using
+`install.packages("GLCMTextures")` or the development version can be
+installed from github using the code
+`remotes::install_github("ailich/GLCMTextures")`. If you are using
 Windows, you may need to install Rtools using the instructions found
-[here](https://cran.r-project.org/bin/windows/Rtools/)).
+[here](https://cran.r-project.org/bin/windows/Rtools/)). To install from
+github you must already have the remotes package installed, which can be
+installed using `install.packages("remotes")`
 
 This package relies on the `terra` package for handling of spatial
 raster data.
