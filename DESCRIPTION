@@ -23,4 +23,4 @@ Imports:
 Suggests:
     knitr,
     rmarkdown
-URL: https://ailich.github.io/GLCMTextures/
+URL: https://ailich.github.io/GLCMTextures/, https://github.com/ailich/GLCMTextures
