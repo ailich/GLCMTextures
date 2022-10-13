@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/404.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/index.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/reference/glcm_metrics.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/reference/glcm_textures.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/reference/make_glcm.html</loc>
+  </url>
+  <url>
+    <loc>https://ailich.github.io/GLCMTextures/reference/quantize_raster.html</loc>
+  </url>
+</urlset>
