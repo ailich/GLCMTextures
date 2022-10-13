@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: GLCM Textures of Raster Layers
-Version: 0.3.6
+Version: 0.3.7
 Authors@R: 
     person(given = "Alexander",
            family = "Ilich",
@@ -12,6 +12,7 @@ License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+BugReports: https://github.com/ailich/GLCMTextures/issues
 Depends: terra
 LinkingTo: 
     Rcpp,
@@ -22,3 +23,4 @@ Imports:
 Suggests:
     knitr,
     rmarkdown
+URL: https://ailich.github.io/GLCMTextures/

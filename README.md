@@ -1,11 +1,16 @@
 README
 ================
 Alexander Ilich
-October 05, 2022
+October 13, 2022
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ailich/GLCMTextures/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ailich/GLCMTextures/actions/workflows/R-CMD-check.yaml)
+
+[![CRAN](https://www.r-pkg.org/badges/version/GLCMTextures)](https://cran.r-project.org/package=GLCMTextures)
+
+[![License:
+GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 [![DOI](https://zenodo.org/badge/299630902.svg)](https://zenodo.org/badge/latestdoi/299630902)
 
