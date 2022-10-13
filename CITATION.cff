@@ -8,7 +8,7 @@ message: 'To cite package "GLCMTextures" in publications use:'
 type: software
 license: GPL-3.0-or-later
 title: 'GLCMTextures: GLCM Textures of Raster Layers'
-version: 0.3.6
+version: 0.3.7
 doi: 10.5281/zenodo.4310186
 abstract: Calculates grey level co-occurrence matrix (GLCM) based texture measures
   (Hall-Beyer (2017) <https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>;
@@ -30,6 +30,9 @@ preferred-citation:
   year: '2020'
   doi: 10.5281/zenodo.4310186
   url: https://github.com/ailich/GLCMTextures
+repository: https://CRAN.R-project.org/package=GLCMTextures
+repository-code: https://github.com/ailich/GLCMTextures
+url: https://ailich.github.io/GLCMTextures/
 contact:
 - family-names: Ilich
   given-names: Alexander
