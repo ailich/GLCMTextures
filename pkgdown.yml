@@ -2,7 +2,7 @@ pandoc: 2.14.2
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-10-17T14:05Z
+last_built: 2022-10-17T14:36Z
 urls:
   reference: https://ailich.github.io/GLCMTextures/reference
   article: https://ailich.github.io/GLCMTextures/articles
