@@ -28,8 +28,8 @@ IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector sh
       if((neighbor_idx[0] < nr) && (neighbor_idx[1] < nc) && (neighbor_idx[0] >= 0) && (neighbor_idx[1] >= 0)){
         focalval_neighborval["neighborval"] = x(neighbor_idx[0], neighbor_idx[1]); //neighbor val
         if(is_false(any(is_na(focalval_neighborval)))){
-          GLCM(focalval_neighborval["focal_val"],focalval_neighborval["neighborval"]) = GLCM(focalval_neighborval["focal_val"],focalval_neighborval["neighborval"])+1;
-          GLCM(focalval_neighborval["neighborval"],focalval_neighborval["focal_val"]) = GLCM(focalval_neighborval["neighborval"],focalval_neighborval["focal_val"])+1;
+          GLCM(focalval_neighborval["focal_val"],focalval_neighborval["neighborval"])++;
+          GLCM(focalval_neighborval["neighborval"],focalval_neighborval["focal_val"])++;
         }
       }}}
   return GLCM;
