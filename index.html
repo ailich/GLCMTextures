@@ -60,7 +60,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="readme">README<a class="anchor" aria-label="anchor" href="#readme"></a>
 </h1></div>
-<p>Alexander Ilich October 14, 2022</p>
+<p>Alexander Ilich October 17, 2022</p>
 <!-- badges: start -->
 <p>Ilich, Alexander R. 2020. “GLCMTextures.”, <a href="https://doi.org/10.5281/zenodo.4310186" class="external-link uri">https://doi.org/10.5281/zenodo.4310186</a>. <a href="https://github.com/ailich/GLCMTextures" class="external-link uri">https://github.com/ailich/GLCMTextures</a>.</p>
 </div>
@@ -103,38 +103,22 @@
 <div class="section level3">
 <h3 id="contrast-group">Contrast Group<a class="anchor" aria-label="anchor" href="#contrast-group"></a>
 </h3>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Contrast%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%28i-j%29%5E2%7D" title="\text{GLCM Contrast} = \sum_{i,j=0}^{N-1} {P_{i,j}(i-j)^2}" alt=""><p class="caption"> = _{i,j=0}^{N-1} {P_{i,j}(i-j)^2}</p>
-</div>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Dissimilarity%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%7Ci-j%7C%7D" title="\text{GLCM Dissimilarity} = \sum_{i,j=0}^{N-1} {P_{i,j}|i-j|}" alt=""><p class="caption"> = _{i,j=0}^{N-1} {P_{i,j}|i-j|}</p>
-</div>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Homogeneity%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%5Cfrac%7BP_%7Bi%2Cj%7D%7D%7B1%2B%28i-j%29%5E2%7D" title="\text{GLCM Homogeneity} = \sum_{i,j=0}^{N-1} \frac{P_{i,j}}{1+(i-j)^2}" alt=""><p class="caption"> = _{i,j=0}^{N-1} </p>
-</div>
+<p><span class="math display">$$\text{GLCM Contrast} = \sum_{i,j=0}^{N-1} {P_{i,j}(i-j)^2}$$</span></p>
+<p><span class="math display">$$\text{GLCM Dissimilarity} = \sum_{i,j=0}^{N-1} {P_{i,j}|i-j|}$$</span></p>
+<p><span class="math display">$$\text{GLCM Homogeneity} = \sum_{i,j=0}^{N-1} \frac{P_{i,j}}{1+(i-j)^2}$$</span></p>
 </div>
 <div class="section level3">
 <h3 id="orderliness-group">Orderliness Group<a class="anchor" aria-label="anchor" href="#orderliness-group"></a>
 </h3>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Angular%20Second%20Moment%20%28ASM%29%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%5E2%7D" title="\text{GLCM Angular Second Moment (ASM)} = \sum_{i,j=0}^{N-1} {P_{i,j}^2}" alt=""><p class="caption"> = _{i,j=0}^{N-1} {P_{i,j}^2}</p>
-</div>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Entropy%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%5B-ln%28P_%7Bi%2Cj%7D%29%5D%7D%20%5Ctext%7B%20where%20%7D%200%2Aln%280%29%3D0" title="\text{GLCM Entropy} = \sum_{i,j=0}^{N-1} {P_{i,j}[-ln(P_{i,j})]} \text{ where } 0*ln(0)=0" alt=""><p class="caption"> = _{i,j=0}^{N-1} {P_{i,j}[-ln(P_{i,j})]}  0*ln(0)=0</p>
-</div>
+<p><span class="math display">$$\text{GLCM Angular Second Moment (ASM)} = \sum_{i,j=0}^{N-1} {P_{i,j}^2}$$</span></p>
+<p><span class="math display">$$\text{GLCM Entropy} = \sum_{i,j=0}^{N-1} {P_{i,j}[-ln(P_{i,j})]} \text{ where } 0*ln(0)=0$$</span></p>
 </div>
 <div class="section level3">
 <h3 id="descriptive-statistics-group">Descriptive Statistics Group<a class="anchor" aria-label="anchor" href="#descriptive-statistics-group"></a>
 </h3>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Mean%7D%20%28%5Cmu%29%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20i%28P_%7Bi%2Cj%7D%29" title="\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})" alt=""><p class="caption"> () = _{i,j=0}^{N-1} i(P_{i,j})</p>
-</div>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Variance%7D%20%28%5Csigma%5E2%29%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20P_%7Bi%2Cj%7D%28i-%5Cmu%29%5E2" title="\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2" alt=""><p class="caption"> (^2) = _{i,j=0}^{N-1} P_{i,j}(i-)^2</p>
-</div>
-<div class="figure">
-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctext%7BGLCM%20Correlation%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%20%5Cfrac%7B%28i-%5Cmu%29%28j-%5Cmu%29%7D%7B%5Csigma%5E2%7D%7D" title="\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}" alt=""><p class="caption"> = _{i,j=0}^{N-1} {P_{i,j} }</p>
-</div>
+<p><span class="math display">$$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$</span></p>
+<p><span class="math display">$$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$</span></p>
+<p><span class="math display">$$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$</span></p>
 </div>
 </div>
 <div class="section level2">
