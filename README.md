@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-October 14, 2022
+October 17, 2022
 
 <!-- badges: start -->
 
@@ -94,25 +94,25 @@ having gray levels i & j
 
 ### Contrast Group
 
-![\text{GLCM Contrast} = \sum\_{i,j=0}^{N-1} {P\_{i,j}(i-j)^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Contrast%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%28i-j%29%5E2%7D "\text{GLCM Contrast} = \sum_{i,j=0}^{N-1} {P_{i,j}(i-j)^2}")
+$$\text{GLCM Contrast} = \sum_{i,j=0}^{N-1} {P_{i,j}(i-j)^2}$$
 
-![\text{GLCM Dissimilarity} = \sum\_{i,j=0}^{N-1} {P\_{i,j}\|i-j\|}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Dissimilarity%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%7Ci-j%7C%7D "\text{GLCM Dissimilarity} = \sum_{i,j=0}^{N-1} {P_{i,j}|i-j|}")
+$$\text{GLCM Dissimilarity} = \sum_{i,j=0}^{N-1} {P_{i,j}|i-j|}$$
 
-![\text{GLCM Homogeneity} = \sum\_{i,j=0}^{N-1} \frac{P\_{i,j}}{1+(i-j)^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Homogeneity%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%5Cfrac%7BP_%7Bi%2Cj%7D%7D%7B1%2B%28i-j%29%5E2%7D "\text{GLCM Homogeneity} = \sum_{i,j=0}^{N-1} \frac{P_{i,j}}{1+(i-j)^2}")
+$$\text{GLCM Homogeneity} = \sum_{i,j=0}^{N-1} \frac{P_{i,j}}{1+(i-j)^2}$$
 
 ### Orderliness Group
 
-![\text{GLCM Angular Second Moment (ASM)} = \sum\_{i,j=0}^{N-1} {P\_{i,j}^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Angular%20Second%20Moment%20%28ASM%29%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%5E2%7D "\text{GLCM Angular Second Moment (ASM)} = \sum_{i,j=0}^{N-1} {P_{i,j}^2}")
+$$\text{GLCM Angular Second Moment (ASM)} = \sum_{i,j=0}^{N-1} {P_{i,j}^2}$$
 
-![\text{GLCM Entropy} = \sum\_{i,j=0}^{N-1} {P\_{i,j}\[-ln(P\_{i,j})\]} \text{ where } 0\*ln(0)=0](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Entropy%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%5B-ln%28P_%7Bi%2Cj%7D%29%5D%7D%20%5Ctext%7B%20where%20%7D%200%2Aln%280%29%3D0 "\text{GLCM Entropy} = \sum_{i,j=0}^{N-1} {P_{i,j}[-ln(P_{i,j})]} \text{ where } 0*ln(0)=0")
+$$\text{GLCM Entropy} = \sum_{i,j=0}^{N-1} {P_{i,j}[-ln(P_{i,j})]} \text{ where } 0*ln(0)=0$$
 
 ### Descriptive Statistics Group
 
-![\text{GLCM Mean} (\mu) = \sum\_{i,j=0}^{N-1} i(P\_{i,j})](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Mean%7D%20%28%5Cmu%29%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20i%28P_%7Bi%2Cj%7D%29 "\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})")
+$$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$
 
-![\text{GLCM Variance} (\sigma^2) = \sum\_{i,j=0}^{N-1} P\_{i,j}(i-\mu)^2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Variance%7D%20%28%5Csigma%5E2%29%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20P_%7Bi%2Cj%7D%28i-%5Cmu%29%5E2 "\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2")
+$$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$
 
-![\text{GLCM Correlation} = \sum\_{i,j=0}^{N-1} {P\_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Ctext%7BGLCM%20Correlation%7D%20%3D%20%5Csum_%7Bi%2Cj%3D0%7D%5E%7BN-1%7D%20%7BP_%7Bi%2Cj%7D%20%5Cfrac%7B%28i-%5Cmu%29%28j-%5Cmu%29%7D%7B%5Csigma%5E2%7D%7D "\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}")
+$$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$
 
 ## Tutorial
 
