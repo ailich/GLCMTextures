@@ -11,7 +11,7 @@ Description: Calculates grey level co-occurrence matrix (GLCM) based texture mea
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 BugReports: https://github.com/ailich/GLCMTextures/issues
 Depends: terra
 LinkingTo: 
