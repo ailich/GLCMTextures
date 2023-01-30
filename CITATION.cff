@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.3.0
+# CITATION file created with {cffr} R package, v0.4.0
 # See also: https://docs.ropensci.org/cffr/
 # -----------------------------------------------------------
  
@@ -43,17 +43,20 @@ references:
   title: terra
   abstract: 'terra: Spatial Data Analysis'
   notes: Depends
+  url: https://rspatial.org/terra/
+  repository: https://CRAN.R-project.org/package=terra
   authors:
   - family-names: Hijmans
     given-names: Robert J.
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
-  year: '2022'
-  url: https://CRAN.R-project.org/package=terra
+  year: '2023'
 - type: software
   title: Rcpp
   abstract: 'Rcpp: Seamless R and C++ Integration'
   notes: LinkingTo
+  url: https://www.rcpp.org
+  repository: https://CRAN.R-project.org/package=Rcpp
   authors:
   - family-names: Eddelbuettel
     given-names: Dirk
@@ -73,13 +76,14 @@ references:
     given-names: Douglas
   - family-names: Chambers
     given-names: John
-  year: '2022'
-  url: https://CRAN.R-project.org/package=Rcpp
+  year: '2023'
 - type: software
   title: RcppArmadillo
   abstract: 'RcppArmadillo: ''Rcpp'' Integration for the ''Armadillo'' Templated Linear
     Algebra Library'
   notes: LinkingTo
+  url: https://dirk.eddelbuettel.com/code/rcpp.armadillo.html
+  repository: https://CRAN.R-project.org/package=RcppArmadillo
   authors:
   - family-names: Eddelbuettel
     given-names: Dirk
@@ -91,34 +95,37 @@ references:
     given-names: Binxiang
   - family-names: Sanderson
     given-names: Conrad
-  year: '2022'
-  url: https://CRAN.R-project.org/package=RcppArmadillo
+  year: '2023'
 - type: software
   title: raster
   abstract: 'raster: Geographic Data Analysis and Modeling'
   notes: Imports
+  url: https://rspatial.org/raster
+  repository: https://CRAN.R-project.org/package=raster
   authors:
   - family-names: Hijmans
     given-names: Robert J.
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
-  year: '2022'
-  url: https://CRAN.R-project.org/package=raster
+  year: '2023'
 - type: software
   title: knitr
   abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
   notes: Suggests
+  url: https://yihui.org/knitr/
+  repository: https://CRAN.R-project.org/package=knitr
   authors:
   - family-names: Xie
     given-names: Yihui
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
-  year: '2022'
-  url: https://CRAN.R-project.org/package=knitr
+  year: '2023'
 - type: software
   title: rmarkdown
   abstract: 'rmarkdown: Dynamic Documents for R'
   notes: Suggests
+  url: https://pkgs.rstudio.com/rmarkdown/
+  repository: https://CRAN.R-project.org/package=rmarkdown
   authors:
   - family-names: Allaire
     given-names: JJ
@@ -152,5 +159,4 @@ references:
     given-names: Richard
     email: rich@rstudio.com
     orcid: https://orcid.org/0000-0003-3925-190X
-  year: '2022'
-  url: https://CRAN.R-project.org/package=rmarkdown
+  year: '2023'
