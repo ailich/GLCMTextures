@@ -1,6 +1,6 @@
 citHeader("To cite GLCMTextures in publications use:")
 
-citEntry(entry = "misc",
+bibentry(bibtype = "misc",
   author = person("Alexander R.", "Ilich"),
   title = "GLCMTextures",
   year= "2020",
