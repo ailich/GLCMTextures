@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: GLCM Textures of Raster Layers
-Version: 0.3.7
+Version: 0.3.8
 Authors@R: 
     person(given = "Alexander",
            family = "Ilich",
@@ -25,3 +25,4 @@ Suggests:
     knitr,
     rmarkdown
 URL: https://ailich.github.io/GLCMTextures/, https://github.com/ailich/GLCMTextures
+VignetteBuilder: knitr
