@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,12 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/README.html">README</a>
+  </div>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -60,7 +66,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="readme">README<a class="anchor" aria-label="anchor" href="#readme"></a>
 </h1></div>
-<p>Alexander Ilich January 30, 2023</p>
+<p>Alexander Ilich April 24, 2023</p>
 <!-- badges: start -->
 
 <p>Ilich, Alexander R. 2020. “GLCMTextures.”, <a href="https://doi.org/10.5281/zenodo.4310186" class="external-link uri">https://doi.org/10.5281/zenodo.4310186</a>. <a href="https://github.com/ailich/GLCMTextures" class="external-link uri">https://github.com/ailich/GLCMTextures</a>.</p>
@@ -137,128 +143,130 @@
 <p>Before conducting texture calculations on entire raster data sets, we will work with a small matrix.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test_matrix</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">3</span>, ncol<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">test_matrix</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
-<span><span class="co">#&gt; [1,]    2    3    0</span></span>
-<span><span class="co">#&gt; [2,]    0    0    3</span></span>
-<span><span class="co">#&gt; [3,]    1    0    2</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">test_matrix</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1] [,2] [,3]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,]    2    3    0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,]    0    0    3</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [3,]    1    0    2</span></span></code></pre></div>
 <p>This test matrix has 3 rows and 3 columns and contains values from 0-3 (4 gray levels).</p>
 <p>We can use the<code>make_glcm</code> function to create a normalized symmetric GLCM.</p>
 <p>A GLCM is a tabulation of counts and has the dimensions of the number of gray levels. The GLCM is initialized with all zeros and then we add as we tabulate counts.</p>
 <p><strong>Initialzed GLCM</strong></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    0    0    0    0</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0    0    0    0</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    0    0</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,]    0    0    0    0</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1] [,2] [,3] [,4]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,]    0    0    0    0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,]    0    0    0    0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [3,]    0    0    0    0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [4,]    0    0    0    0</span></span></code></pre></div>
 <p>The row and column number refers to the gray value of the focal and neighboring pixel (Since gray levels start at a value of 0, the row/column number is 1 larger than the corresponding gray level).We will use a shift of <code>c(1,0)</code> meaning that the neighboring pixels is the pixel directly to the right of the focal pixel. We start in the top left corner and we can see that we have a 2 as the focal value and a 3 as the neighboring value directly to the right, so we add 1 to the corresponding position in the GLCM which is row 3 (2+1)/column 4(3+1). Since we would like to create a symmetric GLCM where each pixel is treated as both a focal and neighbor value, we also add to row 4/column 3.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]    0    0    0    0</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]    0    0    0    0</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]    0    0    0    1</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,]    0    0    1    0</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1] [,2] [,3] [,4]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,]    0    0    0    0</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,]    0    0    0    0</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [3,]    0    0    0    1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [4,]    0    0    1    0</span></span></code></pre></div>
 <p>We then continue this process throughout the whole image, moving right to the next focal pixel, and down to start the next row when a given row is completed. The resulting GLCM is a square matrix of counts that is symmetric about the diagonal.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">horizontal_glcm</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/make_glcm.html">make_glcm</a></span><span class="op">(</span><span class="va">test_matrix</span>, n_levels <span class="op">=</span> <span class="fl">4</span>, shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">horizontal_glcm</span></span>
-<span><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
-<span><span class="co">#&gt; [1,]    2    1    1    2</span></span>
-<span><span class="co">#&gt; [2,]    1    0    0    0</span></span>
-<span><span class="co">#&gt; [3,]    1    0    0    1</span></span>
-<span><span class="co">#&gt; [4,]    2    0    1    0</span></span></code></pre></div>
-<p>Once we have finished tabulating all the counts we “normailize” the GLCM by dividing the each element by the sum of all the counts to get relative frequencies or probabilities that a given pixel of value i occurs next to a pixel of value j. The values in a normalized GLCM will therefore sum to 1.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">horizontal_glcm</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/make_glcm.html">make_glcm</a></span><span class="op">(</span><span class="va">test_matrix</span>, n_levels <span class="op">=</span> <span class="fl">4</span>, shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">horizontal_glcm</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1] [,2] [,3] [,4]</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,]    2    1    1    2</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,]    1    0    0    0</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [3,]    1    0    0    1</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [4,]    2    0    1    0</span></span></code></pre></div>
+<p>Once we have finished tabulating all the counts we “normailize” the GLCM by dividing the each element by the sum of all the counts to get relative frequencies or probabilities that a given pixel of value i occurs next to a pixel of value j. The values in a normalized GLCM will therefore sum to 1.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">horizontal_glcm</span><span class="op">&lt;-</span> <span class="va">horizontal_glcm</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">horizontal_glcm</span><span class="op">)</span></span>
-<span><span class="va">horizontal_glcm</span></span>
-<span><span class="co">#&gt;            [,1]       [,2]       [,3]       [,4]</span></span>
-<span><span class="co">#&gt; [1,] 0.16666667 0.08333333 0.08333333 0.16666667</span></span>
-<span><span class="co">#&gt; [2,] 0.08333333 0.00000000 0.00000000 0.00000000</span></span>
-<span><span class="co">#&gt; [3,] 0.08333333 0.00000000 0.00000000 0.08333333</span></span>
-<span><span class="co">#&gt; [4,] 0.16666667 0.00000000 0.08333333 0.00000000</span></span></code></pre></div>
+<span><span class="va">horizontal_glcm</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">##            [,1]       [,2]       [,3]       [,4]</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,] 0.16666667 0.08333333 0.08333333 0.16666667</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,] 0.08333333 0.00000000 0.00000000 0.00000000</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [3,] 0.08333333 0.00000000 0.00000000 0.08333333</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [4,] 0.16666667 0.00000000 0.08333333 0.00000000</span></span></code></pre></div>
 <p>This could be accomplished in one line of code by setting the argument <code>normalize=TRUE</code> which is the default.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/make_glcm.html">make_glcm</a></span><span class="op">(</span><span class="va">test_matrix</span>, n_levels <span class="op">=</span> <span class="fl">4</span>, shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            [,1]       [,2]       [,3]       [,4]</span></span>
-<span><span class="co">#&gt; [1,] 0.16666667 0.08333333 0.08333333 0.16666667</span></span>
-<span><span class="co">#&gt; [2,] 0.08333333 0.00000000 0.00000000 0.00000000</span></span>
-<span><span class="co">#&gt; [3,] 0.08333333 0.00000000 0.00000000 0.08333333</span></span>
-<span><span class="co">#&gt; [4,] 0.16666667 0.00000000 0.08333333 0.00000000</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/make_glcm.html">make_glcm</a></span><span class="op">(</span><span class="va">test_matrix</span>, n_levels <span class="op">=</span> <span class="fl">4</span>, shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">##            [,1]       [,2]       [,3]       [,4]</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,] 0.16666667 0.08333333 0.08333333 0.16666667</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,] 0.08333333 0.00000000 0.00000000 0.00000000</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [3,] 0.08333333 0.00000000 0.00000000 0.08333333</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [4,] 0.16666667 0.00000000 0.08333333 0.00000000</span></span></code></pre></div>
 <p>You may have noticed that pixels in the last column of the test matrix did not have a neighboring pixel to the right, so you would not tabulate any counts in those cases; however, this is precisely why we tabulate a symmetrical GLCM as these pixels do have neighbors to the left. Also, note that although the original matrix was 3x3, the GLCM is 4x4 because the size of the GLCM corresponds to the number of gray levels, not the size of the input matrix.</p>
 <p>Once the GLCM has been constructed, we can use this to calculate texture metrics using the<code>glcm_metrics</code> function to calculate the GLCM texture metrics</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/glcm_metrics.html">glcm_metrics</a></span><span class="op">(</span><span class="va">horizontal_glcm</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM </span></span>
-<span><span class="co">#&gt;           4.000000           1.666667           0.400000           0.125000 </span></span>
-<span><span class="co">#&gt;       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation </span></span>
-<span><span class="co">#&gt;           2.138333           1.166667           1.638889          -0.220339</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/glcm_metrics.html">glcm_metrics</a></span><span class="op">(</span><span class="va">horizontal_glcm</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">##      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="do">##           4.000000           1.666667           0.400000           0.125000 </span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="do">##       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation </span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="do">##           2.138333           1.166667           1.638889          -0.220339</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="raster-data">Raster Data<a class="anchor" aria-label="anchor" href="#raster-data"></a>
 </h3>
 <p>Now we can move from calculating a single value of a given texture metric to calculating raster surfaces of texture metrics.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">r</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">volcano</span>, extent<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fl">2667400</span>, <span class="fl">2667400</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span><span class="op">*</span><span class="fl">10</span>, <span class="fl">6478700</span>, <span class="fl">6478700</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">volcano</span><span class="op">)</span><span class="op">*</span><span class="fl">10</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"EPSG:27200"</span><span class="op">)</span> <span class="co">#Use preloaded volcano dataset as a raster</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="co">#plot values</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-10-1.png" width="100%"></p>
+<p><img src="reference/figures/README-elevation-1.png" width="100%"></p>
 <div class="section level4">
 <h4 id="raster-quantization">Raster Quantization<a class="anchor" aria-label="anchor" href="#raster-quantization"></a>
 </h4>
 <p>Our test image had integer values that range from 0 to 3. Raster data often represent continuous data that cover a potentially large range and may not be confined to integer values greater than or equal to zero. The first step is therefore to quantize the raster image to a discrete number of gray levels. This can be done using the<code>quantize_raster</code> function. Typically data are quantized to 16 (4 bit; 2<sup>4</sup>) or 32 (5 bit; 2<sup>5</sup>) gray levels. With increasing number of gray levels, the computation cost increases.</p>
 <p>There are two methods of quantization available in the <code>quantize_raster</code> function. The first way, <code>method = "equal range"</code>, will create bins that cover a range of equal size (e.g. if the original data ranged from 0-20 and was quantized to 4 levels, [0-5) would be reassigned to 0, [5-10) would be reassigned to 1, [10-15) would be reassigned to 2, and [15-20] would be reassigned to 4). This is the simplest and most common quantization method. By default the raster is scaled using the min and max of the data set, but a max and min value can be supplied to the <code>max_val</code> and <code>min_val</code> parameters. This may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rq_equalrange</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/quantize_raster.html">quantize_raster</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">r</span>, n_levels <span class="op">=</span> <span class="fl">16</span>, method <span class="op">=</span> <span class="st">"equal range"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rq_equalrange</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html" class="external-link">grey.colors</a></span><span class="op">(</span><span class="fl">16</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-11-1.png" width="100%"></p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "Min Val = 0"</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "Max Val = 15"</span></span></code></pre></div>
+<p><img src="reference/figures/README-rq_er-1.png" width="100%"></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "Min Val = 0"</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "Max Val = 15"</span></span></code></pre></div>
 <p>The second way to perform quantization is <code>method = "equal prob"</code> which performs equal probability quantization and will use quantiles (Hyndman and Fan 1996) to create bins that contain an approximately equal number of samples. This is the quantization method suggested in the original paper (Haralick and Shanmugam 1973).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rq_equalprob</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/quantize_raster.html">quantize_raster</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">r</span>, n_levels <span class="op">=</span> <span class="fl">16</span>, method <span class="op">=</span> <span class="st">"equal prob"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rq_equalprob</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/gray.colors.html" class="external-link">grey.colors</a></span><span class="op">(</span><span class="fl">16</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-13-1.png" width="100%"></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "Min Val = 0"</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "Max Val = 15"</span></span></code></pre></div>
+<p><img src="reference/figures/README-rq_ep-1.png" width="100%"></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "Min Val = 0"</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] "Max Val = 15"</span></span></code></pre></div>
 <p>Since we used equal probability quantization, each value has approximately the same count</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/freq.html" class="external-link">freq</a></span><span class="op">(</span><span class="va">rq_equalprob</span><span class="op">)</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"value"</span>, <span class="st">"count"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    value count</span></span>
-<span><span class="co">#&gt; 1      0   304</span></span>
-<span><span class="co">#&gt; 2      1   344</span></span>
-<span><span class="co">#&gt; 3      2   269</span></span>
-<span><span class="co">#&gt; 4      3   313</span></span>
-<span><span class="co">#&gt; 5      4   394</span></span>
-<span><span class="co">#&gt; 6      5   302</span></span>
-<span><span class="co">#&gt; 7      6   340</span></span>
-<span><span class="co">#&gt; 8      7   354</span></span>
-<span><span class="co">#&gt; 9      8   332</span></span>
-<span><span class="co">#&gt; 10     9   342</span></span>
-<span><span class="co">#&gt; 11    10   341</span></span>
-<span><span class="co">#&gt; 12    11   330</span></span>
-<span><span class="co">#&gt; 13    12   321</span></span>
-<span><span class="co">#&gt; 14    13   323</span></span>
-<span><span class="co">#&gt; 15    14   339</span></span>
-<span><span class="co">#&gt; 16    15   359</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/freq.html" class="external-link">freq</a></span><span class="op">(</span><span class="va">rq_equalprob</span><span class="op">)</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"value"</span>, <span class="st">"count"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">##    value count</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="do">## 1      0   304</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 2      1   344</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="do">## 3      2   269</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="do">## 4      3   313</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 5      4   394</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="do">## 6      5   302</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="do">## 7      6   340</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="do">## 8      7   354</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="do">## 9      8   332</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="do">## 10     9   342</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="do">## 11    10   341</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="do">## 12    11   330</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="do">## 13    12   321</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="do">## 14    13   323</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="do">## 15    14   339</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="do">## 16    15   359</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="calculate-texture-metrics-raster-surfaces">Calculate Texture Metrics Raster Surfaces<a class="anchor" aria-label="anchor" href="#calculate-texture-metrics-raster-surfaces"></a>
 </h4>
 <p>For raster data sets, rather than calculating a single value of the texture for the entire image, we create a surface that represents the texture in a given neighborhood around each pixel. To do this we calculate texture metrics using a rectangular <a href="https://desktop.arcgis.com/en/arcmap/10.3/tools/spatial-analyst-toolbox/how-focal-statistics-works.htm" class="external-link">sliding window of a given size</a>. We start at the top left pixel and treat that as the central pixel, and specify a window of given dimensions. We then extract a window of that size around the central pixel (note: window size must be odd). This extracted window is then run through the process shown before for test_matrix, and the resulting value of a texture metric is assigned as the value for the position corresponding with the central pixel. To do this, we can use the<code>glcm_textures</code> function.</p>
 <p>For example, below we calculate textures using a window size of 3 rows by 5 columns</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textures1</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/glcm_textures.html">glcm_textures</a></span><span class="op">(</span><span class="va">rq_equalprob</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span><span class="op">)</span>, n_levels <span class="op">=</span> <span class="fl">16</span>, quantization <span class="op">=</span> <span class="st">"none"</span>, shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">textures1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-16-1.png" width="100%"></p>
+<p><img src="reference/figures/README-textures1-1.png" width="100%"></p>
 <p>You may have noticed in the example above that <code>quantization = "none"</code>. This is because we supplied a raster that was already quantized.</p>
 <p>We could instead call the original raster and have it quantized within the <code>glcm_textures</code> function.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textures2</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/glcm_textures.html">glcm_textures</a></span><span class="op">(</span><span class="va">r</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span><span class="op">)</span>, n_levels <span class="op">=</span> <span class="fl">16</span>, quantization <span class="op">=</span> <span class="st">"equal prob"</span>, shift<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> </span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">textures1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">textures2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">textures1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">textures2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code></pre></div>
 <p>We can also calculate the value of textures across multiple shifts by supplying a list. In fact, the default is to return directionally/rotationally invariant textures that are averaged across all 4 directions <code>shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textures3</span><span class="op">&lt;-</span> <span class="fu"><a href="reference/glcm_textures.html">glcm_textures</a></span><span class="op">(</span><span class="va">r</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span><span class="op">)</span>, n_levels <span class="op">=</span> <span class="fl">16</span>, quantization <span class="op">=</span> <span class="st">"equal prob"</span>, shift <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">textures3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-18-1.png" width="100%"></p>
+<p><img src="reference/figures/README-textures3-1.png" width="100%"></p>
 <p><strong>Some Other Options</strong></p>
 <p>By default all calculated texture metrics are returned; however you can have only a subset returned by specifying which ones you want using the <code>metrics</code> argument.</p>
 <p>You can also use <code>na.rm</code> to specify how you want to handle <code>NA</code> values.</p>
