@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,7 @@
 <span>  min_val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_scale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  wopt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -107,6 +108,10 @@
 
 <dt>na.rm</dt>
 <dd><p>a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)</p></dd>
+
+
+<dt>include_scale</dt>
+<dd><p>Logical indicating whether to append window size to the layer names (default = FALSE).</p></dd>
 
 
 <dt>filename</dt>
