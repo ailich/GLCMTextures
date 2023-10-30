@@ -44,6 +44,8 @@ glcm_textures(
 \item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
 
 \item{wopt}{list with named options for writing files as in writeRaster}
+
+\item{include_scale}{Logical indicating whether to append window size to the layer names (default = FALSE).}
 }
 \value{
 a SpatRaster or Raster* Object

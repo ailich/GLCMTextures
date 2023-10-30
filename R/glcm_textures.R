@@ -10,6 +10,7 @@
 #' @param min_val minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)
 #' @param max_val maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)
 #' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
+#' @param include_scale Logical indicating whether to append window size to the layer names (default = FALSE).
 #' @param filename character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer
 #' @param overwrite logical. If TRUE, filename is overwritten (default is FALSE).
 #' @param wopt list with named options for writing files as in writeRaster
@@ -103,6 +104,8 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
       output<- out_list[[1]]
     }
   names(output)<- metrics #preserve names in case they were lost
+
+  if(include_scale){names(output)<- paste0(names(output), "_", w[1],"x", w[2])} #Add scale to layer names
 
   if(og_class=="RasterLayer"){
     if(terra::nlyr(output) > 1){
