@@ -15,6 +15,7 @@ glcm_textures(
   min_val = NULL,
   max_val = NULL,
   na.rm = FALSE,
+  include_scale = FALSE,
   filename = NULL,
   overwrite = FALSE,
   wopt = list()
@@ -39,13 +40,13 @@ glcm_textures(
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
 
+\item{include_scale}{Logical indicating whether to append window size to the layer names (default = FALSE).}
+
 \item{filename}{character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer}
 
 \item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
 
 \item{wopt}{list with named options for writing files as in writeRaster}
-
-\item{include_scale}{Logical indicating whether to append window size to the layer names (default = FALSE).}
 }
 \value{
 a SpatRaster or Raster* Object
