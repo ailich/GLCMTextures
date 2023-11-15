@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.10</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,7 @@
 <span>  <span class="va">quantization</span>,</span>
 <span>  min_val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_val <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxcell <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include_scale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -104,6 +105,10 @@
 
 <dt>max_val</dt>
 <dd><p>maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)</p></dd>
+
+
+<dt>maxcell</dt>
+<dd><p>positive integer used to take a regular sample for quantization if "equal prob" is used (default is Inf)</p></dd>
 
 
 <dt>na.rm</dt>
