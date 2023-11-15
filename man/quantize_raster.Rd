@@ -10,6 +10,7 @@ quantize_raster(
   method,
   min_val = NULL,
   max_val = NULL,
+  maxcell = Inf,
   filename = NULL,
   overwrite = FALSE,
   wopt = list()
@@ -25,6 +26,8 @@ quantize_raster(
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
+
+\item{maxcell}{positive integer used to take a regular sample of x if "equal prob" is used (default is Inf)}
 
 \item{filename}{character Output filename.}
 

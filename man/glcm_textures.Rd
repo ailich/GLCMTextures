@@ -14,6 +14,7 @@ glcm_textures(
   quantization,
   min_val = NULL,
   max_val = NULL,
+  maxcell = Inf,
   na.rm = FALSE,
   include_scale = FALSE,
   filename = NULL,
@@ -37,6 +38,8 @@ glcm_textures(
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
+
+\item{maxcell}{positive integer used to take a regular sample for quantization if "equal prob" is used (default is Inf)}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
 
