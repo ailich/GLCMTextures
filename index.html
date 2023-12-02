@@ -8,8 +8,8 @@
 <meta name="description" content="Calculates grey level co-occurrence matrix (GLCM) based texture measures (Hall-Beyer (2017) &lt;https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf&gt;; Haralick et al. (1973) &lt;doi:10.1109/TSMC.1973.4309314&gt;) of raster layers using a sliding rectangular window. It also includes functions to quantize a raster into grey levels as well as tabulate a glcm and calculate glcm texture metrics for a matrix.">
 <title>GLCM Textures of Raster Layers • GLCMTextures</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="GLCM Textures of Raster Layers">
 <meta property="og:description" content="Calculates grey level co-occurrence matrix (GLCM) based texture measures (Hall-Beyer (2017) &lt;https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf&gt;; Haralick et al. (1973) &lt;doi:10.1109/TSMC.1973.4309314&gt;) of raster layers using a sliding rectangular window. It also includes functions to quantize a raster into grey levels as well as tabulate a glcm and calculate glcm texture metrics for a matrix.">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="readme">README<a class="anchor" aria-label="anchor" href="#readme"></a>
 </h1></div>
-<p>Alexander Ilich April 24, 2023</p>
+<p>Alexander Ilich December 01, 2023</p>
 <!-- badges: start -->
 
 <p>Ilich, Alexander R. 2020. “GLCMTextures.”, <a href="https://doi.org/10.5281/zenodo.4310186" class="external-link uri">https://doi.org/10.5281/zenodo.4310186</a>. <a href="https://github.com/ailich/GLCMTextures" class="external-link uri">https://github.com/ailich/GLCMTextures</a>.</p>
@@ -95,14 +95,14 @@
 <h2 id="specifying-the-relationship-between-focal-and-neighbor-pixels">Specifying the Relationship Between Focal and Neighbor Pixels<a class="anchor" aria-label="anchor" href="#specifying-the-relationship-between-focal-and-neighbor-pixels"></a>
 </h2>
 <p>The convention for specifying the direction of the neighboring pixel (the shift) is shown in the image below. The blue pixel in the center is treated as the focal pixel in the example. Shifts are specified as <code>c(x_shift, y_shift)</code>. So, a shift of <code>c(1,0)</code> refers to a the neighboring pixel being 1 to the right and 0 upwards of the focal pixel. Since a symmetric GLCM is created, this means each pixel is counted as both a focal and a neighboring pixel, so it also tabulates the shift in the opposite direction <code>c(-1,0)</code>, which is the dotted blue line. Therefore, these two shifts will produce equivalent results. Although neighboring pixels are typically considered as those one away in a given direction, the shift value can be specified as any integer value.</p>
-<div class="figure">
-<img src="reference/figures/GLCM_Shift.png" alt=""><p class="caption">GLCM Shift</p>
-</div>
+<figure><img src="reference/figures/GLCM_Shift.png" alt="GLCM Shift"><figcaption aria-hidden="true">
+GLCM Shift
+</figcaption></figure>
 </div>
 <div class="section level2">
 <h2 id="available-metrics">Available Metrics<a class="anchor" aria-label="anchor" href="#available-metrics"></a>
 </h2>
-<p>There are 8 metrics than can be calculated by this package. These metrics can be divided into 3 groups: the contrast group, the orderliness group, and the descriptive statistics group (Hall-Beyer 2017). The formulas provided below are from Hall-Beyer (2017).</p>
+<p>There are 9 metrics than can be calculated by this package. The first 8 metrics can be divided into 3 groups: the contrast group, the orderliness group, and the descriptive statistics group (Hall-Beyer 2017). The formulas provided below are from Hall-Beyer (2017).</p>
 <p>N = Number of rows or columns in the GLCM (Equal to the number of gray levels)</p>
 <p>i = row indices of the GLCM matrix (equal to gray level of reference cell)</p>
 <p>j = column indices of the GLCM matrix (equal to gray level of neighboring cell)</p>
@@ -126,6 +126,13 @@
 <p><span class="math display">$$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$</span></p>
 <p><span class="math display">$$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$</span></p>
 <p><span class="math display">$$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$</span></p>
+</div>
+<div class="section level3">
+<h3 id="additional-metrics">Additional Metrics<a class="anchor" aria-label="anchor" href="#additional-metrics"></a>
+</h3>
+<p>Based on user needs, I will implement additional GLCM texture metrics The metric below is from Haralick and Shanmugam (1973). The formula has been adapted to use gray levels starting at 0 rather than 1.</p>
+<p><span class="math display">$$\text{GLCM Sum Average} = \sum_{k=0}^{2(N-1)} {k*k_{prob}}$$</span></p>
+<p>where k=i+j, and <span class="math inline"><em>k</em><sub><em>p</em></sub><em>r</em><em>o</em><em>b</em></span> is they Gray Level Sum Vector. The Gray Level Sum Vector is a vector representing the probability distribution of the sum of two gray levels (i+j) based on the calculated GLCM. The position (starting at 0) in the vector represents the value of k, and the value in that position corresponds to the probability that i and j sum to that value.</p>
 </div>
 </div>
 <div class="section level2">
@@ -196,7 +203,9 @@
 <div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">##      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM </span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="do">##           4.000000           1.666667           0.400000           0.125000 </span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="do">##       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation </span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="do">##           2.138333           1.166667           1.638889          -0.220339</span></span></code></pre></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="do">##           2.138333           1.166667           1.638889          -0.220339 </span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="do">##            glcm_SA </span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="do">##           2.333333</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="raster-data">Raster Data<a class="anchor" aria-label="anchor" href="#raster-data"></a>
