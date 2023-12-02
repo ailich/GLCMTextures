@@ -15,10 +15,10 @@
 #'
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
-glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")){
-  all_metrics<- c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")
+glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA")){
+  all_metrics<- c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA")
   if (any(!(metrics %in% all_metrics))){
-    stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation'")
+    stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation', 'glcm_SA'")
   }
   needed_metrics<- metrics
   if(("glcm_variance" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
@@ -33,7 +33,9 @@ glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "
 
   i_mat<- matrix(data= 0:(nrow(GLCM)-1), nrow= nrow(GLCM), ncol=ncol(GLCM), byrow=FALSE)
   j_mat<- matrix(data= 0:(ncol(GLCM)-1), nrow= nrow(GLCM), ncol=ncol(GLCM), byrow=TRUE)
-  out<- C_glcm_metrics(Pij = GLCM, i_mat = i_mat, j_mat = j_mat, metrics = needed_metrics)
+  n_levels=nrow(GLCM)
+  k_vals<- seq((2*n_levels)-1)-1
+  out<- C_glcm_metrics(Pij = GLCM, i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, k_vals=k_vals, metrics = needed_metrics)
   out<- out[names(out) %in% metrics] #Subset to requsted metrics
   return(out)
   }

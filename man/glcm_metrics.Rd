@@ -7,7 +7,7 @@
 glcm_metrics(
   GLCM,
   metrics = c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
-    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")
+    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA")
 )
 }
 \arguments{

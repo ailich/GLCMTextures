@@ -52,9 +52,26 @@ arma::mat C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool n
   return GLCM_Norm;
 }
 
+//Gray Level Sum Vector
+// [[Rcpp::export]]
+NumericVector C_GLSV(arma::mat Pij, int n_levels) {
+  NumericVector k_prob(2*n_levels-1); //Initialize at zero
+  for (int i=0; i < n_levels; ++i) {
+    for (int j=0; j <= i; ++j) {
+      int k = i+j;
+      if(i==j){
+        k_prob[k]= k_prob[k] + Pij(i,j); //add probability to corresponding spot in k_prob
+      } else{
+        k_prob[k]= k_prob[k] + 2*Pij(i,j); //Since only looping through lower triangle have to count off diaogonal elements twice
+      }
+    }
+  }
+  return k_prob;
+}
+
 //Calculate Texture Metrics
 // [[Rcpp::export]]
-NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, CharacterVector metrics){
+NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics){
 
   NumericVector textures = rep(NA_REAL,metrics.length());
   textures.names() = metrics;
@@ -86,6 +103,10 @@ NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, Ch
     glcm_entropy_mat.replace(datum::nan,0.0);
     textures["glcm_entropy"]= accu(glcm_entropy_mat); //Entropy= sum(P_ij * (-ln(P_ij))) ; 0*ln(0)=0
     }
+  if(in(CharacterVector::create("glcm_SA"), metrics)){
+    NumericVector k_prob = C_GLSV(Pij, n_levels); //Gray Level Sum Vector
+    textures["glcm_SA"]= sum(k_prob*k_vals); //GLCM_SumAverage= sum(k*k_prob)
+    }
   return(textures);
 }
 
@@ -99,6 +120,10 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
 
   arma::mat i_mat(n_levels,n_levels);
   arma::mat j_mat(n_levels,n_levels);
+  NumericVector k_vals((2*n_levels)-1);
+  for (int k = 1; k < k_vals.length(); ++k) {
+    k_vals[k] = k;
+  } // All possible values of k, where k=i+j
   for(int i=0; i<n_levels; ++i){
     for(int j=0; j<n_levels; ++j){
       i_mat(i,j)=i;
@@ -116,7 +141,7 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
       }
     } //fill in matrix by row
     arma::mat curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
-    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, metrics);
+    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, n_levels, k_vals, metrics);
   }
   return(out);
 }
