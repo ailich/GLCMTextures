@@ -125,12 +125,12 @@ been adapted to use gray levels starting at 0 rather than 1.
 
 $$\text{GLCM Sum Average} = \sum_{k=0}^{2(N-1)} {k*k_{prob}}$$
 
-where k=i+j, and $k_prob$ is they Gray Level Sum Vector. The Gray Level
-Sum Vector is a vector representing the probability distribution of the
-sum of two gray levels (i+j) based on the calculated GLCM. The position
-(starting at 0) in the vector represents the value of k, and the value
-in that position corresponds to the probability that i and j sum to that
-value.
+where k=i+j, and $k_{prob}$ is they Gray Level Sum Vector. The Gray
+Level Sum Vector is a vector representing the probability distribution
+of the sum of two gray levels (i+j) based on the calculated GLCM. The
+position (starting at 0) in the vector represents the value of k, and
+the value in that position corresponds to the probability that i and j
+sum to that value.
 
 ## Tutorial
 
