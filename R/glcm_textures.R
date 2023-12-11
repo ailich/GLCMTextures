@@ -5,10 +5,11 @@
 #' @param w A vector of length 2 specifying the dimensions of the rectangular window to use where the first number is the number of rows and the second number is the number of columns. Window size must be an odd number.
 #' @param n_levels Number of grey levels used in the quantization (Typically set to 16 or 32).
 #' @param shift A vector of length 2, or a list of vectors each of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0). To average over "all directions" you can use shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), which is the default.
-#' @param metrics A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".
+#' @param metrics A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM" (angular second moment), "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA" (Sum Average).
 #' @param quantization quantization method (either "equal range", "equal prob", or "none"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples. "none" means the layer has already been quantized.
 #' @param min_val minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)
 #' @param max_val maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)
+#' @param maxcell positive integer used to take a regular sample for quantization if "equal prob" is used (default is Inf)
 #' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
 #' @param include_scale Logical indicating whether to append window size to the layer names (default = FALSE).
 #' @param filename character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer
@@ -33,12 +34,12 @@
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
 #'
-glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quantization, min_val=NULL, max_val=NULL, na.rm=FALSE, include_scale=FALSE, filename=NULL, overwrite=FALSE, wopt=list()){
+glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA"), quantization, min_val=NULL, max_val=NULL, maxcell=Inf, na.rm=FALSE, include_scale=FALSE, filename=NULL, overwrite=FALSE, wopt=list()){
   og_class<- class(r)[1]
   if(og_class=="RasterLayer"){
     r<- terra::rast(r) #Convert to SpatRaster
   }
-  all_metrics<- c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")
+  all_metrics<- c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA")
   # Input checks
   if(!(og_class %in% c("RasterLayer", "SpatRaster"))){
     stop("Error: Input must be a 'SpatRaster' or 'RasterLayer'")
@@ -64,7 +65,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
     stop("Error: shifts must be a numeric or integer")
   }
   if (any(!(metrics %in% all_metrics))){
-    stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation'")
+    stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation', 'glcm_SA'")
   }
 
   if(n_levels > 32){
@@ -84,7 +85,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
 
   out_list<- vector(mode = "list", length=length(shift))
   if(quantization!="none"){
-    r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val, wopt=wopt)
+    r<- quantize_raster(r = r, n_levels = n_levels, method = quantization, min_val = min_val, max_val = max_val, maxcell=maxcell, wopt=wopt)
     } else if(!terra::is.int(r)){
     r<- terra::as.int(r, wopt=wopt) #Make it an integer raster
     }

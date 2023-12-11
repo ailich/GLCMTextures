@@ -10,10 +10,11 @@ glcm_textures(
   n_levels,
   shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)),
   metrics = c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
-    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"),
+    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA"),
   quantization,
   min_val = NULL,
   max_val = NULL,
+  maxcell = Inf,
   na.rm = FALSE,
   include_scale = FALSE,
   filename = NULL,
@@ -30,13 +31,15 @@ glcm_textures(
 
 \item{shift}{A vector of length 2, or a list of vectors each of length 2 specifying the relationship between neighboring pixel to the reference pixel. The first number represents the shift in the x direction and the second number represents the shift in the y direction, where up and right are positive. For example c(1,0) is the pixel directly to the right. The GLCM is made symmetrical by counting each pair twice, once "forwards" and once "backwards" by interchanging reference and neighbor pixels. Therefore a shift directly to the right c(1,0) is equivalent to a shift directly to the left c(-1,0). To average over "all directions" you can use shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), which is the default.}
 
-\item{metrics}{A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
+\item{metrics}{A vector of glcm texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM" (angular second moment), "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA" (Sum Average).}
 
 \item{quantization}{quantization method (either "equal range", "equal prob", or "none"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples. "none" means the layer has already been quantized.}
 
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
+
+\item{maxcell}{positive integer used to take a regular sample for quantization if "equal prob" is used (default is Inf)}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
 

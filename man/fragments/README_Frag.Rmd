@@ -34,7 +34,7 @@ The convention for specifying the direction of the neighboring pixel (the shift)
 ![GLCM Shift](`r md_fig_dir`GLCM_Shift.png)
 
 ## Available Metrics
-There are 8 metrics than can be calculated by this package. These metrics can be divided into 3 groups: the contrast group, the orderliness group, and the descriptive statistics group (Hall-Beyer 2017). The formulas provided below are from Hall-Beyer (2017).
+There are 9 metrics than can be calculated by this package. The first 8 metrics can be divided into 3 groups: the contrast group, the orderliness group, and the descriptive statistics group (Hall-Beyer 2017). The formulas provided below are from Hall-Beyer (2017).
 
 N = Number of rows or columns in the GLCM (Equal to the number of gray levels)
 
@@ -62,6 +62,14 @@ $$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$
 $$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$
 
 $$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$
+
+### Additional Metrics
+
+Based on user needs, I will implement additional GLCM texture metrics The metric below is from Haralick and Shanmugam (1973). The formula has been adapted to use gray levels starting at 0 rather than 1.
+
+$$\text{GLCM Sum Average} = \sum_{k=0}^{2(N-1)} {k*k_{prob}}$$
+
+where k=i+j, and $k_{prob}$ is they Gray Level Sum Vector. The Gray Level Sum Vector is a vector representing the probability distribution of the sum of two gray levels (i+j) based on the calculated GLCM. The position (starting at 0) in the vector represents the value of k, and the value in that position corresponds to the probability that i and j sum to that value. 
 
 ## Tutorial
 

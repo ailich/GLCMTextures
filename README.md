@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-April 24, 2023
+December 01, 2023
 
 <!-- badges: start -->
 
@@ -71,11 +71,14 @@ Therefore, these two shifts will produce equivalent results. Although
 neighboring pixels are typically considered as those one away in a given
 direction, the shift value can be specified as any integer value.
 
-![GLCM Shift](man/figures/GLCM_Shift.png)
+<figure>
+<img src="man/figures/GLCM_Shift.png" alt="GLCM Shift" />
+<figcaption aria-hidden="true">GLCM Shift</figcaption>
+</figure>
 
 ## Available Metrics
 
-There are 8 metrics than can be calculated by this package. These
+There are 9 metrics than can be calculated by this package. The first 8
 metrics can be divided into 3 groups: the contrast group, the
 orderliness group, and the descriptive statistics group (Hall-Beyer
 2017). The formulas provided below are from Hall-Beyer (2017).
@@ -113,6 +116,21 @@ $$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$
 $$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$
 
 $$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$
+
+### Additional Metrics
+
+Based on user needs, I will implement additional GLCM texture metrics
+The metric below is from Haralick and Shanmugam (1973). The formula has
+been adapted to use gray levels starting at 0 rather than 1.
+
+$$\text{GLCM Sum Average} = \sum_{k=0}^{2(N-1)} {k*k_{prob}}$$
+
+where k=i+j, and $k_{prob}$ is they Gray Level Sum Vector. The Gray
+Level Sum Vector is a vector representing the probability distribution
+of the sum of two gray levels (i+j) based on the calculated GLCM. The
+position (starting at 0) in the vector represents the value of k, and
+the value in that position corresponds to the probability that i and j
+sum to that value.
 
 ## Tutorial
 
@@ -244,7 +262,9 @@ glcm_metrics(horizontal_glcm)
     ##      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM 
     ##           4.000000           1.666667           0.400000           0.125000 
     ##       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation 
-    ##           2.138333           1.166667           1.638889          -0.220339
+    ##           2.138333           1.166667           1.638889          -0.220339 
+    ##            glcm_SA 
+    ##           2.333333
 
 ### Raster Data
 
