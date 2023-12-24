@@ -20,7 +20,10 @@ LinkingTo:
     RcppArmadillo
 Imports: 
     Rcpp,
-    raster
+    raster,
+    future,
+    future.apply,
+    dplyr
 Suggests:
     knitr,
     rmarkdown
