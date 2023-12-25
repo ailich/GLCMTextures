@@ -35,6 +35,7 @@ avg_subset_parallel<- function(x,shift,metrics, na.rm, wopt){
 #'
 #' Break raster into smaller chunks
 #' @param r SpatRaster
+#' @param n_chunks Desired number of chunks to break raster into
 #' @param buffer the number of rows above/below the cell value that the calculation needs access to. For cell by cell calculations this should be zero and for standard focal operations this would be (w-1)/2 where w is the number of rows in the focal window.
 #' @return a list containing a dataframe specifying how rasters are chunked and a list of the chunked SpatRasters
 #' @import terra

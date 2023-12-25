@@ -9,6 +9,8 @@ chunk_raster(r, n_chunks, buffer)
 \arguments{
 \item{r}{SpatRaster}
 
+\item{n_chunks}{Desired number of chunks to break raster into}
+
 \item{buffer}{the number of rows above/below the cell value that the calculation needs access to. For cell by cell calculations this should be zero and for standard focal operations this would be (w-1)/2 where w is the number of rows in the focal window.}
 }
 \value{
