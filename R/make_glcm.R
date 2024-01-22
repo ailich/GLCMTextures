@@ -19,7 +19,7 @@
 #' @export
 
 make_glcm<- function(x, n_levels, shift, na.rm = FALSE, normalize=TRUE){
-	if(any(isTRUE(x > (n_levels-1))) | any(isTRUE(x < 0))){
+	if(isTRUE(any(x > (n_levels-1))) | isTRUE(any(x < 0))){
 	  stop("Error: x must have values between 0 and n_levels-1")
 	  }
   if(normalize){
