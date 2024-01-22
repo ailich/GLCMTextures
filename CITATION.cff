@@ -8,7 +8,7 @@ message: 'To cite package "GLCMTextures" in publications use:'
 type: software
 license: GPL-3.0-or-later
 title: 'GLCMTextures: GLCM Textures of Raster Layers'
-version: '0.4'
+version: 0.4.1
 doi: 10.5281/zenodo.4310186
 abstract: Calculates grey level co-occurrence matrix (GLCM) based texture measures
   (Hall-Beyer (2017) <https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>;
@@ -50,7 +50,7 @@ references:
     given-names: Robert J.
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
-  year: '2023'
+  year: '2024'
 - type: software
   title: Rcpp
   abstract: 'Rcpp: Seamless R and C++ Integration'
@@ -76,7 +76,7 @@ references:
     given-names: Douglas
   - family-names: Chambers
     given-names: John
-  year: '2023'
+  year: '2024'
 - type: software
   title: RcppArmadillo
   abstract: 'RcppArmadillo: ''Rcpp'' Integration for the ''Armadillo'' Templated Linear
@@ -95,7 +95,7 @@ references:
     given-names: Binxiang
   - family-names: Sanderson
     given-names: Conrad
-  year: '2023'
+  year: '2024'
 - type: software
   title: raster
   abstract: 'raster: Geographic Data Analysis and Modeling'
@@ -107,7 +107,7 @@ references:
     given-names: Robert J.
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
-  year: '2023'
+  year: '2024'
 - type: software
   title: knitr
   abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
@@ -119,7 +119,7 @@ references:
     given-names: Yihui
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
-  year: '2023'
+  year: '2024'
 - type: software
   title: rmarkdown
   abstract: 'rmarkdown: Dynamic Documents for R'
@@ -162,4 +162,4 @@ references:
     given-names: Richard
     email: rich@posit.co
     orcid: https://orcid.org/0000-0003-3925-190X
-  year: '2023'
+  year: '2024'
