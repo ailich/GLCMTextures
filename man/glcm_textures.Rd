@@ -17,6 +17,7 @@ glcm_textures(
   maxcell = Inf,
   na.rm = FALSE,
   include_scale = FALSE,
+  ncores = 1,
   filename = NULL,
   overwrite = FALSE,
   wopt = list()
@@ -44,6 +45,8 @@ glcm_textures(
 \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
 
 \item{include_scale}{Logical indicating whether to append window size to the layer names (default = FALSE).}
+
+\item{ncores}{Number of cores to use for parallel processing (default is 1 aka serial processing).}
 
 \item{filename}{character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer}
 

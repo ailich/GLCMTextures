@@ -12,6 +12,7 @@
 #' @param maxcell positive integer used to take a regular sample for quantization if "equal prob" is used (default is Inf)
 #' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
 #' @param include_scale Logical indicating whether to append window size to the layer names (default = FALSE).
+#' @param ncores Number of cores to use for parallel processing (default is 1 aka serial processing).
 #' @param filename character Output filename. Can be a single filename, or as many filenames as there are layers to write a file for each layer
 #' @param overwrite logical. If TRUE, filename is overwritten (default is FALSE).
 #' @param wopt list with named options for writing files as in writeRaster
@@ -27,14 +28,19 @@
 #' @importFrom raster raster
 #' @importFrom raster stack
 #' @importFrom raster writeRaster
-
+#' @importFrom future plan
+#' @importFrom future.apply future_lapply
 #' @references
 #' Hall-Beyer, M., 2017. GLCM Texture: A Tutorial v. 3.0. University of Calgary, Alberta, Canada.
 #'
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
 #'
-glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA"), quantization, min_val=NULL, max_val=NULL, maxcell=Inf, na.rm=FALSE, include_scale=FALSE, filename=NULL, overwrite=FALSE, wopt=list()){
+glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA"), quantization, min_val=NULL, max_val=NULL, maxcell=Inf, na.rm=FALSE, include_scale=FALSE, ncores=1, filename=NULL, overwrite=FALSE, wopt=list()){
+
+  oplan<- future::plan()
+  on.exit(future::plan(oplan)) #restore original parallelization plan on exit of function
+
   og_class<- class(r)[1]
   if(og_class=="RasterLayer"){
     r<- terra::rast(r) #Convert to SpatRaster
@@ -93,14 +99,39 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
     stop("Error: raster must have values between 0 and n_levels-1")}
 
   out_list<- vector(mode = "list", length=length(shift))
-  for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], metrics = needed_metrics, na_rm=na.rm, fillvalue=NA, wopt=wopt)
-    out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt) #Subset from needed to requested metrics
+
+  if(ncores==1){
+    for (k in 1:length(shift)) {
+      out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], metrics = needed_metrics, na_rm=na.rm, fillvalue=NA, wopt=wopt)
+      out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt) #Subset from needed to requested metrics
+    }} else{
+      buffer<- (w[1]-1)/2
+      r_list<- chunk_raster(r, n_chunks=ncores, buffer=buffer) #Break raster into smaller chunks
+      breaks_df<- r_list[[1]]
+      r_list<- r_list[[2]]
+      nchunks<- length(r_list)
+      for (k in 1:length(shift)) {
+      future::plan(strategy = "multisession", workers=nchunks) #Set up parallel
+      out_list[[k]]<- future.apply::future_lapply(r_list, FUN = focalCpp_parallel,
+                               w=w,
+                               fun = C_glcm_textures_helper,
+                               w2=w,
+                               n_levels= n_levels,
+                               shift = shift[[k]],
+                               metrics = needed_metrics,
+                               na_rm=na.rm,
+                               fillvalue=NA,
+                               wopt=wopt)
+      plan(oplan) #Go back to original plan
+      out_list[[k]]<- lapply(out_list[[k]], terra::unwrap)
+      out_list[[k]]<- combine_raster_chunks(out_list[[k]], breaks_df=breaks_df)
+      out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt) #Subset from needed to requested metrics
+      }
     }
 
   n_layers<- length(metrics)
   if(length(shift) > 1){
-    output<- terra::app(terra::sds(out_list), fun=mean, na.rm=na.rm, wopt=wopt)
+    output<- terra::app(terra::sds(out_list), fun=mean, na.rm=na.rm, wopt=wopt) #Could try making this parallel with future package.
     } else{
       output<- out_list[[1]]
     }
