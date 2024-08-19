@@ -1,21 +1,24 @@
-# -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.5.0
+# --------------------------------------------
+# CITATION file created with {cffr} R package
 # See also: https://docs.ropensci.org/cffr/
-# -----------------------------------------------------------
+# --------------------------------------------
  
 cff-version: 1.2.0
 message: 'To cite package "GLCMTextures" in publications use:'
 type: software
 license: GPL-3.0-or-later
 title: 'GLCMTextures: GLCM Textures of Raster Layers'
-version: 0.4.1
+version: 0.4.2
 doi: 10.5281/zenodo.4310186
+identifiers:
+- type: doi
+  value: 10.32614/CRAN.package.GLCMTextures
 abstract: Calculates grey level co-occurrence matrix (GLCM) based texture measures
   (Hall-Beyer (2017) <https://prism.ucalgary.ca/bitstream/handle/1880/51900/texture%20tutorial%20v%203_0%20180206.pdf>;
-  Haralick et al. (1973) <doi:10.1109/TSMC.1973.4309314>) of raster layers using a
-  sliding rectangular window. It also includes functions to quantize a raster into
-  grey levels as well as tabulate a glcm and calculate glcm texture metrics for a
-  matrix.
+  Haralick et al. (1973) <https://doi.org/10.1109/TSMC.1973.4309314>) of raster layers
+  using a sliding rectangular window. It also includes functions to quantize a raster
+  into grey levels as well as tabulate a glcm and calculate glcm texture metrics for
+  a matrix.
 authors:
 - family-names: Ilich
   given-names: Alexander
@@ -51,6 +54,7 @@ references:
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
   year: '2024'
+  doi: 10.32614/CRAN.package.terra
 - type: software
   title: Rcpp
   abstract: 'Rcpp: Seamless R and C++ Integration'
@@ -77,6 +81,7 @@ references:
   - family-names: Chambers
     given-names: John
   year: '2024'
+  doi: 10.32614/CRAN.package.Rcpp
 - type: software
   title: RcppArmadillo
   abstract: 'RcppArmadillo: ''Rcpp'' Integration for the ''Armadillo'' Templated Linear
@@ -96,6 +101,7 @@ references:
   - family-names: Sanderson
     given-names: Conrad
   year: '2024'
+  doi: 10.32614/CRAN.package.RcppArmadillo
 - type: software
   title: raster
   abstract: 'raster: Geographic Data Analysis and Modeling'
@@ -108,6 +114,7 @@ references:
     email: r.hijmans@gmail.com
     orcid: https://orcid.org/0000-0001-5872-2872
   year: '2024'
+  doi: 10.32614/CRAN.package.raster
 - type: software
   title: knitr
   abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
@@ -120,6 +127,7 @@ references:
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
   year: '2024'
+  doi: 10.32614/CRAN.package.knitr
 - type: software
   title: rmarkdown
   abstract: 'rmarkdown: Dynamic Documents for R'
@@ -163,3 +171,5 @@ references:
     email: rich@posit.co
     orcid: https://orcid.org/0000-0003-3925-190X
   year: '2024'
+  doi: 10.32614/CRAN.package.rmarkdown
+
