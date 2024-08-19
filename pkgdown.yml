@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   README: README.html
-last_built: 2024-08-19T19:36Z
+last_built: 2024-08-19T20:04Z
 urls:
   reference: https://ailich.github.io/GLCMTextures/reference
   article: https://ailich.github.io/GLCMTextures/articles
