@@ -1,6 +1,6 @@
 #' Quantizes raster to a set number of discrete levels
 #'
-#' Quantizes raster to a set number of discrete levels starting at 0. There are 2 methods of quantization are available: "uniform" and "equal prob"
+#' Quantizes raster to a set number of discrete levels starting at 0. There are 2 methods of quantization are available: "equal range" and "equal prob"
 #' @param r A single layer SpatRaster or RasterLayer.
 #' @param n_levels number of levels to quantize to
 #' @param method quantization method (either "equal range" or "equal prob"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples.

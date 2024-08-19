@@ -39,7 +39,7 @@ quantize_raster(
 a single layer SpatRaster or RasterLayer with integer values ranging from 0 to n_levels-1
 }
 \description{
-Quantizes raster to a set number of discrete levels starting at 0. There are 2 methods of quantization are available: "uniform" and "equal prob"
+Quantizes raster to a set number of discrete levels starting at 0. There are 2 methods of quantization are available: "equal range" and "equal prob"
 }
 \details{
 Equal probability quantization is the method recommended in Haralick et al., 1973. However, equal range may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur. When equal probability quantization is used, quantiles are generated using type 8 as recommended by Hyndman and Fan (1996). This method provides estimates that are approximately median-unbiased regardless of the distribution of x.

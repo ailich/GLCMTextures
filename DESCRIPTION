@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: GLCM Textures of Raster Layers
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: 
     person(given = "Alexander",
            family = "Ilich",
