@@ -7,31 +7,34 @@
 quantize_raster(
   r,
   n_levels,
-  method,
+  quant_method = NULL,
   min_val = NULL,
   max_val = NULL,
   maxcell = Inf,
   filename = NULL,
   overwrite = FALSE,
+  method = NULL,
   wopt = list()
 )
 }
 \arguments{
-\item{r}{A single layer SpatRaster or RasterLayer.}
+\item{r}{A single layer SpatRaster, RasterLayer, or matrix.}
 
 \item{n_levels}{number of levels to quantize to}
 
-\item{method}{quantization method (either "equal range" or "equal prob"). "equal range" quantization will create bins that cover a range of equal size. "equal prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples.}
+\item{quant_method}{quantization method (either "range" or "prob"). "range" quantization will create bins that cover a range of equal size. "prob" performs equal probability quantization and will use quantiles to create bins with approximately equal number of samples.}
 
 \item{min_val}{minimum value for equal range quantization (if not supplied, the minimum value of the raster is used)}
 
 \item{max_val}{maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)}
 
-\item{maxcell}{positive integer used to take a regular sample of x if "equal prob" is used (default is Inf)}
+\item{maxcell}{positive integer used to take a regular sample of x if "prob" is used as 'quant_method' (default is Inf)}
 
 \item{filename}{character Output filename.}
 
 \item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
+
+\item{method}{deprecated. Use 'quant_method'}
 
 \item{wopt}{list with named options for writing files as in writeRaster}
 }
@@ -48,8 +51,8 @@ Equal probability quantization is the method recommended in Haralick et al., 197
 r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10,
 6478700, 6478700 + nrow(volcano)*10),
 crs = "EPSG:27200")
-rq1 <- quantize_raster(r = r, n_levels = 16, method = "equal prob")
-rq2 <- quantize_raster(r = r, n_levels = 16, method = "equal range")
+rq1 <- quantize_raster(r = r, n_levels = 16, quant_method = "prob")
+rq2 <- quantize_raster(r = r, n_levels = 16, quant_method = "range")
 }
 \references{
 Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314

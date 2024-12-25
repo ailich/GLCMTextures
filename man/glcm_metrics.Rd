@@ -7,13 +7,16 @@
 glcm_metrics(
   GLCM,
   metrics = c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
-    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation", "glcm_SA")
+    "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"),
+  average = FALSE
 )
 }
 \arguments{
-\item{GLCM}{A numeric matrix representing a Normalized GLCM.}
+\item{GLCM}{A numeric matrix or list of matrices representing a Normalized GLCM.}
 
 \item{metrics}{A vector of texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
+
+\item{average}{Logical indicating whether to average metrics across the supplied GLCMs}
 }
 \value{
 GLCM based texture measures as a numeric vector.
