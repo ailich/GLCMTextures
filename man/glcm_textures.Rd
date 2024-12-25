@@ -19,7 +19,7 @@ glcm_textures(
   include_scale = FALSE,
   filename = NULL,
   overwrite = FALSE,
-  method = NULL,
+  quantization = NULL,
   wopt = list()
 )
 }
@@ -50,9 +50,9 @@ glcm_textures(
 
 \item{overwrite}{logical. If TRUE, filename is overwritten (default is FALSE).}
 
-\item{wopt}{list with named options for writing files as in writeRaster}
-
 \item{quantization}{deprecated. Use 'quant_method'}
+
+\item{wopt}{list with named options for writing files as in writeRaster}
 }
 \value{
 a SpatRaster or Raster* Object
