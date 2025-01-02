@@ -1,7 +1,7 @@
 README
 ================
 Alexander Ilich
-December 01, 2023
+January 02, 2025
 
 <!-- badges: start -->
 
@@ -78,10 +78,10 @@ direction, the shift value can be specified as any integer value.
 
 ## Available Metrics
 
-There are 9 metrics than can be calculated by this package. The first 8
-metrics can be divided into 3 groups: the contrast group, the
-orderliness group, and the descriptive statistics group (Hall-Beyer
-2017). The formulas provided below are from Hall-Beyer (2017).
+There are 8 metrics than can be calculated by this package that can be
+divided into 3 groups: the contrast group, the orderliness group, and
+the descriptive statistics group (Hall-Beyer 2017). The formulas
+provided below are from Hall-Beyer (2017).
 
 N = Number of rows or columns in the GLCM (Equal to the number of gray
 levels)
@@ -116,21 +116,6 @@ $$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$
 $$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$
 
 $$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$
-
-### Additional Metrics
-
-Based on user needs, I will implement additional GLCM texture metrics
-The metric below is from Haralick and Shanmugam (1973). The formula has
-been adapted to use gray levels starting at 0 rather than 1.
-
-$$\text{GLCM Sum Average} = \sum_{k=0}^{2(N-1)} {k*k_{prob}}$$
-
-where k=i+j, and $k_{prob}$ is they Gray Level Sum Vector. The Gray
-Level Sum Vector is a vector representing the probability distribution
-of the sum of two gray levels (i+j) based on the calculated GLCM. The
-position (starting at 0) in the vector represents the value of k, and
-the value in that position corresponds to the probability that i and j
-sum to that value.
 
 ## Tutorial
 
@@ -253,7 +238,7 @@ size of the input matrix.
 
 Once the GLCM has been constructed, we can use this to calculate texture
 metrics using the`glcm_metrics` function to calculate the GLCM texture
-metrics
+metrics.
 
 ``` r
 glcm_metrics(horizontal_glcm)
@@ -262,9 +247,7 @@ glcm_metrics(horizontal_glcm)
     ##      glcm_contrast glcm_dissimilarity   glcm_homogeneity           glcm_ASM 
     ##           4.000000           1.666667           0.400000           0.125000 
     ##       glcm_entropy          glcm_mean      glcm_variance   glcm_correlation 
-    ##           2.138333           1.166667           1.638889          -0.220339 
-    ##            glcm_SA 
-    ##           2.333333
+    ##           2.138333           1.166667           1.638889          -0.220339
 
 ### Raster Data
 
@@ -290,7 +273,7 @@ function. Typically data are quantized to 16 (4 bit; 2<sup>4</sup>) or
 levels, the computation cost increases.
 
 There are two methods of quantization available in the `quantize_raster`
-function. The first way, `method = "equal range"`, will create bins that
+function. The first way, `quant_method = "range"`, will create bins that
 cover a range of equal size (e.g. if the original data ranged from 0-20
 and was quantized to 4 levels, \[0-5) would be reassigned to 0, \[5-10)
 would be reassigned to 1, \[10-15) would be reassigned to 2, and
@@ -304,7 +287,7 @@ you can supply the global max/min or the theoretical max/min values that
 could occur.
 
 ``` r
-rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
+rq_equalrange<- quantize_raster(r = r, n_levels = 16, quant_method = "range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
@@ -314,14 +297,14 @@ plot(rq_equalrange, col=grey.colors(16))
 
     ## [1] "Max Val = 15"
 
-The second way to perform quantization is `method = "equal prob"` which
+The second way to perform quantization is `quant_method = "prob"` which
 performs equal probability quantization and will use quantiles (Hyndman
 and Fan 1996) to create bins that contain an approximately equal number
 of samples. This is the quantization method suggested in the original
 paper (Haralick and Shanmugam 1973).
 
 ``` r
-rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
+rq_equalprob<- quantize_raster(r = r, n_levels = 16, quant_method = "prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
@@ -375,20 +358,20 @@ For example, below we calculate textures using a window size of 3 rows
 by 5 columns
 
 ``` r
-textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization = "none", shift = c(1,0)) 
+textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quant_method = "none", shift = c(1,0)) 
 plot(textures1)
 ```
 
 <img src="man/figures/README-textures1-1.png" width="100%" />
 
-You may have noticed in the example above that `quantization = "none"`.
+You may have noticed in the example above that `quant_method = "none"`.
 This is because we supplied a raster that was already quantized.
 
 We could instead call the original raster and have it quantized within
 the `glcm_textures` function.
 
 ``` r
-textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
+textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quant_method = "prob", shift=c(1,0)) 
 all.equal(values(textures1), values(textures2))
 ```
 
@@ -400,7 +383,7 @@ directionally/rotationally invariant textures that are averaged across
 all 4 directions `shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))`.
 
 ``` r
-textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
+textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quant_method = "prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
 plot(textures3)
 ```
 

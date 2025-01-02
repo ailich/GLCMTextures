@@ -62,7 +62,7 @@ NumericVector C_GLSV(arma::mat Pij, int n_levels) {
       if(i==j){
         k_prob[k]= k_prob[k] + Pij(i,j); //add probability to corresponding spot in k_prob
       } else{
-        k_prob[k]= k_prob[k] + 2*Pij(i,j); //Since only looping through lower triangle have to count off diaogonal elements twice
+        k_prob[k]= k_prob[k] + 2*Pij(i,j); //Since only looping through lower triangle have to count off diagonal elements twice
       }
     }
   }
@@ -103,10 +103,10 @@ NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, in
     glcm_entropy_mat.replace(datum::nan,0.0);
     textures["glcm_entropy"]= accu(glcm_entropy_mat); //Entropy= sum(P_ij * (-ln(P_ij))) ; 0*ln(0)=0
     }
-  if(in(CharacterVector::create("glcm_SA"), metrics)){
-    NumericVector k_prob = C_GLSV(Pij, n_levels); //Gray Level Sum Vector
-    textures["glcm_SA"]= sum(k_prob*k_vals); //GLCM_SumAverage= sum(k*k_prob)
-    }
+  //if(in(CharacterVector::create("glcm_SA"), metrics)){
+    //NumericVector k_prob = C_GLSV(Pij, n_levels); //Gray Level Sum Vector
+    //textures["glcm_SA"]= sum(k_prob*k_vals); //GLCM_SumAverage= sum(k*k_prob)
+    //}
   return(textures);
 }
 

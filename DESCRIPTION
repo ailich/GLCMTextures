@@ -1,6 +1,6 @@
 Package: GLCMTextures
 Title: GLCM Textures of Raster Layers
-Version: 0.4.2
+Version: 0.5
 Authors@R: 
     person(given = "Alexander",
            family = "Ilich",
@@ -11,7 +11,7 @@ Description: Calculates grey level co-occurrence matrix (GLCM) based texture mea
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 BugReports: https://github.com/ailich/GLCMTextures/issues
 Depends: terra
 SystemRequirements: C++17
@@ -23,6 +23,8 @@ Imports:
     raster
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 URL: https://ailich.github.io/GLCMTextures/, https://github.com/ailich/GLCMTextures
 VignetteBuilder: knitr
+Config/testthat/edition: 3

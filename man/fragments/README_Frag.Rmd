@@ -34,7 +34,7 @@ The convention for specifying the direction of the neighboring pixel (the shift)
 ![GLCM Shift](`r md_fig_dir`GLCM_Shift.png)
 
 ## Available Metrics
-There are 9 metrics than can be calculated by this package. The first 8 metrics can be divided into 3 groups: the contrast group, the orderliness group, and the descriptive statistics group (Hall-Beyer 2017). The formulas provided below are from Hall-Beyer (2017).
+There are 8 metrics than can be calculated by this package that can be divided into 3 groups: the contrast group, the orderliness group, and the descriptive statistics group (Hall-Beyer 2017). The formulas provided below are from Hall-Beyer (2017).
 
 N = Number of rows or columns in the GLCM (Equal to the number of gray levels)
 
@@ -62,14 +62,6 @@ $$\text{GLCM Mean} (\mu) = \sum_{i,j=0}^{N-1} i(P_{i,j})$$
 $$\text{GLCM Variance} (\sigma^2) = \sum_{i,j=0}^{N-1} P_{i,j}(i-\mu)^2$$
 
 $$\text{GLCM Correlation} = \sum_{i,j=0}^{N-1} {P_{i,j} \frac{(i-\mu)(j-\mu)}{\sigma^2}}$$
-
-### Additional Metrics
-
-Based on user needs, I will implement additional GLCM texture metrics The metric below is from Haralick and Shanmugam (1973). The formula has been adapted to use gray levels starting at 0 rather than 1.
-
-$$\text{GLCM Sum Average} = \sum_{k=0}^{2(N-1)} {k*k_{prob}}$$
-
-where k=i+j, and $k_{prob}$ is they Gray Level Sum Vector. The Gray Level Sum Vector is a vector representing the probability distribution of the sum of two gray levels (i+j) based on the calculated GLCM. The position (starting at 0) in the vector represents the value of k, and the value in that position corresponds to the probability that i and j sum to that value. 
 
 ## Tutorial
 
@@ -135,7 +127,7 @@ make_glcm(test_matrix, n_levels = 4, shift = c(1,0), normalize = TRUE)
 
 You may have noticed that pixels in the last column of the test matrix did not have a neighboring pixel to the right, so you would not tabulate any counts in those cases; however, this is precisely why we tabulate a symmetrical GLCM as these pixels do have neighbors to the left. Also, note that although the original matrix was 3x3, the GLCM is 4x4 because the size of the GLCM corresponds to the number of gray levels, not the size of the input matrix.
 
-Once the GLCM has been constructed, we can use this to calculate texture metrics using the`glcm_metrics` function to calculate the GLCM texture metrics
+Once the GLCM has been constructed, we can use this to calculate texture metrics using the`glcm_metrics` function to calculate the GLCM texture metrics.
 
 ```{r}
 glcm_metrics(horizontal_glcm)
@@ -154,10 +146,10 @@ plot(r) #plot values
 
 Our test image had integer values that range from 0 to 3. Raster data often represent continuous data that cover a potentially large range and may not be confined to integer values greater than or equal to zero. The first step is therefore to quantize the raster image to a discrete number of gray levels. This can be done using the`quantize_raster` function. Typically data are quantized to 16 (4 bit; 2^4^) or 32 (5 bit; 2^5^) gray levels. With increasing number of gray levels, the computation cost increases.
 
-There are two methods of quantization available in the `quantize_raster` function. The first way, `method = "equal range"`, will create bins that cover a range of equal size (e.g. if the original data ranged from 0-20 and was quantized to 4 levels, [0-5) would be reassigned to 0, [5-10) would be reassigned to 1, [10-15) would be reassigned to 2, and [15-20] would be reassigned to 4). This is the simplest and most common quantization method. By default the raster is scaled using the min and max of the data set, but a max and min value can be supplied to the `max_val` and `min_val` parameters. This may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur.
+There are two methods of quantization available in the `quantize_raster` function. The first way, `quant_method = "range"`, will create bins that cover a range of equal size (e.g. if the original data ranged from 0-20 and was quantized to 4 levels, [0-5) would be reassigned to 0, [5-10) would be reassigned to 1, [10-15) would be reassigned to 2, and [15-20] would be reassigned to 4). This is the simplest and most common quantization method. By default the raster is scaled using the min and max of the data set, but a max and min value can be supplied to the `max_val` and `min_val` parameters. This may be more desirable if making comparisons across several different rasters where you need the gray levels to correspond in a consistent way to the original data, as you can supply the global max/min or the theoretical max/min values that could occur.
 
 ```{r rq_er}
-rq_equalrange<- quantize_raster(r = r, n_levels = 16, method = "equal range")
+rq_equalrange<- quantize_raster(r = r, n_levels = 16, quant_method = "range")
 plot(rq_equalrange, col=grey.colors(16))
 ```
 
@@ -166,10 +158,10 @@ print(paste("Min Val =", unlist(global(rq_equalrange, min))))
 print(paste("Max Val =", unlist(global(rq_equalrange, max))))
 ```
 
-The second way to perform quantization is `method = "equal prob"` which performs equal probability quantization and will use quantiles (Hyndman and Fan 1996) to create bins that contain an approximately equal number of samples. This is the quantization method suggested in the original paper (Haralick and Shanmugam 1973).
+The second way to perform quantization is `quant_method = "prob"` which performs equal probability quantization and will use quantiles (Hyndman and Fan 1996) to create bins that contain an approximately equal number of samples. This is the quantization method suggested in the original paper (Haralick and Shanmugam 1973).
 
 ```{r rq_ep}
-rq_equalprob<- quantize_raster(r = r, n_levels = 16, method = "equal prob")
+rq_equalprob<- quantize_raster(r = r, n_levels = 16, quant_method = "prob")
 plot(rq_equalprob, col=grey.colors(16))
 ```
 
@@ -191,23 +183,23 @@ For raster data sets, rather than calculating a single value of the texture for 
 For example, below we calculate textures using a window size of 3 rows by 5 columns
 
 ```{r textures1}
-textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quantization = "none", shift = c(1,0)) 
+textures1<- glcm_textures(rq_equalprob, w = c(3,5), n_levels = 16, quant_method = "none", shift = c(1,0)) 
 plot(textures1)
 ```
 
-You may have noticed in the example above that `quantization = "none"`. This is because we supplied a raster that was already quantized.
+You may have noticed in the example above that `quant_method = "none"`. This is because we supplied a raster that was already quantized.
 
 We could instead call the original raster and have it quantized within the `glcm_textures` function.
 
 ```{r textures2}
-textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift=c(1,0)) 
+textures2<- glcm_textures(r, w = c(3,5), n_levels = 16, quant_method = "prob", shift=c(1,0)) 
 all.equal(values(textures1), values(textures2))
 ```
 
 We can also calculate the value of textures across multiple shifts by supplying a list. In fact, the default is to return directionally/rotationally invariant textures that are averaged across all 4 directions `shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))`.
 
 ```{r textures3}
-textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quantization = "equal prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
+textures3<- glcm_textures(r, w = c(3,5), n_levels = 16, quant_method = "prob", shift = list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1))) 
 plot(textures3)
 ```
 

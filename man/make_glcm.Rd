@@ -7,7 +7,7 @@
 make_glcm(x, n_levels, shift, na.rm = FALSE, normalize = TRUE)
 }
 \arguments{
-\item{x}{a matrix of integers representing quantized values. The valid range of values is from 0 to n_levels-1 (e.g. a matrix with 32 grey levels would have a valid range of 0-31).}
+\item{x}{a matrix, SpatRaster, or RasterLayer containing integers representing quantized values. The valid range of values is from 0 to n_levels-1 (e.g. a matrix with 32 grey levels would have a valid range of 0-31).}
 
 \item{n_levels}{Number of grey levels used in the quantization}
 
