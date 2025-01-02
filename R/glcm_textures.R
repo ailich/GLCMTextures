@@ -92,7 +92,7 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
       if(quantization == "equal range"){quant_method<- "range"}
       }
   }
-
+  if(is.null(quant_method)){stop("quant_method is NULL. Specify as 'none', 'range' or 'prob'")}
   out_list<- vector(mode = "list", length=length(shift))
   if(quant_method!="none"){
     r<- quantize_raster(r = r, n_levels = n_levels, quant_method = quant_method, min_val = min_val, max_val = max_val, maxcell=maxcell, wopt=wopt)

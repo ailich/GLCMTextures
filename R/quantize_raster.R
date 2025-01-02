@@ -46,6 +46,7 @@ quantize_raster<- function(r, n_levels, quant_method=NULL, min_val=NULL, max_val
       if(method == "equal range"){quant_method<- "range"}
       }
   }
+  if(is.null(quant_method)){stop("quant_method is NULL. Specify as 'range' or 'prob'")}
   if(quant_method == "range"){
     if(is.null(min_val)){min_val<- unlist(terra::global(r, fun = min, na.rm=TRUE))}
     if(is.null(max_val)){max_val<- unlist(terra::global(r, fun = max, na.rm=TRUE))}
@@ -53,7 +54,7 @@ quantize_raster<- function(r, n_levels, quant_method=NULL, min_val=NULL, max_val
   } else if (quant_method == "prob") {
     qrules<- unlist(terra::global(r, fun = quantile, probs= seq(0,1,length.out = n_levels+1), na.rm=TRUE, type=8, maxcell=maxcell))
   } else {
-    message("Error: method must be 'range' or 'prob'")
+    stop("Error: quant_method must be 'range' or 'prob'")
   }
   qrules[1]<- -Inf
   qrules[length(qrules)]<- Inf #Make edges infinite in case sample is used which doesn't contain min/max value
