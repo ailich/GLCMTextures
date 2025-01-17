@@ -43,7 +43,10 @@ glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "
     out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, k_vals=k_vals, metrics = needed_metrics)
     out[[i]]<-  out[[i]][names(out[[i]]) %in% metrics]
   }
-  if(length(out)==1){out<- out[[1]]}
+  if(length(out)==1){
+    out<- out[[1]]
+    return(out)
+  }
   if(average){
     out<- colMeans(do.call(rbind, out)) # average across shifts
   }
