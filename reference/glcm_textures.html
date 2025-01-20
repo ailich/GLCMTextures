@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Calculates GLCM texture metrics of a Raster Layer</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ailich/GLCMTextures/blob/v0.5/R/glcm_textures.R" class="external-link"><code>R/glcm_textures.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ailich/GLCMTextures/blob/master/R/glcm_textures.R" class="external-link"><code>R/glcm_textures.R</code></a></small>
       <div class="d-none name"><code>glcm_textures.Rd</code></div>
     </div>
 
@@ -67,11 +67,11 @@
 
 
 <dl><dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
-<dd><p>A single layer SpatRaster or RasterLayer. If already quantized set quant_method to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).</p></dd>
+<dd><p>A single layer SpatRaster, RasterLayer, or matrix. If already quantized set quant_method to "none". The valid range of values for a quantized raster is from 0 to n_levels-1 (e.g. a raster with 32 grey levels would have a valid range of 0-31).</p></dd>
 
 
 <dt id="arg-w">w<a class="anchor" aria-label="anchor" href="#arg-w"></a></dt>
-<dd><p>A vector of length 2 specifying the dimensions of the rectangular window to use where the first number is the number of rows and the second number is the number of columns. Window size must be an odd number.</p></dd>
+<dd><p>A vector of length 2 specifying the dimensions of the rectangular window to use where the first number is the number of rows and the second number is the number of columns. Window size must be an odd number. A special case is when w is NULL a single value of each texture will be calculated for the entire image.</p></dd>
 
 
 <dt id="arg-n-levels">n_levels<a class="anchor" aria-label="anchor" href="#arg-n-levels"></a></dt>
@@ -128,7 +128,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a SpatRaster or Raster* Object</p>
+    <p>a SpatRaster or Raster* Object if w is not NULL. If w is NULL, a numeric vector of texture measures.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
