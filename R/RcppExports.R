@@ -13,11 +13,11 @@ C_GLSV <- function(Pij, n_levels) {
     .Call(`_GLCMTextures_C_GLSV`, Pij, n_levels)
 }
 
-C_glcm_metrics <- function(Pij, i_mat, j_mat, n_levels, k_vals, metrics) {
-    .Call(`_GLCMTextures_C_glcm_metrics`, Pij, i_mat, j_mat, n_levels, k_vals, metrics)
+C_glcm_metrics <- function(Pij, i_mat, j_mat, n_levels, k_vals, metrics, impute_corr) {
+    .Call(`_GLCMTextures_C_glcm_metrics`, Pij, i_mat, j_mat, n_levels, k_vals, metrics, impute_corr)
 }
 
-C_glcm_textures_helper <- function(x, w2, n_levels, shift, metrics, na_rm, ni, nw) {
-    .Call(`_GLCMTextures_C_glcm_textures_helper`, x, w2, n_levels, shift, metrics, na_rm, ni, nw)
+C_glcm_textures_helper <- function(x, w2, n_levels, shift, metrics, na_rm, impute_corr, ni, nw) {
+    .Call(`_GLCMTextures_C_glcm_textures_helper`, x, w2, n_levels, shift, metrics, na_rm, impute_corr, ni, nw)
 }
 

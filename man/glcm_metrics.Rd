@@ -8,7 +8,8 @@ glcm_metrics(
   GLCM,
   metrics = c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM",
     "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"),
-  average = FALSE
+  average = FALSE,
+  impute_corr = FALSE
 )
 }
 \arguments{
@@ -17,6 +18,8 @@ glcm_metrics(
 \item{metrics}{A vector of texture metrics to return. Valid entries include "glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation".}
 
 \item{average}{Logical indicating whether to average metrics across the supplied GLCMs}
+
+\item{impute_corr}{logical indicating whether glcm correlation should be filled with zero in the case where all values are the same (default=FALSE). Strictly glcm correlation is NA in this case but the limit approaches zero.}
 }
 \value{
 GLCM based texture measures as a numeric vector.

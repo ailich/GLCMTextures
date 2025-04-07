@@ -52,8 +52,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // C_glcm_metrics
-NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics);
-RcppExport SEXP _GLCMTextures_C_glcm_metrics(SEXP PijSEXP, SEXP i_matSEXP, SEXP j_matSEXP, SEXP n_levelsSEXP, SEXP k_valsSEXP, SEXP metricsSEXP) {
+NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics, bool impute_corr);
+RcppExport SEXP _GLCMTextures_C_glcm_metrics(SEXP PijSEXP, SEXP i_matSEXP, SEXP j_matSEXP, SEXP n_levelsSEXP, SEXP k_valsSEXP, SEXP metricsSEXP, SEXP impute_corrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -63,13 +63,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n_levels(n_levelsSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type k_vals(k_valsSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type metrics(metricsSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_glcm_metrics(Pij, i_mat, j_mat, n_levels, k_vals, metrics));
+    Rcpp::traits::input_parameter< bool >::type impute_corr(impute_corrSEXP);
+    rcpp_result_gen = Rcpp::wrap(C_glcm_metrics(Pij, i_mat, j_mat, n_levels, k_vals, metrics, impute_corr));
     return rcpp_result_gen;
 END_RCPP
 }
 // C_glcm_textures_helper
-NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, CharacterVector metrics, bool na_rm, size_t ni, size_t nw);
-RcppExport SEXP _GLCMTextures_C_glcm_textures_helper(SEXP xSEXP, SEXP w2SEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP metricsSEXP, SEXP na_rmSEXP, SEXP niSEXP, SEXP nwSEXP) {
+NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, CharacterVector metrics, bool na_rm, bool impute_corr, size_t ni, size_t nw);
+RcppExport SEXP _GLCMTextures_C_glcm_textures_helper(SEXP xSEXP, SEXP w2SEXP, SEXP n_levelsSEXP, SEXP shiftSEXP, SEXP metricsSEXP, SEXP na_rmSEXP, SEXP impute_corrSEXP, SEXP niSEXP, SEXP nwSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -79,9 +80,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type shift(shiftSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type metrics(metricsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< bool >::type impute_corr(impute_corrSEXP);
     Rcpp::traits::input_parameter< size_t >::type ni(niSEXP);
     Rcpp::traits::input_parameter< size_t >::type nw(nwSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_glcm_textures_helper(x, w2, n_levels, shift, metrics, na_rm, ni, nw));
+    rcpp_result_gen = Rcpp::wrap(C_glcm_textures_helper(x, w2, n_levels, shift, metrics, na_rm, impute_corr, ni, nw));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -90,8 +92,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GLCMTextures_C_make_glcm_counts", (DL_FUNC) &_GLCMTextures_C_make_glcm_counts, 4},
     {"_GLCMTextures_C_make_glcm", (DL_FUNC) &_GLCMTextures_C_make_glcm, 4},
     {"_GLCMTextures_C_GLSV", (DL_FUNC) &_GLCMTextures_C_GLSV, 2},
-    {"_GLCMTextures_C_glcm_metrics", (DL_FUNC) &_GLCMTextures_C_glcm_metrics, 6},
-    {"_GLCMTextures_C_glcm_textures_helper", (DL_FUNC) &_GLCMTextures_C_glcm_textures_helper, 8},
+    {"_GLCMTextures_C_glcm_metrics", (DL_FUNC) &_GLCMTextures_C_glcm_metrics, 7},
+    {"_GLCMTextures_C_glcm_textures_helper", (DL_FUNC) &_GLCMTextures_C_glcm_textures_helper, 9},
     {NULL, NULL, 0}
 };
 

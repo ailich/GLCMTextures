@@ -71,7 +71,7 @@ NumericVector C_GLSV(arma::mat Pij, int n_levels) {
 
 //Calculate Texture Metrics
 // [[Rcpp::export]]
-NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics){
+NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics, bool impute_corr){
 
   NumericVector textures = rep(NA_REAL,metrics.length());
   textures.names() = metrics;
@@ -96,7 +96,11 @@ NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, in
     textures["glcm_variance"]= accu(Pij % pow(i_mat-textures["glcm_mean"],2)); //varaince= sum(P_ij*(i-u)^2
     }
   if(in(CharacterVector::create("glcm_correlation"), metrics)){
-    textures["glcm_correlation"]= accu(Pij % (((i_mat-textures["glcm_mean"]) % (j_mat-textures["glcm_mean"]))/(textures["glcm_variance"]))); //Correlation= sum(P_ij*[((i-u)*(j-u))/(var)])
+    if((textures["glcm_variance"]==0) && impute_corr){
+      textures["glcm_correlation"]=0; //only way for all values to be the same in symmetric GLCM (limit approaches zero corr)
+    } else{
+      textures["glcm_correlation"]= accu(Pij % (((i_mat-textures["glcm_mean"]) % (j_mat-textures["glcm_mean"]))/(textures["glcm_variance"]))); //Correlation= sum(P_ij*[((i-u)*(j-u))/(var)])
+      }
     }
   if(in(CharacterVector::create("glcm_entropy"), metrics)){
     arma::mat glcm_entropy_mat = Pij % ((-1) * log(Pij));
@@ -112,7 +116,7 @@ NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, in
 
 //GLCM across matrix using sliding window (terra)
 // [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, CharacterVector metrics, bool na_rm, size_t ni, size_t nw){
+NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, CharacterVector metrics, bool na_rm, bool impute_corr, size_t ni, size_t nw){
 
   NumericMatrix out(ni, metrics.length());
   out.fill(NA_REAL);
@@ -141,7 +145,7 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
       }
     } //fill in matrix by row
     arma::mat curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
-    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, n_levels, k_vals, metrics);
+    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, n_levels, k_vals, metrics, impute_corr);
   }
   return(out);
 }

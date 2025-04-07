@@ -16,6 +16,7 @@ glcm_textures(
   max_val = NULL,
   maxcell = Inf,
   na.rm = FALSE,
+  impute_corr = FALSE,
   include_scale = FALSE,
   filename = NULL,
   overwrite = FALSE,
@@ -43,6 +44,8 @@ glcm_textures(
 \item{maxcell}{positive integer used to take a regular sample for quantization if "prob" is used as quant_method (default is Inf)}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
+
+\item{impute_corr}{logical indicating whether glcm correlation should be filled with zero in the case where all values are the same (default=FALSE). Strictly glcm correlation is NA in this case but the limit approaches zero.}
 
 \item{include_scale}{Logical indicating whether to append window size to the layer names (default = FALSE).}
 

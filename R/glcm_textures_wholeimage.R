@@ -10,6 +10,7 @@
 #' @param max_val maximum value for equal range quantization (if not supplied, the maximum value of the raster is used)
 #' @param maxcell positive integer used to take a regular sample for quantization if "prob" is used as quant_method (default is Inf)
 #' @param na.rm a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)
+#' @param impute_corr logical indicating whether glcm correlation should be filled with zero in the case where all values are the same. Strictly glcm correlation is NA in this case but the limit approaches zero.
 #' @param wopt list with named options for writing files as in writeRaster
 #' @return a vector of texture metrics
 #' @import terra
@@ -18,12 +19,12 @@
 #'
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 
-glcm_textures_wholeimage<- function(r, n_levels, shift, metrics, quant_method, min_val, max_val, maxcell, na.rm, wopt){
+glcm_textures_wholeimage<- function(r, n_levels, shift, metrics, quant_method, min_val, max_val, maxcell, na.rm, impute_corr, wopt){
   if(quant_method!="none"){
     r<- quantize_raster(r = r, n_levels = n_levels, quant_method = quant_method, min_val = min_val, max_val = max_val, maxcell=maxcell, wopt=wopt)
   }
   GLCM<- make_glcm(r, n_levels = n_levels, shift = shift, na.rm = na.rm, normalize = TRUE)
-  out<- glcm_metrics(GLCM = GLCM, metrics = metrics, average = TRUE)
+  out<- glcm_metrics(GLCM = GLCM, metrics = metrics, average = TRUE, impute_corr = impute_corr)
   return(out)
 }
 

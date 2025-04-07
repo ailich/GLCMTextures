@@ -14,6 +14,7 @@ glcm_textures_wholeimage(
   max_val,
   maxcell,
   na.rm,
+  impute_corr,
   wopt
 )
 }
@@ -35,6 +36,8 @@ glcm_textures_wholeimage(
 \item{maxcell}{positive integer used to take a regular sample for quantization if "prob" is used as quant_method (default is Inf)}
 
 \item{na.rm}{a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)}
+
+\item{impute_corr}{logical indicating whether glcm correlation should be filled with zero in the case where all values are the same. Strictly glcm correlation is NA in this case but the limit approaches zero.}
 
 \item{wopt}{list with named options for writing files as in writeRaster}
 }
