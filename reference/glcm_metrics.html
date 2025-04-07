@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,8 @@
 <span>  <span class="va">GLCM</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"glcm_contrast"</span>, <span class="st">"glcm_dissimilarity"</span>, <span class="st">"glcm_homogeneity"</span>, <span class="st">"glcm_ASM"</span>,</span>
 <span>    <span class="st">"glcm_entropy"</span>, <span class="st">"glcm_mean"</span>, <span class="st">"glcm_variance"</span>, <span class="st">"glcm_correlation"</span><span class="op">)</span>,</span>
-<span>  average <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  average <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  impute_corr <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -64,6 +65,10 @@
 
 <dt id="arg-average">average<a class="anchor" aria-label="anchor" href="#arg-average"></a></dt>
 <dd><p>Logical indicating whether to average metrics across the supplied GLCMs</p></dd>
+
+
+<dt id="arg-impute-corr">impute_corr<a class="anchor" aria-label="anchor" href="#arg-impute-corr"></a></dt>
+<dd><p>logical indicating whether glcm correlation should be filled with zero in the case where all values are the same (default=FALSE). Strictly glcm correlation is NA in this case but the limit approaches zero.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GLCMTextures</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +54,7 @@
 <span>  max_val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  maxcell <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  impute_corr <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  include_scale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -104,6 +105,10 @@
 
 <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
 <dd><p>a logical value indicating whether NA values should be stripped before the computation proceeds (default=FALSE)</p></dd>
+
+
+<dt id="arg-impute-corr">impute_corr<a class="anchor" aria-label="anchor" href="#arg-impute-corr"></a></dt>
+<dd><p>logical indicating whether glcm correlation should be filled with zero in the case where all values are the same (default=FALSE). Strictly glcm correlation is NA in this case but the limit approaches zero.</p></dd>
 
 
 <dt id="arg-include-scale">include_scale<a class="anchor" aria-label="anchor" href="#arg-include-scale"></a></dt>
