@@ -71,7 +71,7 @@ NumericVector C_GLSV(arma::mat Pij, int n_levels) {
 
 //Calculate Texture Metrics
 // [[Rcpp::export]]
-NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics, bool impute_corr){
+NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, CharacterVector metrics, bool impute_corr){
 
   NumericVector textures = rep(NA_REAL,metrics.length());
   textures.names() = metrics;
@@ -124,10 +124,10 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
 
   arma::mat i_mat(n_levels,n_levels);
   arma::mat j_mat(n_levels,n_levels);
-  NumericVector k_vals((2*n_levels)-1);
-  for (int k = 1; k < k_vals.length(); ++k) {
-    k_vals[k] = k;
-  } // All possible values of k, where k=i+j
+  // NumericVector k_vals((2*n_levels)-1);
+  // for (int k = 1; k < k_vals.length(); ++k) {
+  //   k_vals[k] = k;
+  // } // All possible values of k, where k=i+j
   for(int i=0; i<n_levels; ++i){
     for(int j=0; j<n_levels; ++j){
       i_mat(i,j)=i;
@@ -145,7 +145,7 @@ NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_le
       }
     } //fill in matrix by row
     arma::mat curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
-    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, n_levels, k_vals, metrics, impute_corr);
+    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, n_levels, metrics, impute_corr);
   }
   return(out);
 }
