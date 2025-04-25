@@ -52,8 +52,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // C_glcm_metrics
-NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, NumericVector k_vals, CharacterVector metrics, bool impute_corr);
-RcppExport SEXP _GLCMTextures_C_glcm_metrics(SEXP PijSEXP, SEXP i_matSEXP, SEXP j_matSEXP, SEXP n_levelsSEXP, SEXP k_valsSEXP, SEXP metricsSEXP, SEXP impute_corrSEXP) {
+NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, CharacterVector metrics, bool impute_corr);
+RcppExport SEXP _GLCMTextures_C_glcm_metrics(SEXP PijSEXP, SEXP i_matSEXP, SEXP j_matSEXP, SEXP n_levelsSEXP, SEXP metricsSEXP, SEXP impute_corrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -61,10 +61,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type i_mat(i_matSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type j_mat(j_matSEXP);
     Rcpp::traits::input_parameter< int >::type n_levels(n_levelsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type k_vals(k_valsSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type metrics(metricsSEXP);
     Rcpp::traits::input_parameter< bool >::type impute_corr(impute_corrSEXP);
-    rcpp_result_gen = Rcpp::wrap(C_glcm_metrics(Pij, i_mat, j_mat, n_levels, k_vals, metrics, impute_corr));
+    rcpp_result_gen = Rcpp::wrap(C_glcm_metrics(Pij, i_mat, j_mat, n_levels, metrics, impute_corr));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -92,7 +91,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GLCMTextures_C_make_glcm_counts", (DL_FUNC) &_GLCMTextures_C_make_glcm_counts, 4},
     {"_GLCMTextures_C_make_glcm", (DL_FUNC) &_GLCMTextures_C_make_glcm, 4},
     {"_GLCMTextures_C_GLSV", (DL_FUNC) &_GLCMTextures_C_GLSV, 2},
-    {"_GLCMTextures_C_glcm_metrics", (DL_FUNC) &_GLCMTextures_C_glcm_metrics, 7},
+    {"_GLCMTextures_C_glcm_metrics", (DL_FUNC) &_GLCMTextures_C_glcm_metrics, 6},
     {"_GLCMTextures_C_glcm_textures_helper", (DL_FUNC) &_GLCMTextures_C_glcm_textures_helper, 9},
     {NULL, NULL, 0}
 };

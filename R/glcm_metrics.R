@@ -40,8 +40,8 @@ glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "
     i_mat<- matrix(data= 0:(nrow(GLCM[[i]])-1), nrow= nrow(GLCM[[i]]), ncol=ncol(GLCM[[i]]), byrow=FALSE)
     j_mat<- matrix(data= 0:(ncol(GLCM[[i]])-1), nrow= nrow(GLCM[[i]]), ncol=ncol(GLCM[[i]]), byrow=TRUE)
     n_levels=nrow(GLCM[[i]])
-    k_vals<- seq((2*n_levels)-1)-1
-    out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, k_vals=k_vals, metrics = needed_metrics, impute_corr= impute_corr)
+    # k_vals<- seq((2*n_levels)-1)-1
+    out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, metrics = needed_metrics, impute_corr= impute_corr)
     out[[i]]<-  out[[i]][names(out[[i]]) %in% metrics]
   }
   if(length(out)==1){
