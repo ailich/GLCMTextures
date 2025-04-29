@@ -81,17 +81,6 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
     warning("n_levels is > 32. This may be very computationally expensive.")
     }
 
-  needed_metrics<- metrics
-  if(("glcm_variance" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
-    needed_metrics<- c(needed_metrics, "glcm_mean")
-  }
-  if(("glcm_correlation" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
-    needed_metrics<- c(needed_metrics, "glcm_mean")
-  }
-  if(("glcm_correlation" %in% needed_metrics) & (!("glcm_variance" %in% needed_metrics))){
-    needed_metrics<- c(needed_metrics, "glcm_variance")
-  } #Some metrics needed to calculate others
-
   if(!is.null(quantization)){
     warning("Use of 'quantization' is deprecated. Instead use 'quant_method'")
     if(is.null(quant_method)){
@@ -100,8 +89,9 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
       if(quantization == "equal range"){quant_method<- "range"}
       }
   }
+
   if(is.null(quant_method)){stop("quant_method is NULL. Specify as 'none', 'range' or 'prob'")}
-  out_list<- vector(mode = "list", length=length(shift))
+
   if(quant_method!="none"){
     r<- quantize_raster(r = r, n_levels = n_levels, quant_method = quant_method, min_val = min_val, max_val = max_val, maxcell=maxcell, wopt=wopt)
     } else if(!terra::is.int(r)){
@@ -110,19 +100,12 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
   if((unlist(terra::global(r, fun = max, na.rm=TRUE)) > (n_levels-1)) | (unlist(terra::global(r, fun = min, na.rm=TRUE)) < 0)){
     stop("Error: raster must have values between 0 and n_levels-1")}
 
-  out_list<- vector(mode = "list", length=length(shift))
-  for (k in 1:length(shift)) {
-    out_list[[k]]<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift[[k]], metrics = needed_metrics, na_rm=na.rm, impute_corr = impute_corr, fillvalue=NA, wopt=wopt)
-    out_list[[k]]<- terra::subset(out_list[[k]], metrics, wopt=wopt) #Subset from needed to requested metrics
-    }
 
-  n_layers<- length(metrics)
-  if(length(shift) > 1){
-    output<- terra::app(terra::sds(out_list), fun=mean, na.rm=na.rm, wopt=wopt)
-    } else{
-      output<- out_list[[1]]
-    }
-  names(output)<- metrics #preserve names in case they were lost
+  metric_indices<- match(metrics, all_metrics)-1
+
+  output<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift, metric_indices = metric_indices, na_rm=na.rm, impute_corr = impute_corr, fillvalue=NA, wopt=wopt)
+
+  names(output)<- metrics #Add in names
 
   if(include_scale){names(output)<- paste0(names(output), "_", w[1],"x", w[2])} #Add scale to layer names
 

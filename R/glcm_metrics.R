@@ -22,16 +22,6 @@ glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "
   if (any(!(metrics %in% all_metrics))){
     stop("Error: Invlaid metric. Valid metrics include 'glcm_contrast', 'glcm_dissimilarity', 'glcm_homogeneity', 'glcm_ASM', 'glcm_entropy', 'glcm_mean', 'glcm_variance', 'glcm_correlation'")
   }
-  needed_metrics<- metrics
-  if(("glcm_variance" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
-    needed_metrics<- c(needed_metrics, "glcm_mean")
-  }
-  if(("glcm_correlation" %in% needed_metrics) & (!("glcm_mean" %in% needed_metrics))){
-    needed_metrics<- c(needed_metrics, "glcm_mean")
-  }
-  if(("glcm_correlation" %in% needed_metrics) & (!("glcm_variance" %in% needed_metrics))){
-    needed_metrics<- c(needed_metrics, "glcm_variance")
-  } #Some metrics needed
 
   if(!is.list(GLCM)){GLCM<- list(GLCM)}
   out<- vector(mode="list", length = length(GLCM))
@@ -40,9 +30,11 @@ glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "
     i_mat<- matrix(data= 0:(nrow(GLCM[[i]])-1), nrow= nrow(GLCM[[i]]), ncol=ncol(GLCM[[i]]), byrow=FALSE)
     j_mat<- matrix(data= 0:(ncol(GLCM[[i]])-1), nrow= nrow(GLCM[[i]]), ncol=ncol(GLCM[[i]]), byrow=TRUE)
     n_levels=nrow(GLCM[[i]])
-    # k_vals<- seq((2*n_levels)-1)-1
-    out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, metrics = needed_metrics, impute_corr= impute_corr)
-    out[[i]]<-  out[[i]][names(out[[i]]) %in% metrics]
+
+    metric_indices<- match(metrics, all_metrics) -1
+
+    out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, metric_indices = metric_indices, impute_corr= impute_corr)
+    names(out[[i]])<- metrics
   }
   if(length(out)==1){
     out<- out[[1]]

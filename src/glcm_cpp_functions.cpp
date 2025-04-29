@@ -1,151 +1,233 @@
-#include<RcppArmadillo.h>
+#include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
+
 using namespace Rcpp;
 using namespace arma;
 
-//Make GLCM (non-normalized)
+// Make GLCM
 // [[Rcpp::export]]
-IntegerMatrix C_make_glcm_counts(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
-  IntegerMatrix GLCM(n_levels, n_levels);//initialize GLCM
-  int nr= x.nrow();
-  int nc= x.ncol();
+arma::mat C_make_glcm(const IntegerVector& x,
+                           const int n_levels,
+                           const IntegerVector& shift,
+                           const bool na_rm,
+                           const int nrow,
+                           const int ncol,
+                           const bool normalize) {
 
-  if((!na_rm) && (is_true(any(is_na(x))))){
-    GLCM.fill(NA_INTEGER);
-    return GLCM;
-  }  //Return window of NA's if any vals in window are NA
+  arma::mat GLCM(n_levels, n_levels, arma::fill::zeros); // single matrix from the start
 
-  if(na_rm && (is_true(all(is_na(x))))){
-    GLCM.fill(NA_INTEGER);
-    return GLCM;
-  }  //Return window of NA's if all values in window is NA
-  IntegerVector focalval_neighborval(2);
-  focalval_neighborval.names() = CharacterVector::create("focal_val", "neighborval");
-  for(int i=0; i < nr; ++i){
-    for(int j=0; j < nc; ++j){
-      focalval_neighborval["focal_val"] = x(i,j); //focal val
-      IntegerVector neighbor_idx = {i-shift[1], j+shift[0]};
-      if((neighbor_idx[0] < nr) && (neighbor_idx[1] < nc) && (neighbor_idx[0] >= 0) && (neighbor_idx[1] >= 0)){
-        focalval_neighborval["neighborval"] = x(neighbor_idx[0], neighbor_idx[1]); //neighbor val
-        if(is_false(any(is_na(focalval_neighborval)))){
-          GLCM(focalval_neighborval["focal_val"],focalval_neighborval["neighborval"])++;
-          GLCM(focalval_neighborval["neighborval"],focalval_neighborval["focal_val"])++;
+  for (int i = 0; i < nrow; ++i) {
+    for (int j = 0; j < ncol; ++j) {
+      int idx = i * ncol + j;
+      int focal = x[idx];
+      int ni = i - shift[1];
+      int nj = j + shift[0];
+      if (ni >= 0 && ni < nrow && nj >= 0 && nj < ncol) {
+        int nidx = ni * ncol + nj;
+        int neighbor = x[nidx];
+        if (focal != NA_INTEGER && neighbor != NA_INTEGER) {
+          GLCM(focal, neighbor) += 1.0;
+        } else if (!na_rm) {
+          GLCM.fill(arma::datum::nan);
+          return GLCM;
         }
-      }}}
+      }
+    }
+  }
+
+  // Make symmetric
+  GLCM += GLCM.t();
+
+  // Normalize in place if requested
+  if (normalize) {
+    double total = arma::accu(GLCM);
+    if (total > 0.0) {
+      GLCM /= total;
+    } else {
+      GLCM.fill(arma::datum::nan);
+    }
+  }
+
   return GLCM;
 }
 
-//Make GLCM (normalized)
+//Calculate texture measures
 // [[Rcpp::export]]
-arma::mat C_make_glcm(IntegerMatrix x, int n_levels, IntegerVector shift, bool na_rm){
-  IntegerMatrix GLCM = C_make_glcm_counts(x, n_levels, shift, na_rm); //tabulate counts
-  arma::mat GLCM_Norm(n_levels, n_levels);
-  if(is_true(any(is_na(GLCM)))){
-    GLCM_Norm.fill(NA_REAL);
-    return GLCM_Norm;
-  } //If GLCM is NA return NA
+NumericVector C_glcm_metrics(const arma::mat& Pij,
+                                  const arma::mat& i_mat,
+                                  const arma::mat& j_mat,
+                                  const int n_levels,
+                                  const IntegerVector& metric_indices,
+                                  const bool impute_corr) {
 
-  double total= sum(GLCM);
-  for(int m=0; m < GLCM.size(); ++m){
-    GLCM_Norm[m] = (GLCM[m]*1.0)/total;
-  } //Normalize
-  return GLCM_Norm;
-}
+  int n_metrics = metric_indices.length();
+  NumericVector accum(n_metrics, 0.0);  // Initialize to 0.0, not NA
 
-//Gray Level Sum Vector
-// [[Rcpp::export]]
-NumericVector C_GLSV(arma::mat Pij, int n_levels) {
-  NumericVector k_prob(2*n_levels-1); //Initialize at zero
-  for (int i=0; i < n_levels; ++i) {
-    for (int j=0; j <= i; ++j) {
-      int k = i+j;
-      if(i==j){
-        k_prob[k]= k_prob[k] + Pij(i,j); //add probability to corresponding spot in k_prob
+  // Determine which metrics are requested
+  bool need_mean = false;
+  bool need_var = false;
+  bool need_corr = false;
+  for (int k = 0; k < n_metrics; ++k) {
+    int metric = metric_indices[k];
+    if (metric == 5) need_mean = true;
+    if (metric == 6){
+      need_mean = true;
+      need_var = true;
+    }
+    if (metric == 7){
+      need_mean = true;
+      need_var = true;
+      need_corr = true;
+    }
+  }
+
+  // Precompute mean and variance if needed
+  double glcm_mean = NA_REAL;
+  double glcm_variance = NA_REAL;
+
+  if (need_mean) {
+    glcm_mean = arma::accu(Pij % i_mat);
+  }
+  if (need_var) {
+    glcm_variance = arma::accu(Pij % arma::pow(i_mat - glcm_mean, 2));
+  }
+
+  if(need_corr &&  glcm_variance == 0){
+
+  }
+
+  std::vector<int> loop_metrics;  // For inner loop
+  for (int k = 0; k < n_metrics; ++k) {
+    int metric = metric_indices[k];
+    if (metric == 5) {
+      accum[k] = glcm_mean;
+    } else if (metric == 6) {
+      accum[k] = glcm_variance;
+    } else if(metric==7 && (glcm_variance == 0)){
+      if(impute_corr){
+        accum[k] = 0;
       } else{
-        k_prob[k]= k_prob[k] + 2*Pij(i,j); //Since only looping through lower triangle have to count off diagonal elements twice
+        accum[k] = NA_REAL;
+      }
+    } else {
+      loop_metrics.push_back(k);  // Store index into metric_indices
+    }
+  }
+
+  // Loop over Pij and compute metrics that require element-wise computation
+  for (int i = 0; i < n_levels; ++i) {
+    for (int j = 0; j < n_levels; ++j) {
+      double pij = Pij(i, j);
+      if (pij == 0) continue;
+
+      double i_val = i_mat(i, j);
+      double j_val = j_mat(i, j);
+
+      double diff = i_val - j_val;
+
+      for (int k_idx : loop_metrics) {
+        int metric = metric_indices[k_idx];
+        switch (metric) {
+        case 0: // contrast
+          accum[k_idx] += pij * diff * diff;
+          break;
+        case 1: // dissimilarity
+          accum[k_idx] += pij * std::abs(diff);
+          break;
+        case 2: // homogeneity
+          accum[k_idx] += pij / (1.0 + diff * diff);
+          break;
+        case 3: // ASM
+          accum[k_idx] += pij * pij;
+          break;
+        case 4: // entropy
+          accum[k_idx] += pij * (-std::log(pij));
+          break;
+        case 7: // correlation
+          accum[k_idx] += pij * (i_val - glcm_mean) * (j_val - glcm_mean) / glcm_variance;
+          break;
+        }
       }
     }
   }
-  return k_prob;
+  return accum;
 }
 
-//Calculate Texture Metrics
+//Focal calculation
 // [[Rcpp::export]]
-NumericVector C_glcm_metrics(arma::mat Pij, arma::mat i_mat, arma::mat j_mat, int n_levels, CharacterVector metrics, bool impute_corr){
+NumericMatrix C_glcm_textures_helper(const IntegerVector& x,
+                                          const IntegerVector& w2,
+                                          const int& n_levels,
+                                          const List& shift_list,
+                                          const IntegerVector& metric_indices,
+                                          const bool na_rm,
+                                          const bool impute_corr,
+                                          size_t ni,
+                                          size_t nw) {
 
-  NumericVector textures = rep(NA_REAL,metrics.length());
-  textures.names() = metrics;
-  if(!is_finite(Pij)){
-    return textures;}
-  if(in(CharacterVector::create("glcm_contrast"), metrics)){
-    textures["glcm_contrast"] = accu(Pij % pow(i_mat-j_mat,2)); //Contrast= sum(P_ij*(i-j)^2)
-    }
-  if(in(CharacterVector::create("glcm_dissimilarity"), metrics)){
-    textures["glcm_dissimilarity"]= accu(Pij % abs(i_mat-j_mat)); //Dissimilarity= sum(P_ij*|i-j|)
-    }
-  if(in(CharacterVector::create("glcm_homogeneity"), metrics)){
-    textures["glcm_homogeneity"]= accu(Pij/(1+(pow(i_mat-j_mat,2)))); //Homogeneity= sum(P_ij / (1+(i-j)^2))
-    }
-  if(in(CharacterVector::create("glcm_ASM"), metrics)){
-    textures["glcm_ASM"]= accu(pow(Pij,2)); //ASM= sum(P_ij^2)
-    }
-  if(in(CharacterVector::create("glcm_mean"), metrics)){
-    textures["glcm_mean"]= accu(Pij % i_mat); //mean= sum(i*(P_ij))
-    }
-  if(in(CharacterVector::create("glcm_variance"), metrics)){
-    textures["glcm_variance"]= accu(Pij % pow(i_mat-textures["glcm_mean"],2)); //varaince= sum(P_ij*(i-u)^2
-    }
-  if(in(CharacterVector::create("glcm_correlation"), metrics)){
-    if((textures["glcm_variance"]==0) && impute_corr){
-      textures["glcm_correlation"]=0; //only way for all values to be the same in symmetric GLCM (limit approaches zero corr)
-    } else{
-      textures["glcm_correlation"]= accu(Pij % (((i_mat-textures["glcm_mean"]) % (j_mat-textures["glcm_mean"]))/(textures["glcm_variance"]))); //Correlation= sum(P_ij*[((i-u)*(j-u))/(var)])
-      }
-    }
-  if(in(CharacterVector::create("glcm_entropy"), metrics)){
-    arma::mat glcm_entropy_mat = Pij % ((-1) * log(Pij));
-    glcm_entropy_mat.replace(datum::nan,0.0);
-    textures["glcm_entropy"]= accu(glcm_entropy_mat); //Entropy= sum(P_ij * (-ln(P_ij))) ; 0*ln(0)=0
-    }
-  //if(in(CharacterVector::create("glcm_SA"), metrics)){
-    //NumericVector k_prob = C_GLSV(Pij, n_levels); //Gray Level Sum Vector
-    //textures["glcm_SA"]= sum(k_prob*k_vals); //GLCM_SumAverage= sum(k*k_prob)
-    //}
-  return(textures);
-}
-
-//GLCM across matrix using sliding window (terra)
-// [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper(IntegerVector x, IntegerVector w2, int n_levels, IntegerVector shift, CharacterVector metrics, bool na_rm, bool impute_corr, size_t ni, size_t nw){
-
-  NumericMatrix out(ni, metrics.length());
+  // Initialize output matrix
+  NumericMatrix out(ni, metric_indices.length());
   out.fill(NA_REAL);
-  colnames(out)= metrics;
 
-  arma::mat i_mat(n_levels,n_levels);
-  arma::mat j_mat(n_levels,n_levels);
-  // NumericVector k_vals((2*n_levels)-1);
-  // for (int k = 1; k < k_vals.length(); ++k) {
-  //   k_vals[k] = k;
-  // } // All possible values of k, where k=i+j
-  for(int i=0; i<n_levels; ++i){
-    for(int j=0; j<n_levels; ++j){
-      i_mat(i,j)=i;
-      j_mat(i,j)=j;
-    }} //Set up i_mat and j_mat outside of loop so they don't need to be redefined each time
-
-  for(size_t i=0; i<ni; i++) {
-    size_t start = i*nw;
-    size_t end = start+nw-1;
-    IntegerVector xw = x[Rcpp::Range(start,end)]; //Current window of values
-    IntegerMatrix curr_window(w2[0],w2[1]);
-    for(int r=0; r < w2[0]; r++){
-      for(int c=0; c < w2[1]; c++){
-        curr_window(r,c) = xw[r*(w2[1])+c];
-      }
-    } //fill in matrix by row
-    arma::mat curr_GLCM = C_make_glcm(curr_window, n_levels, shift, na_rm); //Tabulate the GLCM
-    out(i, _) =  C_glcm_metrics(curr_GLCM, i_mat, j_mat, n_levels, metrics, impute_corr);
+  // Precompute i_mat and j_mat
+  arma::mat i_mat(n_levels, n_levels);
+  arma::mat j_mat(n_levels, n_levels);
+  for (int i = 0; i < n_levels; ++i) {
+    for (int j = 0; j < n_levels; ++j) {
+      i_mat(i, j) = i;
+      j_mat(i, j) = j;
+    }
   }
-  return(out);
+
+  const int* x_ptr = x.begin();  // Pointer to the input vector
+
+  const int nrow = w2[0];
+  const int ncol = w2[1];
+
+  for (size_t i = 0; i < ni; ++i) {
+    const int* xw_ptr = x_ptr + i * nw;
+    IntegerVector xw(xw_ptr, xw_ptr + nw);
+
+    if ((!na_rm) && is_true(any(is_na(xw)))) continue;
+
+    int n_metrics = metric_indices.length();
+    NumericVector accum_metrics(n_metrics, 0.0);
+    IntegerVector valid_shifts(n_metrics, 0);
+
+    int n_shifts = shift_list.size();
+    for (int shift_idx = 0; shift_idx < n_shifts; ++shift_idx) {
+      IntegerVector shift = shift_list[shift_idx];
+
+      arma::mat glcm = C_make_glcm(xw, n_levels, shift, na_rm, nrow, ncol, true);
+      NumericVector metrics = C_glcm_metrics(glcm, i_mat, j_mat, n_levels, metric_indices, impute_corr);
+
+      for (int m = 0; m < n_metrics; ++m) {
+        double val = metrics[m];
+        if (na_rm) {
+          if (!Rcpp::NumericVector::is_na(val)) {
+            accum_metrics[m] += val;
+            valid_shifts[m]++;
+          }
+        } else {
+          accum_metrics[m] += val;
+        }
+      }
+    }
+
+    if (na_rm) {
+      for (int m = 0; m < n_metrics; ++m) {
+        if (valid_shifts[m] > 0) {
+          accum_metrics[m] /= valid_shifts[m];
+        } else {
+          accum_metrics[m] = NA_REAL;
+        }
+      }
+    } else {
+      accum_metrics = accum_metrics / n_shifts;
+    }
+
+    out(i, _) = accum_metrics;
+  }
+
+  return out;
 }
