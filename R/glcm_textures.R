@@ -36,7 +36,7 @@
 #' Haralick, R.M., Shanmugam, K., Dinstein, I., 1973. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics 610–621. https://doi.org/10.1109/TSMC.1973.4309314
 #' @export
 #'
-glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quant_method=NULL, min_val=NULL, max_val=NULL, maxcell=Inf, na.rm=FALSE, impute_corr = FALSE, include_scale=FALSE, filename=NULL, overwrite=FALSE, quantization=NULL, wopt=list()){
+glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0,1), c(-1,1)), metrics= c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation"), quant_method=NULL, min_val=NULL, max_val=NULL, maxcell=Inf, na.rm=FALSE, impute_corr = FALSE, include_scale=FALSE, filename=NULL, overwrite=FALSE, quantization=NULL, test, wopt=list()){
   if(is.null(w)){
     out<- glcm_textures_wholeimage(r, n_levels=n_levels, shift=shift, metrics=metrics, quant_method=quant_method, min_val=min_val, max_val=max_val, maxcell=maxcell, na.rm=na.rm, impute_corr = impute_corr, wopt=wopt)
     return(out)
@@ -103,7 +103,14 @@ glcm_textures<- function(r, w = c(3,3), n_levels, shift=list(c(1,0), c(1,1), c(0
 
   metric_indices<- match(metrics, all_metrics)-1
 
-  output<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift, metric_indices = metric_indices, na_rm=na.rm, impute_corr = impute_corr, fillvalue=NA, wopt=wopt)
+  if(test==1){
+    output<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper, w2=w, n_levels= n_levels, shift = shift, metric_indices = metric_indices, na_rm=na.rm, impute_corr = impute_corr, fillvalue=NA, wopt=wopt)
+  }
+
+  if(test==2){
+    output<- terra::focalCpp(r, w=w, fun = C_glcm_textures_helper2, w2=w, n_levels= n_levels, shift = shift, metric_indices = metric_indices, na_rm=na.rm, impute_corr = impute_corr, fillvalue=NA, wopt=wopt)
+  }
+
 
   names(output)<- metrics #Add in names
 
