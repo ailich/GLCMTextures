@@ -19,9 +19,15 @@
 #' @export
 
 make_glcm<- function(x, n_levels, shift, na.rm = FALSE, normalize=TRUE){
-  if(class(x)[1]!="matrix"){
-    x<- as.matrix(x, wide=TRUE)
-  } # Convert to matrix
+  nr=nrow(x)
+  nc=ncol(x)
+
+  if(class(x)[1]=="matrix"){
+    x<- as.vector(t(x))
+  } else{
+    x<- as.vector(t(x))
+  }
+
   if(isTRUE(any(x > (n_levels-1))) | isTRUE(any(x < 0))){
 	  stop("Error: x must have values between 0 and n_levels-1")
 	}
@@ -29,14 +35,8 @@ make_glcm<- function(x, n_levels, shift, na.rm = FALSE, normalize=TRUE){
   GLCM<- vector(mode="list", length = length(shift))
 
   for (i in 1:length(shift)) {
-    if(normalize){
-      GLCM[[i]]<- C_make_glcm(x=x, n_levels=n_levels, shift=shift[[i]], na_rm=na.rm)
-    } else{
-      GLCM[[i]]<- C_make_glcm_counts(x=x, n_levels=n_levels, shift=shift[[i]], na_rm=na.rm)
-    }
+      GLCM[[i]]<- C_make_glcm(x=x, n_levels=n_levels, shift=shift[[i]], na_rm=na.rm, nrow=nr, ncol=nc,normalize=normalize)
   }
   if(length(GLCM)==1){GLCM<- GLCM[[1]]}
   return(GLCM)
 }
-
-

@@ -54,3 +54,15 @@ test_that("glcm_textures er works", {
   txt_er<- values(txt_er, mat=TRUE)
   expect_equal(txt_er, txt_er_extpected)
 })
+
+test_that("glcm_textures NA handling and ordering of metrics works", {
+  txt_ep32_NA_expected <- readRDS(system.file("testdata", "txt_ep32_NA.RDS", package = "GLCMTextures"))
+  r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200") #Use preloaded volcano dataset as a raster
+  set.seed(5)
+  r[sample(x = 1:ncell(r), size = 100)]<- NA
+  txt_ep32_NA<- glcm_textures(r, w = c(3,5), n_levels = 32, quant_method = "prob", shift=list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)),
+                              metrics = rev(c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")),
+                              na.rm=TRUE, impute_corr = TRUE)
+  txt_ep32_NA<- values(txt_ep32_NA, mat=TRUE)
+  expect_equal(txt_ep32_NA, txt_ep32_NA_expected)
+})
