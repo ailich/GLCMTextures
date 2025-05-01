@@ -51,188 +51,8 @@ arma::mat C_make_glcm(const IntegerVector& x,
   return GLCM;
 }
 
-//Calculate texture measures
 // [[Rcpp::export]]
 NumericVector C_glcm_metrics(const arma::mat& Pij,
-                                  const arma::mat& i_mat,
-                                  const arma::mat& j_mat,
-                                  const int n_levels,
-                                  const IntegerVector& metric_indices,
-                                  const bool impute_corr) {
-
-  int n_metrics = metric_indices.length();
-  NumericVector accum(n_metrics, 0.0);  // Initialize to 0.0, not NA
-
-  // Determine which metrics are requested
-  bool need_mean = false;
-  bool need_var = false;
-  for (int k = 0; k < n_metrics; ++k) {
-    int metric = metric_indices[k];
-    if (metric == 5) need_mean = true;
-    if (metric == 6){
-      need_mean = true;
-      need_var = true;
-    }
-    if (metric == 7){
-      need_mean = true;
-      need_var = true;
-    }
-  }
-
-  // Precompute mean and variance if needed
-  double glcm_mean = NA_REAL;
-  double glcm_variance = NA_REAL;
-
-  if (need_mean) {
-    glcm_mean = arma::accu(Pij % i_mat);
-  }
-  if (need_var) {
-    glcm_variance = arma::accu(Pij % arma::pow(i_mat - glcm_mean, 2));
-  }
-
-  std::vector<int> loop_metrics;  // For inner loop
-  for (int k = 0; k < n_metrics; ++k) {
-    int metric = metric_indices[k];
-    if (metric == 5) {
-      accum[k] = glcm_mean;
-    } else if (metric == 6) {
-      accum[k] = glcm_variance;
-    } else if(metric==7 && (glcm_variance == 0)){
-      if(impute_corr){
-        accum[k] = 0;
-      } else{
-        accum[k] = NA_REAL;
-      }
-    } else {
-      loop_metrics.push_back(k);  // Store index into metric_indices
-    }
-  }
-
-  // Loop over Pij and compute metrics that require element-wise computation
-  for (int i = 0; i < n_levels; ++i) {
-    for (int j = 0; j < n_levels; ++j) {
-      double pij = Pij(i, j);
-      if (pij == 0) continue;
-
-      double i_val = i_mat(i, j);
-      double j_val = j_mat(i, j);
-
-      double diff = i_val - j_val;
-
-      for (int k_idx : loop_metrics) {
-        int metric = metric_indices[k_idx];
-        switch (metric) {
-        case 0: // contrast
-          accum[k_idx] += pij * diff * diff;
-          break;
-        case 1: // dissimilarity
-          accum[k_idx] += pij * std::abs(diff);
-          break;
-        case 2: // homogeneity
-          accum[k_idx] += pij / (1.0 + diff * diff);
-          break;
-        case 3: // ASM
-          accum[k_idx] += pij * pij;
-          break;
-        case 4: // entropy
-          accum[k_idx] += pij * (-std::log(pij));
-          break;
-        case 7: // correlation
-          accum[k_idx] += pij * (i_val - glcm_mean) * (j_val - glcm_mean) / glcm_variance;
-          break;
-        }
-      }
-    }
-  }
-  return accum;
-}
-
-//Focal calculation
-// [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper(const IntegerVector& x,
-                                          const IntegerVector& w2,
-                                          const int& n_levels,
-                                          const List& shift_list,
-                                          const IntegerVector& metric_indices,
-                                          const bool na_rm,
-                                          const bool impute_corr,
-                                          size_t ni,
-                                          size_t nw) {
-
-  // Initialize output matrix
-  NumericMatrix out(ni, metric_indices.length());
-  out.fill(NA_REAL);
-
-  // Precompute i_mat and j_mat
-  arma::mat i_mat(n_levels, n_levels);
-  arma::mat j_mat(n_levels, n_levels);
-  for (int i = 0; i < n_levels; ++i) {
-    for (int j = 0; j < n_levels; ++j) {
-      i_mat(i, j) = i;
-      j_mat(i, j) = j;
-    }
-  }
-
-  const int* x_ptr = x.begin();  // Pointer to the input vector
-
-  const int nrow = w2[0];
-  const int ncol = w2[1];
-
-  for (size_t i = 0; i < ni; ++i) {
-    const int* xw_ptr = x_ptr + i * nw;
-    IntegerVector xw(xw_ptr, xw_ptr + nw);
-
-    if ((!na_rm) && is_true(any(is_na(xw)))) continue;
-
-    int n_metrics = metric_indices.length();
-    NumericVector accum_metrics(n_metrics, 0.0);
-    IntegerVector valid_shifts(n_metrics, 0);
-
-    int n_shifts = shift_list.size();
-    for (int shift_idx = 0; shift_idx < n_shifts; ++shift_idx) {
-      IntegerVector shift = shift_list[shift_idx];
-
-      arma::mat glcm = C_make_glcm(xw, n_levels, shift, na_rm, nrow, ncol, true);
-      NumericVector metrics = C_glcm_metrics(glcm, i_mat, j_mat, n_levels, metric_indices, impute_corr);
-
-      for (int m = 0; m < n_metrics; ++m) {
-        double val = metrics[m];
-        if (na_rm) {
-          if (!Rcpp::NumericVector::is_na(val)) {
-            accum_metrics[m] += val;
-            valid_shifts[m]++;
-          }
-        } else {
-          accum_metrics[m] += val;
-        }
-      }
-    }
-
-    if (na_rm) {
-      for (int m = 0; m < n_metrics; ++m) {
-        if (valid_shifts[m] > 0) {
-          accum_metrics[m] /= valid_shifts[m];
-        } else {
-          accum_metrics[m] = NA_REAL;
-        }
-      }
-    } else {
-      accum_metrics = accum_metrics / n_shifts;
-    }
-
-    out(i, _) = accum_metrics;
-  }
-
-  return out;
-}
-
-
-
-///////////////////////////////////////////////////////////////////////
-
-// ADD I_MAT-J_MAT AND I_MAT-j_MAT2 AS ARGUMENTS!!!!!!
-// [[Rcpp::export]]
-NumericVector C_glcm_metrics2(const arma::mat& Pij,
                               const arma::mat& i_mat,
                               const arma::mat& j_mat,
                               const arma::mat& i_minus_j,
@@ -315,10 +135,9 @@ NumericVector C_glcm_metrics2(const arma::mat& Pij,
   return textures;
 }
 
-
-
+// Focal function
 // [[Rcpp::export]]
-NumericMatrix C_glcm_textures_helper2(const IntegerVector& x,
+NumericMatrix C_glcm_textures_helper(const IntegerVector& x,
                                      const IntegerVector& w2,
                                      const int& n_levels,
                                      const List& shift_list,
@@ -366,7 +185,7 @@ NumericMatrix C_glcm_textures_helper2(const IntegerVector& x,
       IntegerVector shift = shift_list[shift_idx];
 
       arma::mat glcm = C_make_glcm(xw, n_levels, shift, na_rm, nrow, ncol, true);
-      NumericVector metrics = C_glcm_metrics2(glcm, i_mat, j_mat, i_minus_j, i_minus_j2, i_minus_j_abs, n_levels, metric_indices, impute_corr);
+      NumericVector metrics = C_glcm_metrics(glcm, i_mat, j_mat, i_minus_j, i_minus_j2, i_minus_j_abs, n_levels, metric_indices, impute_corr);
 
       for (int m = 0; m < n_metrics; ++m) {
         double val = metrics[m];
@@ -398,4 +217,3 @@ NumericMatrix C_glcm_textures_helper2(const IntegerVector& x,
 
   return out;
 }
-

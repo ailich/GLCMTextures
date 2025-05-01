@@ -29,11 +29,15 @@ glcm_metrics<-function(GLCM, metrics= c("glcm_contrast", "glcm_dissimilarity", "
   for (i in 1:length(GLCM)) {
     i_mat<- matrix(data= 0:(nrow(GLCM[[i]])-1), nrow= nrow(GLCM[[i]]), ncol=ncol(GLCM[[i]]), byrow=FALSE)
     j_mat<- matrix(data= 0:(ncol(GLCM[[i]])-1), nrow= nrow(GLCM[[i]]), ncol=ncol(GLCM[[i]]), byrow=TRUE)
+    i_minus_j<- i_mat-j_mat
+
     n_levels=nrow(GLCM[[i]])
 
     metric_indices<- match(metrics, all_metrics) -1
 
-    out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, n_levels=n_levels, metric_indices = metric_indices, impute_corr= impute_corr)
+    out[[i]]<- C_glcm_metrics(GLCM[[i]], i_mat = i_mat, j_mat = j_mat, i_minus_j = i_minus_j,
+                              i_minus_j2 = i_minus_j^2, i_minus_j_abs=abs(i_minus_j),
+                              n_levels=n_levels, metric_indices = metric_indices, impute_corr=impute_corr)
     names(out[[i]])<- metrics
   }
   if(length(out)==1){

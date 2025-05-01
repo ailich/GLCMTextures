@@ -5,19 +5,11 @@ C_make_glcm <- function(x, n_levels, shift, na_rm, nrow, ncol, normalize) {
     .Call(`_GLCMTextures_C_make_glcm`, x, n_levels, shift, na_rm, nrow, ncol, normalize)
 }
 
-C_glcm_metrics <- function(Pij, i_mat, j_mat, n_levels, metric_indices, impute_corr) {
-    .Call(`_GLCMTextures_C_glcm_metrics`, Pij, i_mat, j_mat, n_levels, metric_indices, impute_corr)
+C_glcm_metrics <- function(Pij, i_mat, j_mat, i_minus_j, i_minus_j2, i_minus_j_abs, n_levels, metric_indices, impute_corr) {
+    .Call(`_GLCMTextures_C_glcm_metrics`, Pij, i_mat, j_mat, i_minus_j, i_minus_j2, i_minus_j_abs, n_levels, metric_indices, impute_corr)
 }
 
 C_glcm_textures_helper <- function(x, w2, n_levels, shift_list, metric_indices, na_rm, impute_corr, ni, nw) {
     .Call(`_GLCMTextures_C_glcm_textures_helper`, x, w2, n_levels, shift_list, metric_indices, na_rm, impute_corr, ni, nw)
-}
-
-C_glcm_metrics2 <- function(Pij, i_mat, j_mat, i_minus_j, i_minus_j2, i_minus_j_abs, n_levels, metric_indices, impute_corr) {
-    .Call(`_GLCMTextures_C_glcm_metrics2`, Pij, i_mat, j_mat, i_minus_j, i_minus_j2, i_minus_j_abs, n_levels, metric_indices, impute_corr)
-}
-
-C_glcm_textures_helper2 <- function(x, w2, n_levels, shift_list, metric_indices, na_rm, impute_corr, ni, nw) {
-    .Call(`_GLCMTextures_C_glcm_textures_helper2`, x, w2, n_levels, shift_list, metric_indices, na_rm, impute_corr, ni, nw)
 }
 
