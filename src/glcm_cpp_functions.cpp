@@ -119,7 +119,7 @@ NumericVector C_glcm_metrics(const arma::mat& Pij,
       break;
     case 7: { // Correlation (optimized)
         if (glcm_variance == 0.0) {
-        textures[m] = impute_corr ? 0.0 : NA_REAL;
+        textures[m] = impute_corr ? 0.0 : R_NaN;
       } else {
         double corr_sum = 0.0;
         for (arma::uword i = 0; i < Pij.n_elem; ++i) {
