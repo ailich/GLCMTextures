@@ -65,6 +65,17 @@ NumericVector C_glcm_metrics(const arma::mat& Pij,
   int n_metrics = metric_indices.length();
   NumericVector textures(n_metrics, NA_REAL);  // Initialize output
 
+  bool all_na = true; // Check to see if all values are NA
+  for (arma::uword i = 0; i < Pij.n_elem; ++i) {
+    if (std::isfinite(Pij[i])) {
+      all_na = false;
+      break;
+    }
+  }
+  if (all_na) {
+    return textures;  // Already filled with NA_REAL
+  }
+
   // Flags for what we need to compute
   bool need_mean = false, need_var = false;
 
