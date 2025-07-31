@@ -23,9 +23,9 @@ make_glcm<- function(x, n_levels, shift, na.rm = FALSE, normalize=TRUE){
   nc=ncol(x)
 
   if(class(x)[1]=="matrix"){
-    x<- as.vector(t(x))
+    x<- as.vector(t(x)) #transpose so would match order of focal input
   } else{
-    x<- as.vector(t(x))
+    x<- as.vector(x) # Already a SpatRaster so order will be along rows
   }
 
   if(isTRUE(any(x > (n_levels-1))) | isTRUE(any(x < 0))){

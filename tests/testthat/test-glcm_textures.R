@@ -3,8 +3,11 @@ h_glcm<- matrix(c(4,2,1,0,2,4,0,0,1,0,6,1,0,0,1,2), nrow = 4) # horizontal GLCM 
 h_glcm_norm<- matrix(c(0.166, 0.083, 0.042,0,0.083,0.166,0,0,0.042,0,0.25,0.042,0,0,0.042,0.083), nrow=4) # normalized horizontal GLCM from Hall-Beyer tutorial
 v_glcm<- matrix(c(6,0,2,0,0,4,2,0,2,2,2,2,0,0,2,0), nrow=4) # vertical GLCM from Hall-Beyer tutorial
 v_glcm_norm<- matrix(c(0.249, 0, 0.083, 0, 0, 0.166,0.083,0, 0.083,0.083,0.083,0.083, 0,0,0.083,0), nrow=4) # normalized vertical GLCM from Hall-Beyer tutorial
+whole_img_textures<- round(c(0.21212121, 0.21212121, 0.89393939, 0.02100551, 4.08422180, 15.50000000, 84.25000000, 0.99874112),3)
+names(whole_img_textures)<- c("glcm_contrast", "glcm_dissimilarity","glcm_homogeneity","glcm_ASM","glcm_entropy","glcm_mean","glcm_variance","glcm_correlation") #example from https://stackoverflow.com/questions/57168217/r-calculate-grey-level-co-occurence-matrix-glcm-for-an-image
 
-# Ansers to exercises in Hall-Beyer Guide
+
+# Answers to exercises in Hall-Beyer Guide
 h_metrics<- c(glcm_contrast= 0.586, glcm_dissimilarity= 0.418, glcm_homogeneity = 0.807,
               glcm_ASM = 0.145, glcm_entropy = 2.095, glcm_mean= 1.292, glcm_variance= 1.039,
               glcm_correlation = 0.718)
@@ -66,3 +69,33 @@ test_that("glcm_textures NA handling and ordering of metrics works", {
   txt_ep32_NA<- values(txt_ep32_NA, mat=TRUE)
   expect_equal(txt_ep32_NA, txt_ep32_NA_expected)
 })
+
+test_that("glcm_textures NA handling and ordering of metrics works", {
+  txt_ep32_NA_expected <- readRDS(system.file("testdata", "txt_ep32_NA.RDS", package = "GLCMTextures"))
+  r<- rast(volcano, extent= ext(2667400, 2667400 + ncol(volcano)*10, 6478700, 6478700 + nrow(volcano)*10), crs = "EPSG:27200") #Use preloaded volcano dataset as a raster
+  set.seed(5)
+  r[sample(x = 1:ncell(r), size = 100)]<- NA
+  txt_ep32_NA<- glcm_textures(r, w = c(3,5), n_levels = 32, quant_method = "prob", shift=list(c(1, 0), c(1, 1), c(0, 1), c(-1, 1)),
+                              metrics = rev(c("glcm_contrast", "glcm_dissimilarity", "glcm_homogeneity", "glcm_ASM", "glcm_entropy", "glcm_mean", "glcm_variance", "glcm_correlation")),
+                              na.rm=TRUE, impute_corr = TRUE)
+  txt_ep32_NA<- values(txt_ep32_NA, mat=TRUE)
+  expect_equal(txt_ep32_NA, txt_ep32_NA_expected)
+})
+
+test_that("Test whole images raster", {
+  m<- matrix(data = seq(1, c(12*12), 1), nrow = 12, ncol = 12, byrow = TRUE)
+  r<- rast(m)
+  r<- quantize_raster(r, n_levels = 32, quant_method = "prob")
+  txt_r<- round(glcm_textures(r, w = NULL, n_levels = 32, quant_method = "none", shift=c(1, 0), metrics = names(whole_img_textures)),3)
+  expect_equal(txt_r, whole_img_textures)
+})
+
+test_that("Test whole images matrix", {
+  m<- matrix(data = seq(1, c(12*12), 1), nrow = 12, ncol = 12, byrow = TRUE)
+  r<- rast(m)
+  r<- quantize_raster(r, n_levels = 32, quant_method = "prob")
+  m<- as.matrix(r, wide=TRUE)
+  txt_r<- round(glcm_textures(r, w = NULL, n_levels = 32, quant_method = "none", shift=c(1, 0), metrics = names(whole_img_textures)),3)
+  expect_equal(txt_r, whole_img_textures)
+})
+
